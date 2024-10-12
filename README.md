@@ -28,7 +28,7 @@
   <p align="center">
     A sleek, fast, and fully customizable portfolio for everyone
     <br />
-    <a href="https://biswajit-k.tech/"><strong>View Live »</strong></a>
+    <a href="https://salman-ch.netlify.app/"><strong>View Live »</strong></a>
     <br />
     <br />
     <a href="#getting-started">Quickstart</a>
