@@ -19,7 +19,7 @@ const StyledLoader = styled.div`
 
   .logo-wrapper {
     width: max-content;
-    max-width: 100px;
+    max-width: 150px;         # Increase the loader size .salman :)
     transition: var(--transition);
     opacity: ${props => (props.isMounted ? 1 : 0)};
     svg {
@@ -53,15 +53,15 @@ const Loader = ({ finishLoading }) => {
         strokeDashoffset: [anime.setDashoffset, 0],
       })
       .add({
-        targets: '#logo #B',
+        targets: '#logo', //Removing #logo B
         duration: 700,
         easing: 'easeInOutQuart',
         opacity: 1,
       })
       .add({
         targets: '#logo',
-        delay: 500,
-        duration: 300,
+        delay: 100, //300 to 100
+        duration: 100, //500 to 100
         easing: 'easeInOutQuart',
         opacity: 0,
         scale: 0.1,

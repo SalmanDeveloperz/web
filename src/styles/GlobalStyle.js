@@ -422,7 +422,7 @@ const GlobalStyle = createGlobalStyle`
     font-size: var(--fz-sm);
     ${({ theme }) => theme.mixins.inlineLink};
     &:after {
-      bottom: 0.1em;
+      bottom: 0.2em;
     }
   }
 

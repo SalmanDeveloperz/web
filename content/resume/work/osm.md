@@ -1,15 +1,14 @@
 ---
-company: OpenStreetMap
-website: https://www.openstreetmap.org/about
+company: Hywiz Technologies
+website: https://hywiz.com/
 job:
-  - role: Python Developer(Open-Source)
-    duration: "Jan' 23 - May' 23"
+  - role: Frontend Developer (Internship)
+    duration: "June' 01 - Aug' 20"
     description: >-
-      Worked on development of a [geocoding search engine](https://nominatim.org/) that serves 30 million queries daily on a single server.
-
-        - Implemented a [delete tags sanitizer](https://github.com/osm-search/Nominatim/pull/2993) to prevent unwanted tags from entering the database. Ensured integrity by unit testing using Pytest.
-        - Reduced 20% redundancy in code by [generalizing filter function](https://github.com/osm-search/Nominatim/pull/3006) for multiple use cases
-        - Integrated CI/CD pipeline test on GitHub actions workflow reducing manual effort by 10%
-        - Performed shell scripting for [automation of project description](https://github.com/osm-search/Nominatim/pull/3045)
-        - [Resolved bug in determining amenity](https://github.com/openstreetmap/iD/pull/9483) as area solving 6 current and multiple potential issues.
+      Worked on development and providing cutting-edge Web Application with deep problem solving.
+        - ontributed to cutting-edge web applications,
+        immersing myself in web development and enhancing my coding skills.
+        - Develop responsive web designs while implementing algorithms to perform various tasks efficiently.
+        - Work on Version Control like Git, GitHub, Bit Bucket
+        - Problem Solving & Bug Resolving
 ---

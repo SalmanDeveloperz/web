@@ -65,8 +65,10 @@ const StyledNav = styled.nav`
     ${({ theme }) => theme.mixins.flexCenter};
 
     a {
-      color: var(--white);
-      width: 42px;
+      // color: var(--white);
+      // color: #ffffff
+      color: rgba(255, 255, 255, 0);
+      width: 60px; //Change from 42px :)
       height: 42px;
       position: relative;
       z-index: 1;

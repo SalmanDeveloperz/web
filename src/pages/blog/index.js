@@ -107,7 +107,7 @@ const StyledPost = styled.li`
   }
 `;
 
-const BlogPage = ({ location, data }) => {
+const ExperiencePage = ({ location, data }) => {
   const posts = data.allMarkdownRemark.edges;
   const revealArchiveLink = useRef(null);
 
@@ -125,12 +125,12 @@ const BlogPage = ({ location, data }) => {
 
   return (
     <Layout location={location}>
-      <Helmet title="Blog" />
+      <Helmet title="Experience" />
 
       <StyledMainContainer>
         <header>
-          <h1 className="big-heading">Blog</h1>
-          <p className="subtitle">All the latest posts</p>
+          <h1 className="big-heading">Experience</h1>
+          <p className="subtitle">All the latest experiences</p>
         </header>
 
         <div className="post_container">
@@ -170,12 +170,12 @@ const BlogPage = ({ location, data }) => {
   );
 };
 
-BlogPage.propTypes = {
+ExperiencePage.propTypes = {
   location: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired,
 };
 
-export default BlogPage;
+export default ExperiencePage;
 
 export const pageQuery = graphql`
   {

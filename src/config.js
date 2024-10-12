@@ -1,26 +1,26 @@
 module.exports = {
-  email: 'biswajitkaushik02@gmail.com',
+  email: 'chmsalman199@gmail.com',
 
   socialMedia: [
     {
       name: 'GitHub',
-      url: 'https://github.com/biswajit-k',
+      url: 'https://github.com/SalmanDeveloperz/',
     },
     {
       name: 'Twitter',
-      url: 'https://twitter.com/speedo_sorted',
+      url: 'https://x.com/chsalman199/',
     },
     {
       name: 'Linkedin',
-      url: 'https://www.linkedin.com/in/biswajit-kaushik',
+      url: 'https://www.linkedin.com/in/msalman199/',
     },
   ],
 
-  youtube: 'https://www.youtube.com/@biswajit-k-yt',
+  youtube: 'https://www.youtube.com/@IslamEcho',
 
   navLinks: [
     {
-      name: 'Blog',
+      name: 'Experience',
       url: '/blog',
     },
     {

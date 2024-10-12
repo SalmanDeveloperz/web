@@ -1,23 +1,27 @@
-- ### Programming Language
+- ### Programming Languages
 
-  Python, Javascript, Typescript, C++, Lua, Java, Kotlin
+  Python, Javascript, C , C++, C#, PHP
 
 - ### Framework
 
-  Flask, FastAPI, Django, React, node.js, Next.js, Rest API, SQLAlchemy ORM, Tailwind CSS, HTML
+  .NET, Bootstrap, jQuery, Rest API, SQL, CSS, HTML, Django
 
 - ### Database and Cloud
 
-  SQL, PostgreSQL, MongoDB, Redis, AWS (EC2, S3, Lambda, DynamoDB)
+  SQL, PostgreSQL, MongoDB, AWS (EC2, Ubuntu), Azure
 
 - ### Tools
 
-  Docker, Kubernetes, Apache Kafka, Linux, Bash, Elasticsearch, Version Control (Git)
+  Docker, Kubernetes, Jenkins, Chef, Apache, Linux, Bash, Version Control (Git)
 
 - ### System Architecture
 
   Database Design(SQL), Design Patterns, Monoliths, microservices and the in-between, APIs (modules, REST)
 
+- ### Tools & Platforms
+
+  Visual Studio, VS Code, Sublime Text, Linux/Bash, Anaconda, Jupyter, Notepad ++
+
 - ### Leadership & Communication Skills
 
-  Mentoring & Teaching, Empathy, Eye for process improvements and bottlenecks
+  Mentoring & Teaching

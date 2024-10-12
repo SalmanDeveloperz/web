@@ -1,10 +1,12 @@
 ---
-title: 'LogFlow Insight: Log Ingester Elasticsearch'
-description: A distributed system that can handle large volume of log insertions through HTTP and provides a interface to search these logs in real-time.
+title: 'Point of Sales Inventory System'
+description: This project features a Point of Sale (POS) system designed to streamline transaction processes in retail environments. The system efficiently manages sales transactions, inventory tracking, and customer data, providing real-time insights into business performance. Utilizing robust libraries for data processing and user interface design, this solution enhances operational efficiency and improves the overall customer experience, making it an invaluable tool for modern retail management.
 date: 2024-08-19
-cover: './images/log-ingester-cover.jpg'
-link: https://www.youtube.com/watch?v=JjedCSq7-J0
+cover: './images/point of sales.png'
+link: https://youtu.be/02hPBoNNmIA?si=SgeIBnsZjzlPGHvW
 tags:
   - Accessibility
   - CSS
+  - .NET
+  - C#
 ---

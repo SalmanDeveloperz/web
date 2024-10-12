@@ -146,7 +146,7 @@ const FeaturedPost = () => {
   return (
     <FeaturedPostSection id="featured-posts">
       <h2 className="numbered-heading" ref={revealTitle}>
-        Featured Posts
+        Experience
       </h2>
       <div className="post_container">
         <StyledGrid>

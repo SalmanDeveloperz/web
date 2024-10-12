@@ -1,23 +1,19 @@
 ---
-company: Samsung R&D
-website: https://research.samsung.com/
+company: Techverx
+website: https://techverx.com/
 job:
-  - role: Software Engineer
-    duration: "July' 24 - Present"
+  - role: Software Quality Engineer (Remote)
+    duration: "June' 24 - Present"
     description: >-
-      Part of the AI Platform team developing **RAG workflows** using LangChain and integrating AI solutions on smartphones. 
+      As a key member of the QA team, I have contributed to the successful testing and validation of numerous real-world projects. Leveraging my skills in quality assurance, I ensure that software products meet the highest standards of functionality, performance, and reliability. Through meticulous test planning, execution, and defect management, I help deliver robust solutions that align with user requirements and business objectives.
 
-      Tech Stack: Python, Generative AI, Vector Database, LangChain, RAG
+        Tech Stack: Python, Azure, CI/CD Pipelines, Bugs Reporting, Jira, Postman, API Testing
 
-  - role: Software Engineer Intern
-    duration: "Jan'24 - June'24"
-    description: >-
-      Part of Samsung Health application team, creating solutions to **digitize the health record** of our users.
-
-        - Utilized **AWS Lambda, DynamoDB** and **API Gateway** to develop backend servers for fetching and storage of records.
-        - Researched and analyzed various **OCR** solutions, **LLM** for retrieval of lab parameters from lab reports including Azure, AWS, ChatGPT and Google Gemini that **reduced cost by 30%**.
-        - Delivered modern records share and download functionality in the app improving creativity and user experience.
-        - Deployed cryptography **encryption, decryption service on AWS EC2** providing secure transmission of records
-
-        Tech Stack: Python, AWS(Lambda, DynamoDB, API Gateway), Machine Learning/LLM, Android, Kotlin
+        - Design test plans, scenarios, or procedures.
+        - Document software defects, using a bug-tracking system, and report defects to software developers.
+        - Participate in product design reviews to provide input on functional requirements and potential problems.
+        - Monitor bug resolution efforts and track successes using Jira and click-up.
+        - Perform positive and negative testing.
+        - Performed smoke, regression, and integration testing to ensure software quality.
+        - Documented software defects, reported to developers, and tracked resolutions using Jira.
 ---

@@ -203,9 +203,9 @@ const ResumePage = ({ location }) => {
       <Helmet title="Resume" />
       <StyledMainContainer>
         <header>
-          <h1 className="big-heading">Biswajit Kaushik</h1>
+          <h1 className="big-heading">Muhammad Salman</h1>
           <a
-            href="/resume.pdf"
+            href="https://drive.google.com/file/d/1BOd-76JjB54XRXoEMtL-y_ywchM0kmgu/view?usp=sharing"
             className='className="subtitle styled_link'
             target="_blank"
             rel="noopener noreferrer">

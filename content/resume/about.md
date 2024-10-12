@@ -1,6 +1,5 @@
-I'm a software engineer professional deeply interested in **collaboratively building useful products**. I have
-experience in building software using **Python, React, Flask, FastAPI, SQL, and AWS**. I've
-made notable open-source [contributions](https://github.com/osm-search/Nominatim/pulls?author=biswajit-k&closed) to the [Nominatim project](https://github.com/osm-search/Nominatim) of OpenStreetMap (3k stars on Github). I also have good problem-solving skills and
-I've solved multiple problems on the [Leetcode](https://leetcode.com/biswajit_kaushik) platform.
+I am a dedicated and ambitious Software Engineer with a strong passion for collaboratively building innovative and impactful software solutions. With a solid foundation in software engineering, I have gained hands-on experience in developing applications using technologies like **Python, C++, JavaScript, PHP, C#, and AWS**.
 
-In my current role at Samsung R&D, I am the part of AI Platform team developing **RAG workflows** using LangChain and **integrating AI solutions** on smartphones.
+I am also actively involved in the open-source community, making meaningful contributions to various projects, where I continuously enhance my technical skills and collaborate with developers worldwide. My contributions to open-source projects have helped me develop a deeper understanding of problem-solving, version control, and teamwork. Additionally, I have honed my algorithmic thinking by solving multiple coding challenges on platforms like [Leetcode](https://leetcode.com/u/chsalman199/).
+
+I am always seeking to collaborate with like-minded professionals and contribute to a forward-thinking organization where I can continue to grow, tackle complex challenges, and make a meaningful impact through technology.
