@@ -1,14 +1,28 @@
 
+<!--     <img src="src/components/icons/logo2.png" alt="Logo" width="200"> -->
+<a id="readme-top"></a>
 
+<!-- PROJECT SHIELDS -->
+<!--
+*** I'm using markdown "reference style" links for readability.
+*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
+*** See the bottom of this document for the declaration of the reference variables
+*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
+*** https://www.markdownguide.org/basic-syntax/#reference-style-links
+-->
 
-HEAD
-
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <a href="https://github.com/SalmanDeveloperz">
-    <img src="images/logo.png" alt="Logo" width="200">
+    <img src="src/components/icons/logo2.png" alt="Logo" width="200">
   </a>
 
   <p align="center">
@@ -24,35 +38,85 @@ HEAD
     <a href="https://github.com/SalmanDeveloperz/website/issues">Request Feature</a>
   </p>
 </div>
-2d10188 (Fix accessibility issue in Hero component)
 
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+    </li>
+    <li>
+      <a href="#project-description">Project Description</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+        <li><a href="#building-for-production">Building For Production</a></li>
+        <li><a href="#folder-structure">Folder Structure</a></li>
+      </ul>
+    </li>
+    <li><a href="#future-improvements">Future Improvements</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ol>
+</details>
 
+<!-- ABOUT THE PROJECT -->
 
-
-HEAD
+## About The Project
 
 This a black & white theme portfolio website template that you can quickly setup and customize to make it your own. The design is sleek yet well-organized with multiple sections to suit your needs regardless of which background you come from.
-2d10188 (Fix accessibility issue in Hero component)
 
+This project is a fork of [v4 of Brittany Chiang's portfolio website](https://github.com/bchiang7/v4) which is quite awesome. Make sure to check that out as well.
 
+The key features are:
 
+- **Sleek Design**: Modern, minimalist and consistent design
+- **Organized Section**: Offers essential sections that suits everyone which are easy and intuitive to nagivate
+- **Customizable Content**: Effortlessly update your content and sections with zero coding work.
+- **Free Hosting**: Quickly and easily deploy your portfolio website for free on [Netlify](https://www.netlify.com/) or [Github Pages](https://pages.github.com/).
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+### Built With
 
+- ![Gatsby](https://img.shields.io/badge/Gatsby-%23663399.svg?style=for-the-badge&logo=gatsby&logoColor=white)
+- ![Styled Components](https://img.shields.io/badge/styled--components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white)
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- GETTING STARTED -->
 
+## Getting Started
 
+To get a local copy up and running follow these simple steps.
 
+### Prerequisites
 
+Make sure that you have [Node.js](https://nodejs.org/en) installed as it would help in running the Gatsby server and [yarn](https://yarnpkg.com/) for installing the dependencies.
 
+### Installation
 
+1. Clone the repo
 
+   ```sh
+   git clone https://github.com/biswajit-k/MonoSlate.git
+   ```
 
+2. Install the Gatsby CLI
 
+   ```sh
+   npm install -g gatsby-cli
+   ```
 
-
-HEAD
+3. Install dependencies
 
    ```sh
    yarn
@@ -231,4 +295,3 @@ Don't forget to give the project a star! Thanks again!
 [license-url]: https://github.com/SalmanDeveloperz/website/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/msalman199/
-2d10188 (Fix accessibility issue in Hero component)
