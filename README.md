@@ -107,7 +107,7 @@ Make sure that you have [Node.js](https://nodejs.org/en) installed as it would h
 1. Clone the repo
 
    ```sh
-   git clone https://github.com/biswajit-k/MonoSlate.git
+   https://github.com/SalmanDeveloperz/web.git
    ```
 
 2. Install the Gatsby CLI
