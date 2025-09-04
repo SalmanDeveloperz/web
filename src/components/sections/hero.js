@@ -227,11 +227,11 @@ const Hero = () => {
   const four = (
     <>
       <p>
-        As a flexible professional, I excel in adapting to challenges, fostering creativity, and
-        embracing feedback. Thriving in dynamic environments, I'm committed to staying current with
-        industry trends and emerging technologies. Fueled by a passion for problem-solving and
-        dedication to delivering quality results, I'm enthusiastic about contributing my skills to
-        exciting projects.{' '}
+        Hello Everyone, As a flexible professional, I excel in adapting to challenges, fostering
+        creativity, and embracing feedback. Thriving in dynamic environments, I'm committed to
+        staying current with industry trends and emerging technologies. Fueled by a passion for
+        problem-solving and dedication to delivering quality results, I'm enthusiastic about
+        contributing my skills to exciting projects.{' '}
         <a href="https://github.com/SalmanDeveloperz" target="_blank" rel="noreferrer">
           Visit my GitHub
         </a>
