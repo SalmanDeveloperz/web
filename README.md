@@ -70,18 +70,18 @@
 
 <!-- ABOUT THE PROJECT -->
 
-## About The Project
+## 📌 About The Project
 
-This a black & white theme portfolio website template that you can quickly setup and customize to make it your own. The design is sleek yet well-organized with multiple sections to suit your needs regardless of which background you come from.
+This is a **black & white themed portfolio website template** that you can set up quickly and customize to make it truly your own.  
+It’s designed to be **sleek, minimal, and well-structured** with multiple sections that work for professionals from **any background**.  
 
-This project is a fork of [v4 of Brittany Chiang's portfolio website](https://github.com/bchiang7/v4) which is quite awesome. Make sure to check that out as well.
+This project is a fork of [Brittany Chiang's Portfolio (v4)](https://github.com/bchiang7/v4) — an amazing template that inspired this version. Be sure to check that out as well!  
 
-The key features are:
-
-- **Sleek Design**: Modern, minimalist and consistent design
-- **Organized Section**: Offers essential sections that suits everyone which are easy and intuitive to nagivate
-- **Customizable Content**: Effortlessly update your content and sections with zero coding work.
-- **Free Hosting**: Quickly and easily deploy your portfolio website for free on [Netlify](https://www.netlify.com/) or [Github Pages](https://pages.github.com/).
+### ✨ Key Features
+- 🎨 **Sleek Design** – Modern, minimalist, and consistent look  
+- 📑 **Organized Sections** – Essential sections for everyone, intuitive to navigate  
+- ⚡ **Customizable Content** – Update everything easily with minimal coding  
+- ☁️ **Free Hosting** – Deploy in minutes on [Netlify](https://www.netlify.com/) or [GitHub Pages](https://pages.github.com/)  
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
