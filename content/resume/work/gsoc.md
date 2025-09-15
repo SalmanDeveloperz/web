@@ -1,9 +1,9 @@
 ---
-company: Techverx
-website: https://techverx.com/
+company: Google Summer of Code @ FOSSology
+website: https://summerofcode.withgoogle.com/programs/2025/projects/MjOyiOj7
 job:
-  - role: Software Quality Engineer (Remote)
-    duration: "June' 24 - Present"
+  - role: Software Engineer (Open Source Contributor)
+    duration: '01 May 2025 - 09 September 2025'
     description: >-
       As a key member of the QA team, I have contributed to the successful testing and validation of numerous real-world projects. Leveraging my skills in quality assurance, I ensure that software products meet the highest standards of functionality, performance, and reliability. Through meticulous test planning, execution, and defect management, I help deliver robust solutions that align with user requirements and business objectives.
 

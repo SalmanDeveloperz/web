@@ -3,8 +3,8 @@ name: Muhammad Salman
 profession: Software Engineer
 work: 'Developer & QA Engineer'
 location: Pakistan
-email: 'chmsalman199@gmail.com'
-cover: ./salman1.jpg
+email: 'chsalmanramzan422@gmail.com'
+cover: ./salman.jpg
 skills:
   - Programming Languages (C/C++, JavaScript, C#, Python)
   - Frameworks & Libraries (.NET, Bootstrap, jQuery)

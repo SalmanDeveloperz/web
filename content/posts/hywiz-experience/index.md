@@ -1,22 +1,22 @@
 ---
 title: Hywiz Technologies
-description: "During my 2-month internship at Hywiz Technologies, I had the opportunity to immerse myself in the dynamic world of web development, where I contributed to the creation of cutting-edge web applications. This Experience allowed me to apply my technical skills and gain invaluable insights into the software development lifecycle. I focused on developing responsive web designs that not only met client requirements but also provided an exceptional user Experience across various devices.
 
-Utilizing technologies such as HTML, CSS, and JavaScript, I crafted engaging user interfaces and implemented interactive features using frameworks like Bootstrap and jQuery. My role also involved collaborating closely with cross-functional teams, ensuring that design elements aligned with overall project goals and user needs. Additionally, I leveraged my C++ programming skills to implement algorithms that enhanced the efficiency of various application functions, further solidifying my problem-solving capabilities.
+description: "During my internship at Hywiz Technologies, I gained hands-on experience in web development by contributing to the design and development of responsive, user-friendly web applications. I focused on building adaptive layouts that ensured consistent performance across devices while aligning with client requirements and business goals.
 
-This internship not only refined my technical expertise but also fostered my ability to work in a fast-paced, collaborative environment, preparing me for future challenges in the ever-evolving field of software development."
+I worked with technologies such as HTML, CSS, JavaScript, TypeScript and React to create interactive and engaging user interfaces. My role also involved collaborating with designers and backend engineers, ensuring seamless integration of features and adherence to project standards."
 date: 2023-08-01
 
 featured: true
-slug: /Experience/hywiz
+slug: /experience/hywiz
 tags:
-  - C
-  - C++
-  - Html5
+  - C/C++
+  - HTML5
   - CSS
-  - JavaScript
   - jQuery
   - Bootstrap
+  - JavaScript
+  - TypeScript
+  - React
   - Git
   - GitHub
 ---

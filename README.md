@@ -1,5 +1,5 @@
-
 <!--     <img src="src/components/icons/logo2.png" alt="Logo" width="200"> -->
+
 <a id="readme-top"></a>
 
 <!-- PROJECT SHIELDS -->
@@ -272,7 +272,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 [![Linkedin](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/msalman199/)
 
-[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:chmsalman199@gmail.com)
+[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:chsalmanramzan422@gmail.com)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
