@@ -1,6 +1,6 @@
 ---
 title: Google Summer of Code 2025 Contributor @ FOSSology
-description: "As a Google Summer of Code 2025 Contributor with FOSSology, I worked on modernizing its microservices-based infrastructure by deploying FOSSology on Kubernetes. This project aimed to enhance scalability, simplify deployment, and align with modern DevOps practices. I collaborated with global open-source mentors and developers, gaining valuable experience in cloud-native solutions, containerization, and CI/CD workflows."
+description: 'As a Google Summer of Code 2025 Contributor with FOSSology, I worked on modernizing its microservices-based infrastructure by deploying FOSSology on Kubernetes. This project aimed to enhance scalability, simplify deployment, and align with modern DevOps practices. I collaborated with global open-source mentors and developers, gaining valuable experience in cloud-native solutions, containerization, and CI/CD workflows.'
 date: 2025-05-01
 featured: true
 slug: /Experience/gsoc
@@ -15,6 +15,8 @@ tags:
   - CMake
   - Cloud-Native
 ---
+
+![GSoC @ FOSSology](/fossologyxGSoC.gif)
 
 ## Contents
 
@@ -49,11 +51,11 @@ Adapted quickly to new tools and open-source workflows, ensuring timely project 
 
 ## <span id="tools-and-technologies"> - Tools and Technologies:
 
-- **Kubernetes** for container orchestration and scaling  
-- **Docker / Podman** for containerization  
-- **Bash** and **CMake** for build automation and scripting  
-- **CI/CD pipelines** to improve deployment workflows  
-- Collaboration platforms: GitHub, mailing lists, and GSoC community channels  
+- **Kubernetes** for container orchestration and scaling
+- **Docker / Podman** for containerization
+- **Bash** and **CMake** for build automation and scripting
+- **CI/ CD pipelines** to improve deployment workflows
+- Collaboration platforms: GitHub, mailing lists, and GSoC community channels
 
 ---
 
