@@ -5,7 +5,7 @@ job:
   - role: Software Engineer (Open Source Contributor)
     duration: '01 May 2025 - 09 September 2025'
     description: >-
-      As a key member of the QA team, I have contributed to the successful testing and validation of numerous real-world projects. Leveraging my skills in quality assurance, I ensure that software products meet the highest standards of functionality, performance, and reliability. Through meticulous test planning, execution, and defect management, I help deliver robust solutions that align with user requirements and business objectives.
+      As a Google Summer of Code 2025 Contributor with FOSSology, I worked on modernizing its microservices-based infrastructure by deploying FOSSology on Kubernetes. This project aimed to enhance scalability, simplify deployment, and align with modern DevOps practices. I collaborated with global open-source mentors and developers, gaining valuable experience in cloud-native solutions, containerization, and CI/CD workflows.
 
         Tech Stack: Python, Azure, CI/CD Pipelines, Bugs Reporting, Jira, Postman, API Testing
 

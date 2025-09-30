@@ -222,16 +222,16 @@ const Hero = () => {
     return () => clearTimeout(timeout);
   }, []);
 
-  const one = <h1>Hi, my name is</h1>;
+  const one = <h1>Hi, I am </h1>;
   const three = <h3 className="big-heading">Muhammad Salman</h3>;
   const four = (
     <>
       <p>
-        Hello Everyone, As a flexible professional, I excel in adapting to challenges, fostering
-        creativity, and embracing feedback. Thriving in dynamic environments, I'm committed to
-        staying current with industry trends and emerging technologies. Fueled by a passion for
-        problem-solving and dedication to delivering quality results, I'm enthusiastic about
-        contributing my skills to exciting projects.{' '}
+        A Software professional, having experience in Open Source World, I excel in adapting to
+        challenges, fostering creativity and embracing Hardworking. Thriving in dynamic
+        environments, I am committed to staying current with industry trends and emerging
+        technologies. Fueled by a passion for problem-solving and dedication to delivering quality
+        results, I am enthusiastic about contributing my skills to exciting projects.{' '}
         <a href="https://github.com/SalmanDeveloperz" target="_blank" rel="noreferrer">
           Visit my GitHub
         </a>
