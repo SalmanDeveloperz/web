@@ -26,7 +26,7 @@
   </a>
 
   <p align="center">
-    A sleek, fast, and fully customizable portfolio for everyone
+    A sleek, fast and fully customizable portfolio for everyone
     <br />
     <a href="https://salman-ch.netlify.app/"><strong>View Live »</strong></a>
     <br />
