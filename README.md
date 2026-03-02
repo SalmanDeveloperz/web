@@ -96,7 +96,7 @@ The key features are:
 
 ## Getting Started
 
-To get a local copy up and running follow these simple steps.
+To get a local copy up and running follow these simple steps:-
 
 ### Prerequisites
 
@@ -104,7 +104,7 @@ Make sure that you have [Node.js](https://nodejs.org/en) installed as it would h
 
 ### Installation
 
-1. Clone the repo
+1. Clone this repo
 
    ```sh
    https://github.com/SalmanDeveloperz/web.git
