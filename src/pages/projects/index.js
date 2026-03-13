@@ -37,7 +37,7 @@ const ProjectPage = ({ location }) => (
     <StyledMainContainer>
       <header>
         <h1 className="big-heading">Projects</h1>
-        <p className="subtitle">Some of my recent projects</p>
+        <p className="subtitle">Some of my projects</p>
       </header>
       <FeaturedProject />
       <Projects />
