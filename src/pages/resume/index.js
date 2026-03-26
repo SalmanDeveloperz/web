@@ -205,7 +205,7 @@ const ResumePage = ({ location }) => {
         <header>
           <h1 className="big-heading">Muhammad Salman</h1>
           <a
-            href="https://drive.google.com/file/d/1KXOWf0e2l_G3zDb2Pd3VFqMGYNGGUhrJ/view?usp=sharing"
+            href="https://drive.google.com/file/d/1a0hRIzC0HtVfCG8M7se2skHeFeN5RVGg/view?usp=sharing"
             className='className="subtitle styled_link'
             target="_blank"
             rel="noopener noreferrer">
