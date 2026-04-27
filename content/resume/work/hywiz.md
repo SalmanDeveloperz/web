@@ -3,7 +3,7 @@ company: Hywiz Technologies
 website: https://hywiz.com/
 job:
   - role: Frontend Developer (Internship)
-    duration: '01 May 2023 - 15 August 2023'
+    duration: '01 May 2023 - 01 September 2023'
     description: >-
       Worked on development and providing cutting-edge Web Application with deep problem solving.
         - Contributed to cutting-edge web applications,

@@ -17,7 +17,7 @@ const StyledHeader = styled.header`
   padding: 0px 50px;
   width: 100%;
   height: var(--nav-height);
-  background-color: rgb(255 255 255 / 0.2) !important;
+  background-color: var(--nav-bg) !important;
   filter: none !important;
   pointer-events: auto !important;
   user-select: auto !important;
@@ -38,7 +38,7 @@ const StyledHeader = styled.header`
       css`
         height: var(--nav-scroll-height);
         transform: translateY(0px);
-        background-color: rgba(10, 25, 47, 0.85);
+        background-color: var(--nav-scrolled-bg);
         box-shadow: 0 10px 30px -10px var(--navy-shadow);
       `};
 
@@ -147,9 +147,50 @@ const StyledLinks = styled.div`
     margin-left: 15px;
     font-size: var(--fz-xs);
   }
+
+  .theme-toggle {
+    margin-left: 15px;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--light-gray);
+    border-radius: 999px;
+    background-color: var(--pure-white);
+    color: var(--dark-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    box-shadow: 0 8px 20px -14px var(--navy-shadow);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease,
+      background-color 0.25s ease;
+
+    &:hover,
+    &:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px -14px var(--navy-shadow);
+      border-color: var(--medium-gray);
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .sun-icon {
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .moon-icon {
+      fill: currentColor;
+    }
+  }
 `;
 
-const Nav = ({ isHome }) => {
+const Nav = ({ isHome, themeMode, toggleTheme }) => {
   const [isMounted, setIsMounted] = useState(!isHome);
   const scrollDirection = useScrollDirection('down');
   const [scrolledToTop, setScrolledToTop] = useState(true);
@@ -179,6 +220,7 @@ const Nav = ({ isHome }) => {
   const timeout = isHome ? loaderDelay : 0;
   const fadeClass = isHome ? 'fade' : '';
   const fadeDownClass = isHome ? 'fadedown' : '';
+  const isLight = themeMode === 'light';
 
   const Logo = (
     <div className="logo" tabIndex="-1">
@@ -220,9 +262,36 @@ const Nav = ({ isHome }) => {
                     </li>
                   ))}
               </ol>
+              <button
+                type="button"
+                className="theme-toggle"
+                onClick={toggleTheme}
+                aria-label={`Switch to ${themeMode === 'light' ? 'dark' : 'light'} mode`}>
+                {isLight ? (
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <g className="moon-icon">
+                      <path d="M21 12.8A9 9 0 1 1 11.2 3 7.5 7.5 0 1 0 21 12.8z" />
+                    </g>
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <g className="sun-icon">
+                      <circle cx="12" cy="12" r="4.5" />
+                      <line x1="12" y1="2" x2="12" y2="5" />
+                      <line x1="12" y1="19" x2="12" y2="22" />
+                      <line x1="2" y1="12" x2="5" y2="12" />
+                      <line x1="19" y1="12" x2="22" y2="12" />
+                      <line x1="4.93" y1="4.93" x2="7.05" y2="7.05" />
+                      <line x1="16.95" y1="16.95" x2="19.07" y2="19.07" />
+                      <line x1="16.95" y1="7.05" x2="19.07" y2="4.93" />
+                      <line x1="4.93" y1="19.07" x2="7.05" y2="16.95" />
+                    </g>
+                  </svg>
+                )}
+              </button>
             </StyledLinks>
 
-            <Menu />
+            <Menu themeMode={themeMode} toggleTheme={toggleTheme} />
           </>
         ) : (
           <>
@@ -248,12 +317,39 @@ const Nav = ({ isHome }) => {
                     ))}
                 </TransitionGroup>
               </ol>
+              <button
+                type="button"
+                className="theme-toggle"
+                onClick={toggleTheme}
+                aria-label={`Switch to ${themeMode === 'light' ? 'dark' : 'light'} mode`}>
+                {isLight ? (
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <g className="moon-icon">
+                      <path d="M21 12.8A9 9 0 1 1 11.2 3 7.5 7.5 0 1 0 21 12.8z" />
+                    </g>
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <g className="sun-icon">
+                      <circle cx="12" cy="12" r="4.5" />
+                      <line x1="12" y1="2" x2="12" y2="5" />
+                      <line x1="12" y1="19" x2="12" y2="22" />
+                      <line x1="2" y1="12" x2="5" y2="12" />
+                      <line x1="19" y1="12" x2="22" y2="12" />
+                      <line x1="4.93" y1="4.93" x2="7.05" y2="7.05" />
+                      <line x1="16.95" y1="16.95" x2="19.07" y2="19.07" />
+                      <line x1="16.95" y1="7.05" x2="19.07" y2="4.93" />
+                      <line x1="4.93" y1="19.07" x2="7.05" y2="16.95" />
+                    </g>
+                  </svg>
+                )}
+              </button>
             </StyledLinks>
 
             <TransitionGroup component={null}>
               {isMounted && (
                 <CSSTransition classNames={fadeClass} timeout={timeout}>
-                  <Menu />
+                  <Menu themeMode={themeMode} toggleTheme={toggleTheme} />
                 </CSSTransition>
               )}
             </TransitionGroup>
@@ -266,6 +362,8 @@ const Nav = ({ isHome }) => {
 
 Nav.propTypes = {
   isHome: PropTypes.bool,
+  themeMode: PropTypes.oneOf(['light', 'dark']).isRequired,
+  toggleTheme: PropTypes.func.isRequired,
 };
 
 export default Nav;

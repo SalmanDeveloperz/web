@@ -1,15 +1,16 @@
 ---
-date: '2022-03-01'
-title: 'Scientific Calculator Desktop App'
-github: 'https://github.com/SalmanDeveloperz/Scientific-Calculator-in-CSharp'
-external: 'https://github.com/SalmanDeveloperz/Scientific-Calculator-in-CSharp'
+date: '2025-03-30'
+title: 'ML House Price Prediction (Dockerized)'
+github: 'https://github.com/SalmanDeveloperz/ML_House_Prediction'
+external: 'https://github.com/SalmanDeveloperz/ML_House_Prediction'
 tech:
-  - .NET
-  - C#
-  - GUI
-  - Desktop App
-company: Self
+  - Python
+  - Scikit-learn
+  - Pandas
+  - Jupyter Notebook
+  - Docker
+company: 'Self'
 showInProjects: true
 ---
 
-A Scientific Calculator (Desktop Application) that perform mathematical, Jeometrical and Algebra calculations accurately.
+Developed a machine-learning workflow for house-price prediction using comparative regression/classification modeling and feature preprocessing. The repository includes reproducible notebook experiments plus Docker support for environment consistency.

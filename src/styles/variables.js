@@ -24,6 +24,8 @@ const variables = css`
     --bright-gray: #adb5bd;
     --pure-white: #fff;
     --text-color: rgb(55 65 81 / 1);
+    --nav-bg: rgb(255 255 255 / 0.2);
+    --nav-scrolled-bg: rgba(255, 255, 255, 0.9);
 
     --font-sans: 'Calibre', 'Inter', 'San Francisco', 'SF Pro Text', -apple-system, system-ui,
       sans-serif;
@@ -56,6 +58,22 @@ const variables = css`
     --ham-after: bottom 0.1s ease-in 0.25s, transform 0.22s cubic-bezier(0.55, 0.055, 0.675, 0.19);
     --ham-after-active: bottom 0.1s ease-out,
       transform 0.22s cubic-bezier(0.215, 0.61, 0.355, 1) 0.12s;
+  }
+
+  [data-theme='dark'] {
+    --black: #e2e8f0;
+    --black-light: #f8fafc;
+    --dark-gray: #f1f5f9;
+    --medium-gray: #cbd5e1;
+    --light-gray: #94a3b8;
+    --bright-gray: #64748b;
+    --pure-white: #0f172a;
+    --text-color: #cbd5e1;
+    --light-navy: #1e293b;
+    --lightest-navy: #334155;
+    --navy-shadow: rgba(2, 6, 23, 0.7);
+    --nav-bg: rgb(15 23 42 / 0.75);
+    --nav-scrolled-bg: rgb(15 23 42 / 0.95);
   }
 `;
 

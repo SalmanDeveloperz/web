@@ -1,16 +1,16 @@
 ---
-date: '2021-05-01'
-title: 'Weather Web Application'
-github: 'https://github.com/SalmanDeveloperz/weather-app-tutorial'
-external: 'https://github.com/SalmanDeveloperz/weather-app-tutorial'
+date: '2026-04-26'
+title: 'Portfolio Platform (Gatsby + React)'
+github: 'https://github.com/SalmanDeveloperz/web'
+external: 'https://github.com/SalmanDeveloperz/web'
 tech:
-  - Git
-  - AWS
-  - Python
-  - Chef
-  - DevOps
+  - Gatsby
+  - React
+  - GraphQL
+  - Styled Components
+  - CI/CD
 company: 'Self'
-showInProjects: false
+showInProjects: true
 ---
 
-Add a customizable knocking pattern and later open the doors only when door is knocked in same pattern. It is made using arduino and sound sensor
+A production-grade developer portfolio built with Gatsby and React, focused on fast delivery, clean architecture, and maintainable content workflows. It includes reusable UI patterns, markdown-driven sections, and deployment-ready structure suitable for continuous iteration.

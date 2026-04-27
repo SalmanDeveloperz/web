@@ -1,16 +1,16 @@
 ---
 order: 1
-title: Point of Sales Inventory Management System
+title: Point of Sales & Inventory System
 cover: ./images/point of sales.jpg
 featured: true
-github: https://github.com/SalmanDeveloperz/Point-of-Sales-Inventory-System-Project/tree/main
+github: https://github.com/SalmanDeveloperz/Point-of-Sales-Inventory-System-Project
 external: https://youtu.be/02hPBoNNmIA?si=oQ7-MpLyHtCp4HED
 tech:
   - .NET
   - C#
-  - Database
-  - Desktop Development
-  - App Development
+  - MS Access
+  - Inventory Management
+  - Desktop Application
 ---
 
-This project features a Point of Sale (POS) system designed to streamline transaction processes in retail environments. The system efficiently manages sales transactions, inventory tracking, and customer data, providing real-time insights into business performance. Utilizing robust libraries for data processing and user interface design, this solution enhances operational efficiency and improves the overall customer experience, making it an invaluable tool for modern retail management.
+Developed a complete retail desktop workflow for billing, stock tracking, and sales operations. The application streamlines cashier operations, product-level inventory updates, and transaction recording with a practical operator interface, reflecting real-world business process automation.

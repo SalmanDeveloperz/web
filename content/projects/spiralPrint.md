@@ -1,16 +1,16 @@
 ---
-date: '2023-01-01'
-title: 'Spiral Print Pattern Web UI Application'
-github: 'https://github.com/SalmanDeveloperz/spiral_print_pattern'
-external: 'https://github.com/SalmanDeveloperz/spiral_print_pattern'
+date: '2025-03-03'
+title: 'Student Performance Prediction and Classification'
+github: 'https://github.com/SalmanDeveloperz/Student-Performance-Prediction-and-Grade-Classification'
+external: 'https://github.com/SalmanDeveloperz/Student-Performance-Prediction-and-Grade-Classification'
 tech:
-  - JavaScript
-  - Algorithms
-  - Html5
-  - User Interface
-  - Responsiveness
+  - Python
+  - Scikit-learn
+  - Data Preprocessing
+  - Model Evaluation
+  - Visualization
 company: 'Self'
 showInProjects: true
 ---
 
-This project showcases the dynamic creation of a spiral matrix. Users can specify the number of rows, columns, and animation speed to observe the real-time formation of the spiral pattern.
+Created a supervised machine-learning pipeline to predict student outcomes and classify grade ranges from educational datasets. The project covers preprocessing, training, evaluation, and visual analysis to support evidence-based academic performance insights.

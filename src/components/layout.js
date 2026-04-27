@@ -13,6 +13,11 @@ const StyledContent = styled.div`
 const Layout = ({ children, location }) => {
   const isHome = location.pathname === '/';
   const [isLoading, setIsLoading] = useState(isHome);
+  const [themeMode, setThemeMode] = useState('light');
+
+  const toggleTheme = () => {
+    setThemeMode(prevMode => (prevMode === 'light' ? 'dark' : 'light'));
+  };
 
   // Sets target="_blank" rel="noopener noreferrer" on external links
   const handleExternalLinks = () => {
@@ -46,6 +51,26 @@ const Layout = ({ children, location }) => {
     handleExternalLinks();
   }, [isLoading]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const savedTheme = window.localStorage.getItem('theme-mode');
+    const initialTheme = savedTheme || 'light';
+
+    setThemeMode(initialTheme);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    document.documentElement.setAttribute('data-theme', themeMode);
+    window.localStorage.setItem('theme-mode', themeMode);
+  }, [themeMode]);
+
   return (
     <>
       <Head />
@@ -58,7 +83,7 @@ const Layout = ({ children, location }) => {
             <Loader finishLoading={() => setIsLoading(false)} />
           ) : (
             <StyledContent>
-              <Nav isHome={isHome} />
+              <Nav isHome={isHome} themeMode={themeMode} toggleTheme={toggleTheme} />
               <Social isHome={isHome} />
               <Email isHome={isHome} />
 

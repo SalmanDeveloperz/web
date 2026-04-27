@@ -1,14 +1,16 @@
 ---
-date: '2021-10-02'
-title: 'Tic Toc Toe Game in C++'
-github: 'https://github.com/SalmanDeveloperz/Tic-Toc-Toe-Game-in-CPP'
-external: 'https://github.com/SalmanDeveloperz/Tic-Toc-Toe-Game-in-CPP'
+date: '2026-03-30'
+title: 'GSoC 2025 Final Engineering Report'
+github: 'https://github.com/SalmanDeveloperz/GSoC-2025'
+external: 'https://github.com/SalmanDeveloperz/GSoC-2025'
 tech:
-  - C++
-  - Data Structure
-  - Algorithm
+  - Open Source
+  - Kubernetes
+  - Docker
+  - Microservices
+  - Technical Documentation
 company: 'Self'
 showInProjects: true
 ---
 
-This game allows you to challenge an intelligent AI computer in a classic battle of Xs and Os. The board is a 3x3 grid, and your goal is to form a line of three of your markers either horizontally, vertically, or diagonally. The AI is designed to make strategic moves, so prepare for a challenging match!
+Published the complete technical report for Google Summer of Code 2025 work, documenting architecture decisions, implementation milestones, and delivery outcomes. It serves as a concise engineering record of cloud-native and open-source contribution impact.

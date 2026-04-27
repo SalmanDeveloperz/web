@@ -37,7 +37,9 @@ const ProjectPage = ({ location }) => (
     <StyledMainContainer>
       <header>
         <h1 className="big-heading">Projects</h1>
-        <p className="subtitle"> Some of my projects </p>
+        <p className="subtitle">
+          Selected engineering projects from production, DevOps, and ML work.
+        </p>
       </header>
       <FeaturedProject />
       <Projects />
