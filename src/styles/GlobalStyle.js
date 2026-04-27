@@ -57,6 +57,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: var(--font-sans);
     font-size: var(--fz-xl);
     line-height: 1.3;
+    transition: background-color 0.35s ease, color 0.35s ease;
 
     @media (max-width: 480px) {
       font-size: var(--fz-lg);
@@ -238,6 +239,8 @@ const GlobalStyle = createGlobalStyle`
     font-weight: 500;
     transition: var(--transition);
     transform: none;
+    transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease,
+      box-shadow 0.25s ease, transform 0.25s ease;
     &.inline-link {
       ${({ theme }) => theme.mixins.inlineLink};
     }

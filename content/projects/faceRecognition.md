@@ -1,16 +1,16 @@
 ---
 order: 2
-title: 'Face Recognition based Attendence System'
+title: 'PoS-OTel: CI/CD Observability Stack'
 cover: './images/faceAttendence.png'
 featured: true
-github: 'https://github.com/SalmanDeveloperz/Face-Attendence-Python-Project-'
+github: 'https://github.com/SalmanDeveloperz/PoS-OTel'
 tech:
+  - Jenkins
+  - OpenTelemetry
+  - Prometheus
+  - Grafana
+  - Jaeger
   - Python
-  - Numpy
-  - Pandas
-  - SQL
-  - Artificial Intelligence
-  - ML
 ---
 
-This project implements an automated attendance system using facial recognition technology to accurately track student participation. By scanning images captured by a camera, the system identifies individuals and logs their attendance efficiently. Leveraging advanced libraries for image processing and facial recognition, this solution enhances the accuracy and reliability of attendance management in educational settings.
+Built an end-to-end local observability platform for delivery pipelines, combining traces, metrics, and logs for faster debugging and release confidence. This project integrates Jenkins pipeline simulation with OpenTelemetry Collector, Jaeger tracing, Prometheus metrics, and Grafana dashboards to provide production-style visibility in a developer-friendly setup.
