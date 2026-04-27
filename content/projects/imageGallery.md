@@ -1,15 +1,15 @@
 ---
-date: '2023-01-01'
-title: 'Image Gallery'
-github: 'https://github.com/SalmanDeveloperz/image_gallery'
-external: ''
+date: '2026-04-06'
+title: 'AutoAccept Facebook Friends Extension'
+github: 'https://github.com/SalmanDeveloperz/AutoAccept-Facebook-Friends'
+external: 'https://github.com/SalmanDeveloperz/AutoAccept-Facebook-Friends'
 tech:
   - JavaScript
-  - Html5
-  - CSS
-  - jQuery
+  - Chrome Extension APIs
+  - DOM Automation
+  - Browser Scripting
 company: 'Self'
 showInProjects: true
 ---
 
-It features a responsive grid layout displaying categorized images. Users can click on any image to view it in a modal window, where they can see a larger version of the image along with its description. The modal also includes a download button for saving the image locally and a back button to return to the gallery view.
+Built a browser extension that adds one-click friend-request approval for high-volume account workflows. The implementation focuses on safe DOM interaction, action batching, and practical UX to reduce repetitive manual operations.

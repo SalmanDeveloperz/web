@@ -1,61 +1,57 @@
 ---
-title: Freelance & Open Source Contributions
-description: "I worked as a freelance engineer, delivering projects to local and Internation Clients where I containerized apps, automated workflows, provide them their desired product and collaborated on real-world Software Applications. My work led to repeated Clients, projects and referrals.
-
-Alongside freelancing, I contributed to couple of Open-Source projects like NumFOCUS, TYPO3 Best Practices, Aeon Toolkit, FOSSology and Rocker.Chat etc... from working on Critical Bugs to raised new bugs, updating testing frameworks,  working on documentation, creating Jupyter notebooks that integrate time-series models with scikit-learn and couple of other Areas.
-
-This mix of freelance and open-source work strengthened my skills in cloud-native development, collaboration, testing and problem-solving, while building credibility in both client and community sides."
+title: Freelance Software Engineer & DevOps
+description: 'Delivered CI/CD setup and Docker-based containerization for 8-10 client projects on Fiverr and local contracts. Built and deployed full-stack products with React, Node.js, Express.js, and SQL databases while managing requirements, versioning, and client communication from kickoff to release.'
 date: 2024-07-05
 
 featured: true
 slug: /Experience/freelance-opensource
 tags:
   - Freelance
-  - Open Source
   - Kubernetes
-  - Docker  
+  - Docker
   - Jenkins
   - GitHub Actions
-  - Postman
-  - Jira
-  - Clickup
+  - React
+  - Node.js
+  - Express.js
+  - PostgreSQL
+  - MySQL
+  - REST APIs
+  - Nginx
+  - Linux
   - AWS
-  - EC2, Athena, Glue
-  - Azure 
-  - SQL, PostgreSQL
+  - Azure
   - Grafana
   - Prometheus
 ---
 
 ## Contents
 
-- <a href="#cloud-infrastructure-and-deployment">Cloud Infrastructure & Deployment</a>
-- <a href="#open-source-contributions">Open Source Contributions</a>
-- <a href="#client-collaboration">Client Collaboration</a>
-- <a href="#problem-solving-and-impact">Problem-Solving & Impact</a>
+- <a href="#devops-and-cicd">DevOps and CI/CD</a>
+- <a href="#full-stack-development">Full-Stack Development</a>
+- <a href="#delivery-and-client-communication">Delivery and Client Communication</a>
+- <a href="#impact-and-reliability">Impact and Reliability</a>
 
-## <span id="cloud-infrastructure-and-deployment"> - Cloud Infrastructure & Deployment:
+## <span id="devops-and-cicd"> - DevOps and CI/CD:
 
-Delivered freelance projects involving **Docker** and **Kubernetes** building custom images, creating YAML manifests and managing deployments and services.  
-Implemented **Helm charts** and **Ingress controllers** for scalable and secure deployments.  
-Automated CI/CD pipelines with **Jenkins** and **GitHub Actions**, ensuring faster and reliable releases.  
-Configured **Prometheus** and **Grafana** dashboards to monitor application performance and availability.
+Delivered CI/CD pipeline setup and **Docker** containerization for 8-10 clients across Fiverr and local contracts.  
+Configured **Jenkins** and **GitHub Actions** to automate build, test, and deployment workflows.  
+Prepared environment-aware release pipelines for staging and production, reducing manual deployment steps.
 
-## <span id="open-source-contributions"> - Open Source Contributions:
+## <span id="full-stack-development"> - Full-Stack Development:
 
-Contributed to **NumFOCUS DISCOVER Cookbook** by refining clarity, correcting documentation issues, and being added as a contributor.  
-Enhanced **TYPO3 Best Practices** documentation by updating deprecated testing frameworks, helping developers adopt the correct references for LTS versions.  
-Developed a **Jupyter Notebook** for **Aeon Toolkit**, showcasing the integration of time-series classification methods with scikit-learn, improving onboarding for new users.  
-Contributed to old bugs of **FOSSology** along with GSoC and after GSoC worked on MIcroservices Infrastructure Features of FOSSology.
+Built full-stack web interfaces and backend services using **React**, **Node.js**, and **Express.js**.  
+Designed and integrated **REST APIs** with **PostgreSQL/MySQL** data layers and role-based access flows.  
+Handled deployment-ready configuration including environment variables, secrets handling, and cloud host setup.
 
-## <span id="client-collaboration"> - Client Collaboration:
+## <span id="delivery-and-client-communication"> - Delivery and Client Communication:
 
-Built long-term relationships with clients through successful project delivery locally and on Freelance Projects (Fiverr, Upwork).  
-Received repeat work and referrals after deploying production-ready cloud-native applications ahead of deadlines.
-Be part of few Organizations and added in list of their Contributors officially.
-Maintained effective communication to translate business requirements into technical implementations.
+Managed end-to-end project delivery including requirement gathering, scoping, sprint planning, and timeline tracking.  
+Used Git-based versioning and structured release notes to keep deliverables transparent for clients.  
+Maintained direct communication with stakeholders to translate business needs into practical technical solutions.
 
-## <span id="problem-solving-and-impact"> - Problem-Solving & Impact:
+## <span id="impact-and-reliability"> - Impact and Reliability:
 
-Applied strong analytical and troubleshooting skills to resolve performance bottlenecks and deployment challenges.  
-Balanced freelance commitments with community contributions, building a strong track record of **reliability, technical expertise, and open-source impact**.
+Improved deployment consistency and rollback readiness with reproducible containerized releases.  
+Implemented monitoring stacks using **Prometheus** and **Grafana** to track system health and prevent downtime.  
+Delivered maintainable production solutions that led to repeat clients, referrals, and long-term collaborations.

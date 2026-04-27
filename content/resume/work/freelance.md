@@ -1,16 +1,24 @@
 ---
-company: Google Summer of Code @ FOSSology
-website: https://summerofcode.withgoogle.com/programs/2025/projects/MjOyiOj7
+company: Self-Employed
+website: /blog/Experience/freelance-opensource
 job:
-  - role: Software Engineer (Open Source Contributor)
-    duration: '01 May 2025 - 09 September 2025'
+  - role: Freelance Software Engineer & DevOps
+    duration: 'Aug 2023 - Present'
     description: >-
-      As a key member of the QA team, I have contributed to the successful testing and validation of numerous real-world projects. Leveraging my skills in quality assurance, I ensure that software products meet the highest standards of functionality, performance, and reliability. Through meticulous test planning, execution, and defect management, I help deliver robust solutions that align with user requirements and business objectives.
+      Delivered CI/CD pipeline setup and Docker-based containerization for 8-10
+      clients on Fiverr and local projects.
 
-        Tech Stack: Azure, AWS, GitHub, CI/CD Pipelines, Jira, ClickUp, Postman, API Testing
+      Configured Jenkins and GitHub Actions workflows for automated build,
+      testing, and deployment.
 
-        - Design test plans and scenarios.
-        - Participate in product design reviews to provide input on functional requirements and potential problems.
-        - Monitor and bug resolution efforts using Jira and click-up.
-        - Documented software defects, reported to Dev and QA Team.
+      Built and deployed full-stack interfaces and APIs using React, Node.js,
+      Express.js, and PostgreSQL/MySQL for local business clients.
+
+      Delivered end-to-end execution from requirements gathering and architecture
+      planning to Git-based versioning, release management, and client
+      communication.
+
+      Improved production reliability with environment management, reverse proxy
+      setup, monitoring, and post-deployment support on cloud-hosted Linux
+      servers.
 ---
