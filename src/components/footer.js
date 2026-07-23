@@ -90,15 +90,12 @@ const Footer = () => (
     </StyledSocialLinks>
 
     <StyledCredit tabindex="-1">
-      <a href="https://brittanychiang.com">
-        <div>Inspired by Brittany Chiang</div>
-      </a>
       <div className="copy">
-        <span style={{ fontSize: '1rem', marginRight: '5px' }}>&copy;</span> Muhammad Salman{' '}
+        <span style={{ fontSize: '1rem', marginRight: '5px' }}>&copy;</span> Muhammad Salman
         <span style={{ fontSize: '.5rem', color: 'var(--light-gray)', margin: '0px 5px' }}>
           &bull;
-        </span>{' '}
-        2024
+        </span>
+        Crafted with Gatsby, Styled Components, and a lot of curiosity.
       </div>
     </StyledCredit>
   </StyledFooter>

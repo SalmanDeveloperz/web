@@ -13,7 +13,7 @@ const StyledContent = styled.div`
 const Layout = ({ children, location }) => {
   const isHome = location.pathname === '/';
   const [isLoading, setIsLoading] = useState(isHome);
-  const [themeMode, setThemeMode] = useState('light');
+  const [themeMode, setThemeMode] = useState('dark');
 
   const toggleTheme = () => {
     setThemeMode(prevMode => (prevMode === 'light' ? 'dark' : 'light'));
@@ -57,7 +57,7 @@ const Layout = ({ children, location }) => {
     }
 
     const savedTheme = window.localStorage.getItem('theme-mode');
-    const initialTheme = savedTheme || 'light';
+    const initialTheme = savedTheme || 'dark';
 
     setThemeMode(initialTheme);
   }, []);

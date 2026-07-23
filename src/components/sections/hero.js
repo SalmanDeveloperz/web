@@ -160,8 +160,17 @@ const StyledHeroSection = styled.section`
     padding: auto;
   }
 
+  .eyebrow {
+    margin: 0 0 20px 4px;
+    color: var(--medium-gray);
+    font-family: var(--font-mono);
+    font-size: clamp(var(--fz-xs), 3vw, var(--fz-sm));
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
   h1 {
-    margin: 0 0 30px 4px;
+    margin: 0 0 20px 4px;
     color: var(--medium-gray);
     font-family: var(--font-mono);
     font-size: clamp(var(--fz-sm), 5vw, var(--fz-md));
@@ -173,13 +182,65 @@ const StyledHeroSection = styled.section`
   }
 
   h3 {
-    margin-top: 5px;
+    margin: 0 0 18px;
     color: var(--black);
-    line-height: 0.9;
+    line-height: 0.96;
   }
 
-  p {
-    margin: 20px 0 0;
+  .hero-copy {
+    max-width: 840px;
+    margin-top: 12px;
+  }
+
+  .hero-copy p {
+    margin: 0 0 18px;
+    line-height: 1.8;
+    color: var(--dark-gray);
+    font-size: clamp(1rem, 2.1vw, 1.15rem);
+  }
+
+  .story-line {
+    margin-top: 8px;
+    color: var(--black);
+    font-size: clamp(1rem, 2.05vw, 1.2rem);
+  }
+
+  .hero-points {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 22px 0 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      padding: 8px 12px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.6);
+      color: var(--dark-gray);
+      font-family: var(--font-mono);
+      font-size: var(--fz-xxs);
+    }
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 28px;
+  }
+
+  .cta-link {
+    ${({ theme }) => theme.mixins.bigButton};
+    font-size: var(--fz-sm);
+    text-decoration: none;
+  }
+
+  .cta-link.secondary {
+    background: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: var(--black);
   }
 
   .down_arrow {
@@ -195,19 +256,20 @@ const StyledHeroSection = styled.section`
       display: block;
     }
   }
-
-  .email-link {
-    ${({ theme }) => theme.mixins.bigButton};
-    margin-top: 50px;
-  }
 `;
 
 const Hero = () => {
   const [isMounted, setIsMounted] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
-  const [height, setHeight] = useState(window.innerHeight);
+  const [height, setHeight] = useState(() =>
+    typeof window !== 'undefined' ? window.innerHeight : 800,
+  );
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
+
     const handleResize = () => setHeight(window.innerHeight);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -220,26 +282,59 @@ const Hero = () => {
 
     const timeout = setTimeout(() => setIsMounted(true), navDelay);
     return () => clearTimeout(timeout);
-  }, []);
+  }, [prefersReducedMotion]);
 
   const one = <h1>Hi, I’m</h1>;
+  const two = <div className="eyebrow">Platform / DevOps Engineer • Open Source Contributor</div>;
   const three = <h3 className="big-heading">Muhammad Salman</h3>;
   const four = (
-    <>
-      <p>
-        A Platform / DevOps Engineer building cloud-native infrastructure, Kubernetes systems,
-        observability pipelines, and open-source tooling that solve real production problems. I turn
-        operational pain into reliable automation, and I enjoy working at the intersection of
-        software engineering, CI/CD, and systems reliability.{' '}
-        <a href="https://github.com/SalmanDeveloperz" target="_blank" rel="noreferrer">
-          Explore my GitHub
-        </a>
-        .
+    <div className="hero-copy">
+      <p className="story-line">
+        I build resilient cloud-native platforms, Kubernetes microservices, and observability
+        pipelines that help engineering teams deploy faster, debug faster, and trust their systems
+        more.
       </p>
-    </>
+      <p>
+        Over the last year, I’ve designed and operated a 10+ service Kubernetes infrastructure for
+        FOSSology, built telemetry pipelines for Jenkins CI that cut trace volume by 81%, and
+        migrated a brittle build path from Make to CMake to restore a stalled CI workflow. My work
+        sits at the intersection of infrastructure, automation, open source, and reliability.
+      </p>
+      <p>
+        I enjoy turning operational pain into elegant systems: whether it’s fixing crash loops,
+        stabilizing container networking, improving developer workflows, or making observability
+        visible enough to prevent incidents before they become outages.
+      </p>
+      <ul className="hero-points">
+        <li>10+ service Kubernetes platform</li>
+        <li>40% faster build migration</li>
+        <li>81% trace-volume reduction</li>
+        <li>22 FOSSology PRs</li>
+        <li>5 merged Jenkins PRs</li>
+      </ul>
+      <div className="cta-row">
+        <a
+          className="cta-link"
+          href="https://github.com/SalmanDeveloperz"
+          target="_blank"
+          rel="noreferrer">
+          Explore GitHub
+        </a>
+        <a
+          className="cta-link secondary"
+          href="https://www.linkedin.com/in/msalman199/"
+          target="_blank"
+          rel="noreferrer">
+          Connect on LinkedIn
+        </a>
+        <Link className="cta-link secondary" to="/resume">
+          View Resume
+        </Link>
+      </div>
+    </div>
   );
 
-  const items = [one, three, four];
+  const items = [one, two, three, four];
 
   return (
     <StyledHeroSection style={{ height: height }}>
