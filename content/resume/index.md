@@ -1,8 +1,8 @@
 ---
 about: |
-  I'm an ambitious and detail-oriented Computer Science student with a strong passion for collaboratively building innovative and impactful software products. My expertise lies in C++, Python, DevOps, AWS, and frontend development, and I’ve applied these skills to both academic and real-world projects.
+  Platform / DevOps Engineer with hands-on experience in Kubernetes-based microservices, observability pipelines, CI/CD tooling, and open-source contribution. I have built and deployed cloud-native infrastructure for globally used projects and contributed production-grade fixes across Jenkins and FOSSology.
 
-  I’ve made contributions to open-source projects and have a solid foundation in performance testing, system optimization, and algorithm development. Additionally, I’ve honed my problem-solving abilities by solving numerous challenges on platforms like LeetCode.
+  My work combines software engineering with reliability, automation, and system thinking. I enjoy solving complex engineering problems end-to-end — from container orchestration and infrastructure design to build system modernization, observability, and troubleshooting production failures.
 
-  In my current role as part of the QA team, I ensure the delivery of high-quality software by thoroughly testing real-world applications. I’m actively seeking opportunities in a reputed organization to continue growing my skills and collaborate on cutting-edge solutions in the field of software development.
+  I’m particularly interested in building platforms that are not only scalable and maintainable, but also measurable and transparent through strong telemetry and automation practices.
 ---

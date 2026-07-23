@@ -1,27 +1,27 @@
-- ### Programming Languages
+- ### Languages
 
-  Python, Javascript, C , C++, C#, PHP
+  Go, Python, Bash, C++, JavaScript
 
-- ### Framework
+- ### Cloud & DevOps
 
-  .NET, Bootstrap, jQuery, Rest API, SQL, CSS, HTML, Django
+  AWS, Kubernetes, Docker, Terraform, Jenkins, Helm, GitHub Actions, Argo CD
 
-- ### Database and Cloud
+- ### Observability
 
-  SQL, PostgreSQL, MongoDB, AWS (EC2, Ubuntu), Azure
+  OpenTelemetry, Prometheus, Grafana, Jaeger
 
-- ### Tools
+- ### Infrastructure
 
-  Docker, Kubernetes, Jenkins, Chef, Apache, Linux, Bash, Version Control (Git)
+  Linux, Git, Ansible, Nginx, Kustomize
 
-- ### System Architecture
+- ### Databases
 
-  Database Design(SQL), Design Patterns, Monoliths, microservices and the in-between, APIs (modules, REST)
+  PostgreSQL, MySQL, MongoDB, Redis
 
-- ### Tools & Platforms
+- ### AI / LLM Infrastructure
 
-  Visual Studio, VS Code, Sublime Text, Linux/Bash, Anaconda, Jupyter, Notepad ++
+  LangChain, LangGraph, LlamaIndex, RAG, vLLM, Ollama, Langfuse, MLflow
 
-- ### Leadership & Communication Skills
+- ### Strengths
 
-  Mentoring & Teaching
+  Systems thinking, debugging complex infrastructure issues, open-source collaboration, reliability engineering, clear technical storytelling

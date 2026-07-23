@@ -2,13 +2,10 @@
 company: Hywiz Technologies
 website: https://hywiz.com/
 job:
-  - role: Frontend Developer (Internship)
-    duration: '01 May 2023 - 01 September 2023'
+  - role: Software Engineer Intern
+    duration: 'May 2023 - Sep 2023'
     description: >-
-      Worked on development and providing cutting-edge Web Application with deep problem solving.
-        - Contributed to cutting-edge web applications,
-        immersing myself in web development and enhancing my coding skills.
-        - Develop responsive web designs while implementing algorithms to perform various tasks efficiently.
-        - Work on Version Control like Git, GitHub, Bit Bucket
-        - Problem Solving & Bug Resolving
+      Built and shipped REST API modules across Agile sprints while managing source control and task coordination with Git. Replaced manual daily data export flows with MongoDB aggregation pipelines, removing a recurring operational bottleneck and improving the team’s execution efficiency.
+
+      This internship helped me strengthen practical backend and data workflow skills while working in a fast-moving engineering environment with clear delivery accountability.
 ---

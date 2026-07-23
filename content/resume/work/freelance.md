@@ -1,24 +1,11 @@
 ---
-company: Self-Employed
+company: Freelance / Open Source Work
 website: /blog/Experience/freelance-opensource
 job:
-  - role: Freelance Software Engineer & DevOps
+  - role: Platform Engineer & Automation Consultant
     duration: 'Aug 2023 - Present'
     description: >-
-      Delivered CI/CD pipeline setup and Docker-based containerization for 8-10
-      clients on Fiverr and local projects.
+      Delivered end-to-end DevOps and software engineering work for clients and personal projects, including CI/CD automation, Dockerization, deployment automation, and cloud-hosted Linux environment setup.
 
-      Configured Jenkins and GitHub Actions workflows for automated build,
-      testing, and deployment.
-
-      Built and deployed full-stack interfaces and APIs using React, Node.js,
-      Express.js, and PostgreSQL/MySQL for local business clients.
-
-      Delivered end-to-end execution from requirements gathering and architecture
-      planning to Git-based versioning, release management, and client
-      communication.
-
-      Improved production reliability with environment management, reverse proxy
-      setup, monitoring, and post-deployment support on cloud-hosted Linux
-      servers.
+      Worked across GitHub Actions, Jenkins, and containerized application delivery models to help teams reduce manual operations and improve release confidence. Also built and maintained full-stack interfaces and APIs using modern web and backend tooling when projects needed a product-level implementation rather than just infrastructure support.
 ---

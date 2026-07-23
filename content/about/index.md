@@ -1,26 +1,28 @@
 ---
 name: Muhammad Salman
-profession: Software Engineer
-work: 'Developer & QA Engineer'
-location: Pakistan
+profession: Platform / DevOps Engineer
+work: 'Platform Engineer • Open Source Contributor'
+location: Lahore, Pakistan
 email: 'chsalmanramzan422@gmail.com'
 cover: ./salman.jpg
 skills:
-  - Programming Languages (C/C++, JavaScript, C#, Python)
-  - Frameworks & Libraries (.NET, Bootstrap, jQuery)
-  - Databases (Access, SQL)
-  - Version Control (Git, GitHub, GitLab)
-  - Testing (Manual Testing, Regression Testing, Black/White Box Testing, API Testing, Bugs Reporting on Jira)
-  - Development & Operations (DevOps, AWS, EC2 Instance, Chef, Ansible, Docker, CI/CD, Jenkins)
-  - Operating Systems (Windows, Linux)
-  - Tools & Platforms (Visual Studio, VS Code, Sublime Text, Linux/Bash, Anaconda)
-  - Non-Technical Skills (Problem Solving, Data Structures & Algorithms, Team Collaboration, Teaching)
+  - Kubernetes and container orchestration
+  - Docker, Kustomize, Helm, and Terraform
+  - Jenkins, GitHub Actions, CI/CD automation
+  - OpenTelemetry, Prometheus, Grafana, Jaeger
+  - Go, Python, Bash, C++
+  - PostgreSQL, MySQL, MongoDB, Redis
+  - Linux systems, Git workflows, and infrastructure automation
+  - Distributed systems, observability, and reliability engineering
+  - Open source collaboration and contributor-led maintenance
 ---
 
-I am an ambitious and detail-oriented Computer Science student passionate about coding, problem-solving, and creating innovative software solutions. With a strong foundation in software engineering, performance optimization, and algorithm development, I thrive on the challenges that come with developing efficient and scalable systems. My expertise spans a range of technologies, including C++, Python, DevOps practices, and cloud computing with AWS.
+I’m a Platform / DevOps Engineer with a strong builder mindset: I enjoy turning fragile systems into reliable, observable, and production-ready platforms. My work spans Kubernetes microservices, observability pipelines, CI/CD design, and open-source engineering across tools used by global communities.
 
-Throughout my academic journey and contributions to open-source projects, I’ve honed my ability to collaborate effectively with diverse teams and navigate complex technical challenges. My interest in coding stems from my deep curiosity about how technology can be leveraged to solve real-world problems, and I am constantly seeking to enhance my skills in areas such as performance testing, system design, and automation.
+Over the last year, I’ve built and operated cloud-native systems that brought real operational improvements: a 10+ service Kubernetes infrastructure for FOSSology, telemetry pipelines for Jenkins CI, and contributor-level fixes across Jenkins, FOSSology, and other open-source projects. My focus has always been on two things: making platforms reliable enough for real-world workloads and making the invisible work of infrastructure visible through metrics, traces, and logs.
 
-I am eager to bring my technical expertise, problem-solving abilities, and passion for coding to a dynamic and reputable organization where innovation and collaboration are key drivers of success. I look forward to contributing meaningfully to projects that push the boundaries of what technology can achieve while continuing to grow as a professional in the ever-evolving field of software development.
+What sets my journey apart is that I don’t just ship software — I also solve the operational problems that make software hard to ship at scale. That includes debugging scheduler crash loops, migrating build systems, aligning environment-specific configuration, and building observability stacks that help teams understand what is failing and why.
+
+I’m looking for opportunities where I can contribute to resilient engineering systems, influence cloud-native architecture decisions, and keep learning through high-impact technical work.
 
 Here are a few technologies I've been working with recently:

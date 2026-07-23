@@ -222,18 +222,17 @@ const Hero = () => {
     return () => clearTimeout(timeout);
   }, []);
 
-  const one = <h1>Hi, I am </h1>;
+  const one = <h1>Hi, I’m</h1>;
   const three = <h3 className="big-heading">Muhammad Salman</h3>;
   const four = (
     <>
       <p>
-        A Software professional, having experience in Open Source World, I excel in adapting to
-        challenges, fostering creativity and embracing Hardworking. Thriving in dynamic
-        environments, I am committed to staying current with industry trends and emerging
-        technologies. Fueled by a passion for problem-solving and dedication to delivering quality
-        results, I am enthusiastic about contributing my skills to exciting projects.{' '}
+        A Platform / DevOps Engineer building cloud-native infrastructure, Kubernetes systems,
+        observability pipelines, and open-source tooling that solve real production problems. I turn
+        operational pain into reliable automation, and I enjoy working at the intersection of
+        software engineering, CI/CD, and systems reliability.{' '}
         <a href="https://github.com/SalmanDeveloperz" target="_blank" rel="noreferrer">
-          Visit my GitHub
+          Explore my GitHub
         </a>
         .
       </p>

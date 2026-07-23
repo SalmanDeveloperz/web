@@ -8,7 +8,7 @@ module.exports = {
     },
     {
       name: 'Twitter',
-      url: 'https://x.com/chsalman199/',
+      url: 'https://x.com/sam_env/',
     },
     {
       name: 'Linkedin',

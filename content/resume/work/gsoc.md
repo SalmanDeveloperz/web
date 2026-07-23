@@ -2,18 +2,12 @@
 company: Google Summer of Code @ FOSSology
 website: https://summerofcode.withgoogle.com/programs/2025/projects/MjOyiOj7
 job:
-  - role: Software Engineer (Open Source Contributor)
-    duration: '01 May 2025 - 09 September 2025'
+  - role: Platform / DevOps Engineer (Open Source)
+    duration: 'Feb 2025 - Sep 2025'
     description: >-
-      As a Google Summer of Code 2025 Contributor with FOSSology, I worked on modernizing its microservices-based infrastructure by deploying FOSSology on Kubernetes. This project aimed to enhance scalability, simplify deployment, and align with modern DevOps practices. I collaborated with global open-source mentors and developers, gaining valuable experience in cloud-native solutions, containerization, and CI/CD workflows.
+      Built and deployed a 10+ service Kubernetes microservices infrastructure for FOSSology, replacing an unreliable monolithic deployment with a scalable, environment-aware architecture using Kustomize overlays for dev, staging, and prod.
 
-        Tech Stack: Python, Azure, CI/CD Pipelines, Bugs Reporting, Jira, Postman, API Testing
+      Migrated the build system from Make to CMake, reducing build time by approximately 40% and restoring a CI flow that had been blocking project progress. Diagnosed and resolved critical runtime failures including scheduler crash loops, container networking issues, and init ordering problems by tracing them through PostgreSQL schema constraints and deployment semantics.
 
-        - Design test plans, scenarios, or procedures.
-        - Document software defects, using a bug-tracking system, and report defects to software developers.
-        - Participate in product design reviews to provide input on functional requirements and potential problems.
-        - Monitor bug resolution efforts and track successes using Jira and click-up.
-        - Perform positive and negative testing.
-        - Performed smoke, regression, and integration testing to ensure software quality.
-        - Documented software defects, reported to developers, and tracked resolutions using Jira.
+      This work strengthened my ability to design reliable infrastructure, ship production-grade automation, and debug distributed failure modes with a strong emphasis on observability and repeatability.
 ---
