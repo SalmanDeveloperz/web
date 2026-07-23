@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { getImage, GatsbyImage } from 'gatsby-plugin-image';
 import { useStaticQuery, graphql } from 'gatsby';
 import styled from 'styled-components';
 import { srConfig } from '@config';
@@ -157,25 +156,30 @@ const About = () => {
   const data = useStaticQuery(graphql`
     query {
       about: markdownRemark(fileAbsolutePath: { regex: "/content/about/index.md/" }) {
+        fileAbsolutePath
         frontmatter {
           name
           profession
           work
           location
           email
-          cover {
-            childImageSharp {
-              gatsbyImageData(width: 500, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
-            }
-          }
+          cover
           skills
         }
         html
       }
+      images: allFile(filter: { sourceInstanceName: { eq: "content" } }) {
+        edges {
+          node {
+            publicURL
+            relativePath
+          }
+        }
+      }
     }
   `);
 
-  const { frontmatter, html } = data.about;
+  const { frontmatter, html, fileAbsolutePath } = data.about;
 
   const revealContainer = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -189,7 +193,13 @@ const About = () => {
   }, []);
 
   const skills = frontmatter.skills;
-  const image = getImage(frontmatter.cover);
+  const contentRelativePath = fileAbsolutePath.split('/content/')[1] || '';
+  const markdownDirectory = contentRelativePath.replace(/\/[^/]+$/, '');
+  const normalizedCoverPath = frontmatter.cover.replace(/^\.\//, '');
+  const relativeImagePath = `${markdownDirectory}/${normalizedCoverPath}`.replace(/\/+/g, '/');
+  const imageSrc =
+    data.images.edges.find(({ node }) => node.relativePath === relativeImagePath)?.node.publicURL ||
+    '';
 
   return (
     <StyledAboutSection id="about" ref={revealContainer}>
@@ -206,7 +216,7 @@ const About = () => {
 
         <StyledPic>
           <div className="wrapper">
-            <GatsbyImage className="img" image={image} alt="Headshot" />
+            {imageSrc && <img className="img" src={imageSrc} alt="Headshot" />}
           </div>
           <div className="detail">
             <p className="detail__name">{frontmatter.name}</p>

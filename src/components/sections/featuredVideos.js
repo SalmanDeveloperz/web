@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
-import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import styled from 'styled-components';
 import sr from '@utils/sr';
 import { srConfig, youtube } from '@config';
@@ -127,23 +126,44 @@ const FeaturedVideo = () => {
       ) {
         edges {
           node {
+            fileAbsolutePath
             frontmatter {
               title
               description
               date
-              cover {
-                childImageSharp {
-                  gatsbyImageData(width: 500, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
-                }
-              }
+              cover
               link
               tags
             }
           }
         }
       }
+      images: allFile(filter: { sourceInstanceName: { eq: "content" } }) {
+        edges {
+          node {
+            publicURL
+            relativePath
+          }
+        }
+      }
     }
   `);
+
+  const getVideoImage = (coverPath, fileAbsolutePath) => {
+    if (!coverPath || !fileAbsolutePath) {
+      return '';
+    }
+
+    const contentRelativePath = fileAbsolutePath.split('/content/')[1] || '';
+    const markdownDirectory = contentRelativePath.replace(/\/[^/]+$/, '');
+    const normalizedCoverPath = coverPath.replace(/^\.\//, '');
+    const relativeImagePath = `${markdownDirectory}/${normalizedCoverPath}`.replace(/\/+/g, '/');
+
+    return (
+      data.images.edges.find(({ node }) => node.relativePath === relativeImagePath)?.node
+        .publicURL || ''
+    );
+  };
 
   const featuredVideos = data.featured.edges.filter(({ node }) => node);
   const revealTitle = useRef(null);
@@ -167,15 +187,15 @@ const FeaturedVideo = () => {
       <FeaturedVideoGrid>
         {featuredVideos &&
           featuredVideos.map(({ node }, i) => {
-            const { frontmatter } = node;
+            const { frontmatter, fileAbsolutePath } = node;
             const { title, description, cover, link } = frontmatter;
-            const image = getImage(cover);
+            const imageSrc = getVideoImage(cover, fileAbsolutePath);
 
             return (
               <StyledVideo key={i} href={link} ref={el => (revealVideo.current[i] = el)}>
                 <StyledPic>
                   <div className="wrapper">
-                    <GatsbyImage image={image} alt={title} class="img" />
+                    {imageSrc && <img src={imageSrc} alt={title} className="img" />}
                   </div>
                 </StyledPic>
                 <div className="title">{title}</div>

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { Link, useStaticQuery, graphql } from 'gatsby';
 import styled from 'styled-components';
 import sr from '@utils/sr';
 import { srConfig } from '@config';
@@ -8,9 +7,18 @@ import { usePrefersReducedMotion } from '@hooks';
 const FeaturedPostSection = styled.section`
   padding-top: 5rem;
 
+  .intro {
+    max-width: 880px;
+    margin: -8px 0 30px;
+    color: var(--medium-gray);
+    font-size: clamp(1rem, 2vw, 1.12rem);
+    line-height: 1.8;
+  }
+
   .link-container {
-    margin-top: 4rem;
+    margin-top: 3rem;
     text-align: end;
+
     a {
       font-size: var(--fz-md) !important;
     }
@@ -29,105 +37,107 @@ const FeaturedPostSection = styled.section`
 
 const StyledGrid = styled.ul`
   ${({ theme }) => theme.mixins.resetList};
-  display: inline-flex;
-  align-items: baseline;
-  flex-direction: column;
-  padding: 1rem;
-  gap: 2.5rem;
+  display: grid;
+  width: 100%;
+  gap: 1.2rem;
 `;
 
 const StyledPost = styled.li`
   transition: var(--transition);
   display: flex;
-
-  ${({ theme }) => theme.mixins.flexBetween};
-  gap: 3rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 18px;
+  padding: 1.4rem 1.5rem;
+  gap: 1.4rem;
   align-items: flex-start;
 
-  .more_link {
-    margin-left: 2px;
-  }
-
-  .metadata {
-    display: flex;
-    min-width: 8rem;
-    flex-direction: column;
-    justify-content: flex-start;
-    font-size: var(--fz-lg);
-  }
-
-  .date {
+  .left-label {
+    min-width: 110px;
     color: var(--medium-gray);
-    margin: 0.2rem 0;
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding-top: 0.35rem;
   }
 
-  .read_time {
-    color: var(--light-gray);
+  .main {
+    flex: 1;
   }
 
   .title {
-    font-size: var(--fz-xxl);
+    font-size: clamp(1.1rem, 2.4vw, 1.6rem);
     color: var(--black);
-    margin-top: 2px;
+    margin: 0 0 0.5rem;
   }
 
   .description {
-    margin: 1rem 0;
-    margin-top: 0.4rem;
-    font-size: var(--fz-xl);
+    margin: 0;
+    font-size: clamp(0.98rem, 1.8vw, 1.05rem);
+    line-height: 1.75;
+    color: var(--medium-gray);
   }
 
-  @media (max-width: 870px) {
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .tag {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(100, 255, 218, 0.12);
+    color: var(--green);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 768px) {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.8rem;
 
-    .description {
-      margin-top: 0;
-    }
-
-    .date {
-      display: none;
-    }
-  }
-
-  @media (max-width: 600px) {
-    .description {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
+    .left-label {
+      min-width: auto;
     }
   }
 `;
 
-const FeaturedPost = () => {
-  const data = useStaticQuery(graphql`
-    {
-      featured: allMarkdownRemark(
-        filter: {
-          fileAbsolutePath: { regex: "/content/posts/*/" }
-          frontmatter: { featured: { eq: true } }
-        }
-        sort: { fields: [frontmatter___date], order: DESC }
-      ) {
-        edges {
-          node {
-            frontmatter {
-              title
-              description
-              date
-              slug
-              tags
-            }
-            html
-          }
-        }
-      }
-    }
-  `);
+const contributions = [
+  {
+    label: 'Jenkins',
+    title: 'Production-ready container env-var substitution in official Jenkins images',
+    description:
+      'Merged Jenkins Docker improvements that brought Linux and Windows container environment variable substitution into official releases, solving a long-standing gap that had blocked enterprise CI workflows.',
+    tags: ['Docker', 'CI/CD', 'Official Release', 'Jenkins'],
+  },
+  {
+    label: 'FOSSology',
+    title: 'Built a 10+ service Kubernetes microservices platform from a fragile monolith',
+    description:
+      'Designed and deployed a Kubernetes-native platform for FOSSology with Kustomize overlays for dev, staging, and prod, replacing an unreliable deployment model and restoring CI confidence across the project.',
+    tags: ['Kubernetes', 'Kustomize', 'Docker', 'Microservices'],
+  },
+  {
+    label: 'Observability',
+    title: 'A Jenkins telemetry pipeline that cut trace volume by 81%',
+    description:
+      'Created a 3-tier OpenTelemetry pipeline with tail-based sampling, Prometheus alerting, and Grafana/Jaeger visibility so Jenkins CI signals became actionable instead of noisy.',
+    tags: ['OpenTelemetry', 'Prometheus', 'Grafana', 'Jaeger'],
+  },
+  {
+    label: 'Accessibility',
+    title: 'Improved real user experience across open-source interfaces',
+    description:
+      'Reported and resolved accessibility regressions in OWASP Nest and Jenkins UI flows, making keyboard navigation, focus visibility, and screen-reader support more reliable for everyday users.',
+    tags: ['Accessibility', 'UX', 'Open Source', 'Collaboration'],
+  },
+];
 
-  const posts = data.featured.edges.filter(({ node }) => node);
+const FeaturedPost = () => {
   const revealTitle = useRef(null);
   const revealArchiveLink = useRef(null);
   const revealPost = useRef([]);
@@ -146,39 +156,41 @@ const FeaturedPost = () => {
   return (
     <FeaturedPostSection id="featured-posts">
       <h2 className="numbered-heading" ref={revealTitle}>
-        Experience
+        Open Source Contributions
       </h2>
+      <p className="intro">
+        I focus on the parts of engineering that make platforms usable in production: reliability,
+        observability, automation, accessibility, and contributor-led maintenance.
+      </p>
       <div className="post_container">
         <StyledGrid>
-          {posts.length > 0 &&
-            posts.map(({ node }, i) => {
-              const { frontmatter } = node;
-              const { title, description, slug, date } = frontmatter;
-              const formattedDate = new Date(date).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              });
-              return (
-                <StyledPost key={i}>
-                  <div className="metadata">
-                    <p className="date">{formattedDate}</p>
-                  </div>
-                  <div className="main">
-                    <Link to={slug}>
-                      <h3 className="title">{title}</h3>
-                    </Link>
-                    <p className="description">{description}</p>
-                  </div>
-                </StyledPost>
-              );
-            })}
+          {contributions.map((item, i) => (
+            <StyledPost key={i} ref={el => (revealPost.current[i] = el)}>
+              <div className="left-label">{item.label}</div>
+              <div className="main">
+                <h3 className="title">{item.title}</h3>
+                <p className="description">{item.description}</p>
+                <div className="tag-row">
+                  {item.tags.map(tag => (
+                    <span key={tag} className="tag">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </StyledPost>
+          ))}
         </StyledGrid>
       </div>
       <div className="link-container">
-        <Link className="styled_link" to="/blog" ref={revealArchiveLink}>
-          see all posts &rarr;
-        </Link>
+        <a
+          className="styled_link"
+          href="https://github.com/SalmanDeveloperz"
+          target="_blank"
+          rel="noreferrer"
+          ref={revealArchiveLink}>
+          Explore all GitHub work &rarr;
+        </a>
       </div>
     </FeaturedPostSection>
   );

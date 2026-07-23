@@ -1,16 +1,15 @@
 ---
-order: 1
-title: Point of Sales & Inventory System
+order: 2
+title: 'FOSSology Microservices Infrastructure'
 cover: ./images/point of sales.jpg
 featured: true
 github: https://github.com/SalmanDeveloperz/Point-of-Sales-Inventory-System-Project
-external: https://youtu.be/02hPBoNNmIA?si=oQ7-MpLyHtCp4HED
 tech:
-  - .NET
-  - C#
-  - MS Access
-  - Inventory Management
-  - Desktop Application
+  - Linux
+  - Microservices
+  - DevOps
+  - CI/CD
+  - Open Source Systems
 ---
 
-Developed a complete retail desktop workflow for billing, stock tracking, and sales operations. The application streamlines cashier operations, product-level inventory updates, and transaction recording with a practical operator interface, reflecting real-world business process automation.
+Shaped a practical open-source platform infrastructure story around service decomposition, deployment flow, and maintainable automation. The work highlights production-minded DevOps thinking, structured system design, and the ability to translate technical complexity into clean, scalable delivery patterns.

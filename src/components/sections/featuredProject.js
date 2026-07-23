@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
-import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import styled from 'styled-components';
 import sr from '@utils/sr';
 import { srConfig } from '@config';
@@ -322,18 +321,10 @@ const FeaturedProject = () => {
       ) {
         edges {
           node {
+            fileAbsolutePath
             frontmatter {
               title
-              cover {
-                childImageSharp {
-                  gatsbyImageData(
-                    width: 700
-                    height: 700
-                    placeholder: BLURRED
-                    formats: [AUTO, WEBP, AVIF]
-                  )
-                }
-              }
+              cover
               featured
               github
               external
@@ -343,8 +334,32 @@ const FeaturedProject = () => {
           }
         }
       }
+      images: allFile(filter: { sourceInstanceName: { eq: "content" } }) {
+        edges {
+          node {
+            publicURL
+            relativePath
+          }
+        }
+      }
     }
   `);
+
+  const getProjectImage = (coverPath, fileAbsolutePath) => {
+    if (!coverPath || !fileAbsolutePath) {
+      return '';
+    }
+
+    const contentRelativePath = fileAbsolutePath.split('/content/')[1] || '';
+    const markdownDirectory = contentRelativePath.replace(/\/[^/]+$/, '');
+    const normalizedCoverPath = coverPath.replace(/^\.\//, '');
+    const relativeImagePath = `${markdownDirectory}/${normalizedCoverPath}`.replace(/\/+/g, '/');
+
+    return (
+      data.images.edges.find(({ node }) => node.relativePath === relativeImagePath)?.node
+        .publicURL || ''
+    );
+  };
 
   const featuredProjects = data.featured.edges.filter(({ node }) => node);
   const revealTitle = useRef(null);
@@ -365,9 +380,9 @@ const FeaturedProject = () => {
       <StyledProjectsGrid>
         {featuredProjects &&
           featuredProjects.map(({ node }, i) => {
-            const { frontmatter, html } = node;
+            const { frontmatter, html, fileAbsolutePath } = node;
             const { external, title, tech, github, cover, cta } = frontmatter;
-            const image = getImage(cover);
+            const imageSrc = getProjectImage(cover, fileAbsolutePath);
 
             return (
               <StyledFeaturedProject key={i} ref={el => (revealProjects.current[i] = el)}>
@@ -414,7 +429,7 @@ const FeaturedProject = () => {
 
                 <div className="project-image">
                   <a href={external ? external : github ? github : '#'}>
-                    <GatsbyImage image={image} alt={title} className="img" />
+                    {imageSrc && <img src={imageSrc} alt={title} className="img" />}
                   </a>
                 </div>
               </StyledFeaturedProject>

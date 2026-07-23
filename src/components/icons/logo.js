@@ -13,23 +13,38 @@
 // export default IconLogo;
 
 import React from 'react';
-import logo from './logo3.png'; // Adjust the path if necessary
+import PropTypes from 'prop-types';
+import logo from './logo3.png';
 
-const IconLogo = () => (
-  <div
-    style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-      height: '100px',
-      marginTop: '-1px',
-    }}>
-    <img
-      src={logo}
-      alt="MonoSlate Logo"
-      style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-    />
-  </div>
-);
+const IconLogo = ({ themeMode = 'dark' }) => {
+  const isDark = themeMode === 'dark';
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        height: '100px',
+        marginTop: '-1px',
+      }}>
+      <img
+        src={logo}
+        alt="Muhammad Salman logo"
+        style={{
+          maxWidth: '100%',
+          maxHeight: '100%',
+          objectFit: 'contain',
+          filter: isDark ? 'invert(1) brightness(1.85) saturate(1.2)' : 'brightness(0) saturate(0)',
+          transition: 'filter 0.25s ease',
+        }}
+      />
+    </div>
+  );
+};
+
+IconLogo.propTypes = {
+  themeMode: PropTypes.oneOf(['light', 'dark']),
+};
 
 export default IconLogo;

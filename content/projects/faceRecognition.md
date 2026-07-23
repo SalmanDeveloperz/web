@@ -1,6 +1,6 @@
 ---
-order: 2
-title: 'PoS-OTel: CI/CD Observability Stack'
+order: 1
+title: 'OpenTelemetry Collector Jenkins Observability Stack'
 cover: './images/faceAttendence.png'
 featured: true
 github: 'https://github.com/SalmanDeveloperz/PoS-OTel'
@@ -13,4 +13,4 @@ tech:
   - Python
 ---
 
-Built an end-to-end local observability platform for delivery pipelines, combining traces, metrics, and logs for faster debugging and release confidence. This project integrates Jenkins pipeline simulation with OpenTelemetry Collector, Jaeger tracing, Prometheus metrics, and Grafana dashboards to provide production-style visibility in a developer-friendly setup.
+Built a deployment-ready observability pipeline that brings traces, metrics, and logs together for a clearer release story. The stack demonstrates strong platform engineering fundamentals: pipeline visibility, fast incident triage, and a polished developer experience for understanding application health under real delivery pressure.

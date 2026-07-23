@@ -230,7 +230,7 @@ const Nav = ({ isHome, themeMode, toggleTheme }) => {
             <IconHex />
           </div>
           <div className="logo-container">
-            <IconLogo />
+            <IconLogo themeMode={themeMode} />
           </div>
         </a>
       ) : (
@@ -239,7 +239,7 @@ const Nav = ({ isHome, themeMode, toggleTheme }) => {
             <IconHex />
           </div>
           <div className="logo-container">
-            <IconLogo />
+            <IconLogo themeMode={themeMode} />
           </div>
         </Link>
       )}

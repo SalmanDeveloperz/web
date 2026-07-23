@@ -15,15 +15,17 @@ const StyledProjectsSection = styled.section`
 
   h2 {
     font-size: clamp(24px, 5vw, var(--fz-heading));
+    text-align: center;
   }
 
   .projects-grid {
     ${({ theme }) => theme.mixins.resetList};
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    grid-gap: 15px;
+    grid-gap: 18px;
     position: relative;
     margin-top: 50px;
+    width: 100%;
 
     @media (max-width: 1080px) {
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -46,6 +48,7 @@ const StyledProject = styled.li`
     &:focus-within {
       .project-inner {
         transform: translateY(-7px);
+        border-color: rgba(100, 255, 218, 0.38);
       }
     }
   }
@@ -64,17 +67,27 @@ const StyledProject = styled.li`
     height: 100%;
     padding: 2rem 1.75rem;
     border-radius: var(--border-radius);
-    background-color: var(--pure-white);
+    background: linear-gradient(180deg, rgba(11, 18, 32, 0.96), rgba(7, 10, 18, 0.98));
+    border: 1px solid rgba(100, 255, 218, 0.12);
     transition: var(--transition);
-    overflow: auto;
+    overflow: hidden;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(150deg, rgba(100, 255, 218, 0.05), transparent 45%);
+      pointer-events: none;
+    }
   }
 
   .project-top {
     ${({ theme }) => theme.mixins.flexBetween};
     margin-bottom: 35px;
+    width: 100%;
 
     .folder {
-      color: var(--light-gray);
+      color: var(--green);
       svg {
         width: 40px;
         height: 40px;
@@ -93,7 +106,7 @@ const StyledProject = styled.li`
 
         &:hover,
         &:focus {
-          color: var(--medium-gray);
+          color: var(--green);
         }
 
         &.external {
@@ -135,6 +148,8 @@ const StyledProject = styled.li`
 
   .project-description {
     font-size: 17px;
+    color: var(--slate);
+    line-height: 1.7;
     a {
       ${({ theme }) => theme.mixins.inlineLink};
     }
@@ -153,9 +168,15 @@ const StyledProject = styled.li`
       font-family: var(--font-mono);
       font-size: var(--fz-xxs);
       line-height: 1.75;
+      color: var(--light-slate);
+      background: rgba(100, 255, 218, 0.08);
+      border: 1px solid rgba(100, 255, 218, 0.12);
+      border-radius: 999px;
+      padding: 0.3rem 0.65rem;
 
       &:not(:last-of-type) {
-        margin-right: 15px;
+        margin-right: 10px;
+        margin-bottom: 10px;
       }
     }
   }
@@ -167,7 +188,7 @@ const Projects = () => {
       projects: allMarkdownRemark(
         filter: {
           fileAbsolutePath: { regex: "/content/projects/" }
-          frontmatter: { featured: { ne: true } }
+          frontmatter: { showInProjects: { eq: true }, featured: { ne: true } }
         }
         sort: { fields: [frontmatter___date], order: DESC }
       ) {
@@ -200,7 +221,7 @@ const Projects = () => {
     revealProjects.current.forEach((ref, i) => sr.reveal(ref, srConfig(i * 100)));
   }, []);
 
-  const GRID_LIMIT = 3;
+  const GRID_LIMIT = 6;
   const projects = data.projects.edges.filter(({ node }) => node);
   const firstSix = projects.slice(0, GRID_LIMIT);
   const projectsToShow = showMore ? projects : firstSix;
@@ -259,7 +280,7 @@ const Projects = () => {
 
   return (
     <StyledProjectsSection>
-      <h2 ref={revealTitle}>Other Noteworthy Projects</h2>
+      <h2 ref={revealTitle}>Selected Builds & Experiments</h2>
 
       <ul className="projects-grid">
         {prefersReducedMotion ? (
