@@ -94,7 +94,7 @@ The key features are:
 
 ## Getting Started
 
-To get a local copy up and running follow these simple steps:-
+To setup it local follow these simple steps:-
 
 ### Prerequisites
 
@@ -129,7 +129,7 @@ Make sure that you have [Node.js](https://nodejs.org/en) installed as it would h
 Finally, below services will be running-
 
 - Website: `http://localhost:8000`
-- GraphiQL Server: `http://localhost:8000/___graphql`
+- GraphiQL Server: `http://localhost:8000/___graphql` 
 
 ### Building For Production
 
@@ -147,7 +147,7 @@ Finally, below services will be running-
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### Folder Structure
+### Folder this Structure
 
 ```
 ├── gatsby-config.js
