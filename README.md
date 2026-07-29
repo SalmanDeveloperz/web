@@ -31,11 +31,6 @@
     <a href="https://salman-ch.netlify.app/"><strong>View Live »</strong></a>
     <br />
     <br />
-    <a href="#getting-started">Quickstart</a>
-    ·
-    <a href="https://github.com/SalmanDeveloperz/website/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/SalmanDeveloperz/website/issues">Request Feature</a>
   </p>
 </div>
 
