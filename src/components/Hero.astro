@@ -1,4 +1,5 @@
 ---
+import Mark from './Mark.astro';
 import { profile, projects, openSource, spans, stack, allPrsUrl } from '../data/profile';
 import { counts } from '../data/github';
 import Icon from './Icon.astro';
@@ -37,8 +38,8 @@ const termData = {
 <section class="hero wrap" aria-labelledby="hero-title">
   <div class="hero-copy">
     <div class="id rise">
-      <p class="kicker mono"><span class="k-dot" aria-hidden="true"></span>{profile.role} · 9D Technologies</p>
-      <h1 id="hero-title">{profile.name}</h1>
+      <p class="kicker mono"><span class="k-dot" aria-hidden="true"></span>{profile.name} · {profile.role} · 9D Technologies</p>
+      <h1 id="hero-title" class="hand">Hi, I’m <Mark>Salman</Mark>.</h1>
     </div>
 
     <p class="headline rise">
@@ -66,7 +67,12 @@ const termData = {
     </div>
   </div>
 
-  <div class="term card rise" data-term-root>
+  <div class="term-wrap rise">
+  <p class="scribble hand" aria-hidden="true">
+    <span>psst, it’s a real terminal. type&nbsp;<b>help</b></span>
+    <svg viewBox="0 0 70 60" width="54" height="46"><path d="M8 6 C 40 4, 62 20, 52 50" /><path d="M42 42 L 52 52 L 60 40" /></svg>
+  </p>
+  <div class="term card" data-term-root>
     <div class="term-bar">
       <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
       <span class="mono term-title">salman@env: ~</span>
@@ -107,6 +113,7 @@ const termData = {
         ))}
       </div>
     </div>
+  </div>
   </div>
 </section>
 
@@ -247,7 +254,12 @@ const termData = {
   }
   .kicker { display: inline-flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--accent); letter-spacing: .02em; }
   .k-dot { width: 7px; height: 7px; border-radius: 2px; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
-  h1 { font-size: clamp(40px, 6vw, 68px); line-height: .98; letter-spacing: -0.05em; font-weight: 700; margin-top: 14px; }
+  h1 { font-size: clamp(56px, 8vw, 96px); line-height: 1; margin-top: 12px; }
+  .term-wrap { position: relative; }
+  .scribble { position: absolute; right: 8px; top: -52px; display: flex; align-items: flex-start; gap: 2px; font-size: 19px; color: var(--muted); transform: rotate(-3deg); pointer-events: none; }
+  .scribble b { color: var(--accent); }
+  .scribble svg { margin-top: 6px; }
+  .scribble path { fill: none; stroke: var(--accent); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
   .headline { font-size: clamp(21px, 2.3vw, 27px); line-height: 1.3; letter-spacing: -0.02em; margin-top: 22px; font-weight: 500; max-width: 26ch; text-wrap: balance; }
   .hl { color: var(--accent); }
   .intro { color: var(--text-2); margin-top: 18px; max-width: 56ch; display: grid; gap: 12px; }
@@ -288,6 +300,7 @@ const termData = {
 
   @media (max-width: 980px) {
     .hero { grid-template-columns: 1fr; }
+    .term-wrap { margin-top: 44px; }
     .term-body { height: 400px; }
   }
   @media (max-width: 560px) {

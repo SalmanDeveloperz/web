@@ -1,14 +1,15 @@
 ---
+import Mark from './Mark.astro';
 import { projects } from '../data/profile';
 const featured = projects.find((p) => p.featured);
 const rest = projects.filter((p) => !p.featured);
 
 // Pipeline diagram nodes (x, y in a 560x220 box)
 const nodes = [
-  { id: 'jenkins', x: 16, y: 88, w: 104, label: 'Jenkins', sub: 'OTLP traces' },
-  { id: 'col', x: 170, y: 72, w: 150, label: 'OTel Collector', sub: 'tail_sampling · spanmetrics', tall: true },
-  { id: 'jaeger', x: 380, y: 22, w: 160, label: 'Jaeger', sub: 'errors · slow · 20%' },
-  { id: 'prom', x: 380, y: 150, w: 160, label: 'Prometheus → Grafana', sub: 'RED metrics · alerts' },
+  { id: 'jenkins', x: 8, y: 86, w: 100, label: 'Jenkins', sub: 'OTLP traces' },
+  { id: 'col', x: 148, y: 72, w: 190, label: 'OTel Collector', sub: 'tail_sampling · spanmetrics', tall: true },
+  { id: 'jaeger', x: 386, y: 22, w: 166, label: 'Jaeger', sub: 'errors · slow · 20%' },
+  { id: 'prom', x: 386, y: 150, w: 166, label: 'Prometheus → Grafana', sub: 'RED metrics · alerts' },
 ];
 ---
 
@@ -16,7 +17,7 @@ const nodes = [
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow">05 · projects</span>
-      <h2 class="h2">Other projects</h2>
+      <h2 class="h2">More things I’ve <Mark variant={2}>built</Mark></h2>
       <p class="lede">Mostly things I built because I needed them.</p>
     </div>
 
@@ -43,9 +44,9 @@ const nodes = [
                 <path d="M0 0 10 5 0 10z" fill="var(--border-2)" />
               </marker>
             </defs>
-            <path id="p1" class="edge" d="M120 110 H168" marker-end="url(#arr)" />
-            <path id="p2" class="edge" d="M320 96 C 350 96, 350 48, 378 48" marker-end="url(#arr)" />
-            <path id="p3" class="edge" d="M320 126 C 350 126, 350 176, 378 176" marker-end="url(#arr)" />
+            <path id="p1" class="edge" d="M108 110 H146" marker-end="url(#arr)" />
+            <path id="p2" class="edge" d="M338 96 C 362 96, 362 46, 384 46" marker-end="url(#arr)" />
+            <path id="p3" class="edge" d="M338 126 C 362 126, 362 174, 384 174" marker-end="url(#arr)" />
             <circle r="3.5" class="pkt"><animateMotion dur="1.6s" repeatCount="indefinite"><mpath href="#p1" /></animateMotion></circle>
             <circle r="3.5" class="pkt err"><animateMotion dur="2.2s" begin=".4s" repeatCount="indefinite"><mpath href="#p2" /></animateMotion></circle>
             <circle r="3.5" class="pkt"><animateMotion dur="2.4s" begin="1s" repeatCount="indefinite"><mpath href="#p3" /></animateMotion></circle>

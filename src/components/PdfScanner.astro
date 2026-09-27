@@ -1,4 +1,5 @@
 ---
+import Mark from './Mark.astro';
 import { pdfScanner as p } from '../data/profile';
 const total = p.groups.reduce((a, g) => a + g.n, 0);
 ---
@@ -7,8 +8,8 @@ const total = p.groups.reduce((a, g) => a + g.n, 0);
   <div class="wrap">
     <div class="pdf card reveal">
       <div class="pdf-copy">
-        <span class="eyebrow">04 · built at {p.org}</span>
-        <h2 class="h2">{p.name}</h2>
+        <span class="eyebrow">04 · pdf scanner web</span>
+        <h2 class="h2">PDF Scanner, <Mark>shipped</Mark> at 9D</h2>
         <p class="lede">{p.story}</p>
         <div class="stats mono">
           <div><b>{total}</b><span>tools</span></div>

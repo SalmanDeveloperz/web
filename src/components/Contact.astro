@@ -1,4 +1,5 @@
 ---
+import Mark from './Mark.astro';
 import { profile } from '../data/profile';
 import Icon from './Icon.astro';
 const socials = profile.socials.filter((s) => s.url.startsWith('http'));
@@ -11,7 +12,7 @@ const socials = profile.socials.filter((s) => s.url.startsWith('http'));
         <span class="dot" aria-hidden="true"></span>
         {profile.availability}
       </span>
-      <h2 class="cta-h">Get in touch</h2>
+      <h2 class="cta-h hand">Say <Mark variant={3}>hello</Mark></h2>
       <p class="lede">Email is the fastest way to reach me. I usually reply within a day ({profile.timezone}).</p>
 
       <div class="cta-row">
@@ -63,7 +64,7 @@ const socials = profile.socials.filter((s) => s.url.startsWith('http'));
     position: relative; display: inline-flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-2);
     padding: 7px 14px 7px 12px; border: 1px solid var(--border-2); border-radius: 999px; background: var(--bg-2);
   }
-  .cta-h { font-size: clamp(32px, 4.6vw, 52px); line-height: 1.05; letter-spacing: -0.04em; font-weight: 600; margin-top: 20px; position: relative; }
+  .cta-h { font-size: clamp(44px, 6vw, 68px); line-height: 1.05; margin-top: 18px; position: relative; }
   .lede { margin-inline: auto; position: relative; }
   .cta-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 28px; position: relative; }
   .copy { font-size: 13px; max-width: 100%; }

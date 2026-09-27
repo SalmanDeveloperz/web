@@ -1,4 +1,5 @@
 ---
+import Mark from './Mark.astro';
 import { spans, traceWindow } from '../data/profile';
 
 const toMonths = (s: string) => {
@@ -45,7 +46,7 @@ const traceId = '5a1ma9c0de' + String(nowM).slice(-4);
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow">01 · experience</span>
-      <h2 class="h2">Experience</h2>
+      <h2 class="h2">The road <Mark>so far</Mark></h2>
       <p class="lede">Laid out like a trace in Jaeger, because that’s how I read systems. Each bar is a role. Click one to open it.</p>
     </div>
 

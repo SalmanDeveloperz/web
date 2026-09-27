@@ -1,4 +1,5 @@
 ---
+import Mark from './Mark.astro';
 import { openSource, allPrsUrl } from '../data/profile';
 import { liveState, counts, synced } from '../data/github';
 
@@ -30,7 +31,7 @@ const group = (s: string) => (s === 'shipped' ? 'merged' : s === 'private' ? 'is
     <div class="section-head head-row reveal">
       <div>
         <span class="eyebrow">02 · contributions</span>
-        <h2 class="h2">Open source</h2>
+        <h2 class="h2">Code I got <Mark variant={2}>merged</Mark></h2>
         <p class="lede">
           Most of these began as bugs I hit myself. I reproduce the bug, write it up, and then send the fix. Some had been open for years. Every row links to its PR or issue.
         </p>
