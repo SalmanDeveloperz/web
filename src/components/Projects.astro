@@ -124,6 +124,6 @@ const nodes = [
   .p-links a { color: var(--accent); }
   .p-links a:hover { text-decoration: underline; text-underline-offset: 3px; }
   .more { margin-top: 28px; }
-  @media (max-width: 980px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .grid > .proj, .grid > .proj:nth-child(n) { grid-column: auto; } .feat { grid-template-columns: 1fr; } }
+  @media (max-width: 980px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .grid > .proj { grid-column: auto !important; } .feat { grid-template-columns: 1fr; } }
   @media (max-width: 620px) { .grid { grid-template-columns: 1fr; } }
 </style>
