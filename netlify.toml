@@ -4,6 +4,9 @@
 
 [build.environment]
   NODE_VERSION = "22"
+  # The Gatsby build plugin is still enabled in the Netlify UI from the old site.
+  # This tells it to skip itself, since the site is Astro now.
+  NETLIFY_SKIP_GATSBY_BUILD_PLUGIN = "true"
 
 [[headers]]
   for = "/_astro/*"
