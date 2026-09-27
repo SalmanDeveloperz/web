@@ -1,0 +1,64 @@
+---
+import { pdfScanner as p } from '../data/profile';
+const total = p.groups.reduce((a, g) => a + g.n, 0);
+---
+
+<section id="pdf-scanner" class="block tight">
+  <div class="wrap">
+    <div class="pdf card reveal">
+      <div class="pdf-copy">
+        <span class="eyebrow">04 · shipped at {p.org}</span>
+        <h2 class="h2">{p.name}: {total} document tools, zero uploads.</h2>
+        <p class="lede">{p.pitch}</p>
+        <div class="stats mono">
+          <div><b>{total}</b><span>tools</span></div>
+          <div><b>50M+</b><span>app installs</span></div>
+          <div><b>4.8★</b><span>Play rating</span></div>
+          <div><b>0</b><span>bytes uploaded</span></div>
+        </div>
+        <div class="chips">{p.stack.map((s) => <span class="chip">{s}</span>)}</div>
+        <div class="ctas">
+          <a class="btn primary" href={p.live} target="_blank" rel="noopener">Try it live ↗</a>
+          <a class="btn" href={p.repo} target="_blank" rel="noopener">Source</a>
+        </div>
+      </div>
+
+      <div class="pdf-ui">
+        <div class="drop mono" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 18v-6M9 15l3-3 3 3"/></svg>
+          <span>drop a PDF · it never leaves this tab</span>
+        </div>
+        <ul class="groups">
+          {p.groups.map((g) => (
+            <li>
+              <div class="g-top"><span class="g-name">{g.name}</span><span class="g-n mono">{g.n}</span></div>
+              <p class="g-tools">{g.tools}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tight { padding-top: 0; }
+  .pdf { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); padding: clamp(22px, 3.5vw, 40px); }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 24px 0 20px; }
+  .stats div { background: var(--bg-2); padding: 12px; display: grid; gap: 2px; }
+  .stats b { font-family: var(--font-sans); font-size: 22px; letter-spacing: -0.03em; color: var(--text); }
+  .stats span { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .pdf-ui { display: grid; gap: 12px; align-content: center; }
+  .drop { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 26px; border: 1.5px dashed var(--border-2); border-radius: 12px; color: var(--muted); font-size: 12px; text-align: center; background: var(--bg-2); }
+  .drop svg { color: var(--accent); }
+  .groups { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .groups li { border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; background: var(--surface-2); transition: border-color .15s, transform .15s; }
+  .groups li:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .g-top { display: flex; justify-content: space-between; align-items: baseline; }
+  .g-name { font-weight: 600; font-size: 14px; }
+  .g-n { font-size: 11px; color: var(--accent); }
+  .g-tools { font-size: 12.5px; color: var(--muted); margin-top: 4px; line-height: 1.45; }
+  @media (max-width: 900px) { .pdf { grid-template-columns: 1fr; } }
+  @media (max-width: 480px) { .stats { grid-template-columns: 1fr 1fr; } .groups { grid-template-columns: 1fr; } }
+</style>

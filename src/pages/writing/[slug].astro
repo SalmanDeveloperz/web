@@ -1,0 +1,58 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { profile } from '../../data/profile';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('writing', ({ data }) => !data.draft && !data.external);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const words = (post.body ?? '').split(/\s+/).length;
+const minutes = Math.max(1, Math.ceil(words / 200));
+const date = post.data.date.toLocaleDateString('en', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<Base title={post.data.title} description={post.data.description} type="article" published={post.data.date}>
+  <article class="wrap post">
+    <a href="/writing/" class="back mono">← all writing</a>
+    <header>
+      <div class="meta mono">
+        <time datetime={post.data.date.toISOString()}>{date}</time>
+        <span>·</span>
+        <span>{minutes} min read</span>
+      </div>
+      <h1>{post.data.title}</h1>
+      <p class="desc">{post.data.description}</p>
+      <div class="tags mono">{post.data.tags.map((t) => <span>#{t}</span>)}</div>
+    </header>
+    <div class="prose">
+      <Content />
+    </div>
+    <footer class="post-foot">
+      <img src={profile.photo} alt="" width="48" height="48" />
+      <div>
+        <p class="by">Written by {profile.name}</p>
+        <p class="muted">{profile.role}. <a href="/#contact">Get in touch</a> or follow on <a href="https://github.com/SalmanDeveloperz" target="_blank" rel="noopener">GitHub</a>.</p>
+      </div>
+    </footer>
+  </article>
+</Base>
+
+<style>
+  .post { max-width: 760px; padding-block: clamp(40px, 7vw, 88px) 40px; }
+  .back { font-size: 12px; color: var(--muted); }
+  .back:hover { color: var(--accent); }
+  header { margin: 28px 0 40px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
+  .meta { display: flex; gap: 8px; font-size: 12px; color: var(--muted); }
+  h1 { font-size: clamp(32px, 5vw, 48px); line-height: 1.08; letter-spacing: -0.04em; font-weight: 700; margin-top: 14px; }
+  .desc { color: var(--text-2); font-size: 18px; margin-top: 14px; }
+  .tags { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; font-size: 12px; color: var(--accent); }
+  .post-foot { display: flex; gap: 14px; align-items: center; margin-top: 56px; padding: 20px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+  .post-foot img { width: 48px; height: 48px; border-radius: 12px; object-fit: cover; }
+  .by { font-weight: 600; }
+  .post-foot .muted { font-size: 14px; }
+  .post-foot a { color: var(--accent); }
+</style>

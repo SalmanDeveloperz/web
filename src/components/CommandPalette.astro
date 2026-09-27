@@ -1,0 +1,136 @@
+---
+import { profile } from '../data/profile';
+
+const commands = [
+  { group: 'Navigate', label: 'Experience trace', hint: '/#trace', action: 'go', value: '/#trace' },
+  { group: 'Navigate', label: 'Open source contributions', hint: '/#open-source', action: 'go', value: '/#open-source' },
+  { group: 'Navigate', label: 'Ezvor, flagship project', hint: '/#ezvor', action: 'go', value: '/#ezvor' },
+  { group: 'Navigate', label: 'PDF Scanner Web', hint: '/#pdf-scanner', action: 'go', value: '/#pdf-scanner' },
+  { group: 'Navigate', label: 'All projects', hint: '/#work', action: 'go', value: '/#work' },
+  { group: 'Navigate', label: 'Awards', hint: '/#awards', action: 'go', value: '/#awards' },
+  { group: 'Navigate', label: 'Writing', hint: '/writing', action: 'go', value: '/writing/' },
+  { group: 'Navigate', label: 'Contact', hint: '/#contact', action: 'go', value: '/#contact' },
+  { group: 'Actions', label: 'Copy email address', hint: profile.email, action: 'copy', value: profile.email },
+  { group: 'Actions', label: 'Download résumé (PDF)', hint: 'resume.pdf', action: 'open', value: profile.resume },
+  { group: 'Actions', label: 'Toggle light / dark theme', hint: 'theme', action: 'theme', value: '' },
+  ...profile.socials
+    .filter((s) => s.url.startsWith('http'))
+    .map((s) => ({ group: 'Links', label: `Open ${s.name}`, hint: s.url.replace('https://', ''), action: 'open', value: s.url })),
+  { group: 'Links', label: 'Ezvor live app', hint: 'ezvor.lovable.app', action: 'open', value: 'https://ezvor.lovable.app' },
+  { group: 'Links', label: 'PDF Scanner live', hint: 'docs-scan.netlify.app', action: 'open', value: 'https://docs-scan.netlify.app/' },
+];
+---
+
+<div class="cp" data-palette hidden>
+  <div class="cp-backdrop" data-close></div>
+  <div class="cp-panel" role="dialog" aria-modal="true" aria-label="Command menu">
+    <div class="cp-search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="text" placeholder="Type a command or search…" aria-label="Search commands" autocomplete="off" spellcheck="false" data-input />
+      <kbd class="mono">esc</kbd>
+    </div>
+    <ul class="cp-list" role="listbox" data-list>
+      {commands.map((c, i) => (
+        <li role="option" data-item data-group={c.group} data-action={c.action} data-value={c.value} data-label={c.label.toLowerCase()} aria-selected={i === 0 ? 'true' : 'false'}>
+          <span class="cp-group mono">{c.group}</span>
+          <span class="cp-label">{c.label}</span>
+          <span class="cp-hint mono">{c.hint}</span>
+        </li>
+      ))}
+    </ul>
+    <div class="cp-foot mono"><span>↑↓ navigate</span><span>↵ select</span><span class="cp-toast" data-toast></span></div>
+  </div>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-palette]')!;
+  const input = root.querySelector<HTMLInputElement>('[data-input]')!;
+  const items = Array.from(root.querySelectorAll<HTMLLIElement>('[data-item]'));
+  const toast = root.querySelector<HTMLElement>('[data-toast]')!;
+  let idx = 0;
+  let lastFocus: Element | null = null;
+
+  const visible = () => items.filter((i) => !i.hidden);
+  const select = (n: number) => {
+    const v = visible();
+    if (!v.length) return;
+    idx = (n + v.length) % v.length;
+    items.forEach((i) => i.setAttribute('aria-selected', 'false'));
+    v[idx].setAttribute('aria-selected', 'true');
+    v[idx].scrollIntoView({ block: 'nearest' });
+  };
+  const open = () => {
+    lastFocus = document.activeElement;
+    root.hidden = false;
+    input.value = '';
+    filter();
+    requestAnimationFrame(() => input.focus());
+    document.body.style.overflow = 'hidden';
+  };
+  const close = () => {
+    root.hidden = true;
+    document.body.style.overflow = '';
+    (lastFocus as HTMLElement | null)?.focus?.();
+  };
+  const filter = () => {
+    const q = input.value.trim().toLowerCase();
+    items.forEach((i) => (i.hidden = !!q && !(i.dataset.label || '').includes(q) && !(i.dataset.group || '').toLowerCase().includes(q)));
+    select(0);
+  };
+  const run = (el?: HTMLElement) => {
+    if (!el) return;
+    const { action, value = '' } = el.dataset;
+    if (action === 'go') { close(); location.href = value; }
+    else if (action === 'open') { close(); window.open(value, '_blank', 'noopener'); }
+    else if (action === 'copy') {
+      navigator.clipboard?.writeText(value).then(() => { toast.textContent = 'copied ✓'; setTimeout(() => { toast.textContent = ''; close(); }, 700); });
+    } else if (action === 'theme') {
+      document.querySelector<HTMLButtonElement>('[data-theme-toggle]')?.click();
+    }
+  };
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); root.hidden ? open() : close(); return; }
+    if (e.key === '/' && root.hidden && !(e.target as HTMLElement).closest('input,textarea,[contenteditable]')) { e.preventDefault(); open(); return; }
+    if (root.hidden) return;
+    if (e.key === 'Escape') close();
+    else if (e.key === 'ArrowDown') { e.preventDefault(); select(idx + 1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); select(idx - 1); }
+    else if (e.key === 'Enter') { e.preventDefault(); run(visible()[idx]); }
+  });
+  input.addEventListener('input', filter);
+  items.forEach((i) => {
+    i.addEventListener('click', () => run(i));
+    i.addEventListener('mousemove', () => { const v = visible(); const n = v.indexOf(i); if (n !== idx) select(n); });
+  });
+  root.querySelector('[data-close]')!.addEventListener('click', close);
+  document.querySelectorAll('[data-open-palette]').forEach((b) => b.addEventListener('click', open));
+</script>
+
+<style>
+  .cp { position: fixed; inset: 0; z-index: 90; display: grid; place-items: start center; padding: 12vh 16px 16px; }
+  .cp[hidden] { display: none; }
+  .cp-backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, .55); backdrop-filter: blur(3px); }
+  .cp-panel {
+    position: relative; width: min(620px, 100%); border-radius: 14px; overflow: hidden;
+    background: var(--surface); border: 1px solid var(--border-2);
+    box-shadow: 0 40px 120px -20px rgba(0, 0, 0, .7);
+    animation: pop .16s ease-out;
+  }
+  @keyframes pop { from { opacity: 0; transform: translateY(-6px) scale(.985); } }
+  .cp-search { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--border); color: var(--muted); }
+  .cp-search input { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: var(--text); font: inherit; font-size: 15px; }
+  .cp-search kbd { font-size: 11px; padding: 3px 6px; border-radius: 5px; border: 1px solid var(--border); }
+  .cp-list { list-style: none; padding: 6px; max-height: min(420px, 55vh); overflow-y: auto; }
+  .cp-list li { display: grid; grid-template-columns: 80px 1fr auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+  .cp-list li[aria-selected='true'] { background: var(--accent-soft); }
+  .cp-list li[aria-selected='true'] .cp-label { color: var(--accent); }
+  .cp-group { font-size: 11px; color: var(--faint); text-transform: uppercase; letter-spacing: .06em; }
+  .cp-hint { font-size: 11px; color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
+  .cp-foot { display: flex; gap: 16px; padding: 10px 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--faint); }
+  .cp-toast { margin-left: auto; color: var(--accent); }
+  @media (max-width: 560px) {
+    .cp-list li { grid-template-columns: 1fr; gap: 2px; }
+    .cp-group, .cp-hint { display: none; }
+  }
+</style>

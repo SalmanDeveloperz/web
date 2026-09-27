@@ -1,5 +1,0 @@
-I’m a Platform / DevOps Engineer who enjoys bridging software development, infrastructure, and reliability. My work has centered around Kubernetes, CI/CD pipelines, observability, and open-source collaboration, with a clear focus on building systems that are understandable, maintainable, and resilient under real deployment pressure.
-
-My recent experience includes designing and deploying a 10-service Kubernetes infrastructure for FOSSology, migrating build pipelines from Make to CMake, and building telemetry stacks using OpenTelemetry, Prometheus, Grafana, and Jaeger. I’ve also contributed merged fixes to Jenkins core and related projects, which has sharpened both my software engineering judgment and my ability to work within global, high-trust engineering communities.
-
-What drives me is the challenge of turning architectural complexity into calm, reliable operations. I’m especially energized by environments where strong engineering discipline, observability, and continuous improvement matter as much as feature delivery.

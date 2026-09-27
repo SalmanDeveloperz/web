@@ -1,0 +1,57 @@
+---
+import { projects } from '../data/profile';
+---
+
+<section id="work" class="block">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">05 · more builds</span>
+      <h2 class="h2">Systems that heal, trace and ship.</h2>
+      <p class="lede">A mix of infrastructure I needed, tools I wished existed, and hackathon builds that went further than the weekend.</p>
+    </div>
+
+    <div class="grid">
+      {projects.map((p, i) => (
+        <article class="proj card reveal" style={`transition-delay:${(i % 3) * 60}ms`}>
+          <div class="p-top">
+            <span class="p-kind mono">{p.kind}</span>
+            {p.metric && <span class="p-metric mono">{p.metric}</span>}
+          </div>
+          <h3>
+            <a href={p.live ?? p.repo} target="_blank" rel="noopener" class="stretch">{p.name}</a>
+          </h3>
+          <p class="p-body">{p.body}</p>
+          <div class="chips">{p.stack.map((s) => <span class="chip">{s}</span>)}</div>
+          <div class="p-links mono">
+            {p.repo && <a href={p.repo} target="_blank" rel="noopener">code ↗</a>}
+            {p.live && <a href={p.live} target="_blank" rel="noopener">live ↗</a>}
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <p class="more reveal">
+      <a class="link-arrow" href="https://github.com/SalmanDeveloperz?tab=repositories" target="_blank" rel="noopener">Browse all 80+ repositories on GitHub ↗</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .proj { position: relative; padding: 22px; display: flex; flex-direction: column; gap: 12px; transition: border-color .2s, transform .2s; }
+  .proj:hover { border-color: var(--border-2); transform: translateY(-3px); }
+  .proj:hover h3 a { color: var(--accent); }
+  .p-top { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+  .p-kind { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  .p-metric { font-size: 11px; color: var(--green); background: color-mix(in srgb, var(--green) 12%, transparent); padding: 3px 8px; border-radius: 99px; white-space: nowrap; }
+  h3 { font-size: 19px; letter-spacing: -0.02em; font-weight: 600; }
+  h3 a { transition: color .15s; }
+  .stretch::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius); }
+  .p-body { color: var(--text-2); font-size: 14.5px; flex: 1; }
+  .p-links { display: flex; gap: 14px; font-size: 12px; position: relative; z-index: 1; }
+  .p-links a { color: var(--muted); }
+  .p-links a:hover { color: var(--accent); }
+  .more { margin-top: 28px; }
+  @media (max-width: 980px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 620px) { .grid { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Metrics from '../components/Metrics.astro';
+import Trace from '../components/Trace.astro';
+import OpenSource from '../components/OpenSource.astro';
+import Ezvor from '../components/Ezvor.astro';
+import PdfScanner from '../components/PdfScanner.astro';
+import Projects from '../components/Projects.astro';
+import Recognition from '../components/Recognition.astro';
+import WritingList from '../components/WritingList.astro';
+import Contact from '../components/Contact.astro';
+
+const posts = (await getCollection('writing', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+---
+
+<Base>
+  <Hero />
+  <Metrics />
+  <Trace />
+  <OpenSource />
+  <Ezvor />
+  <PdfScanner />
+  <Projects />
+  <Recognition />
+
+  <section id="writing" class="block">
+    <div class="wrap">
+      <div class="section-head head-row reveal">
+        <div>
+          <span class="eyebrow">08 · writing</span>
+          <h2 class="h2">Notes from the debugging trenches.</h2>
+        </div>
+        <a class="link-arrow" href="/writing/">All posts →</a>
+      </div>
+      <WritingList posts={posts} />
+    </div>
+  </section>
+
+  <Contact />
+</Base>
+
+<style>
+  .head-row { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+</style>

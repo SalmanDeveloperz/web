@@ -1,0 +1,36 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { posts: CollectionEntry<'writing'>[] }
+const { posts } = Astro.props;
+const fmt = (d: Date) => d.toLocaleDateString('en', { year: 'numeric', month: 'short', day: '2-digit' });
+---
+
+<ul class="posts">
+  {posts.map((p) => (
+    <li class="reveal">
+      <a href={p.data.external ?? `/writing/${p.id}/`} target={p.data.external ? '_blank' : undefined} rel={p.data.external ? 'noopener' : undefined}>
+        <time class="mono" datetime={p.data.date.toISOString()}>{fmt(p.data.date)}</time>
+        <div>
+          <h3>{p.data.title}{p.data.external && <span class="pub mono">{p.data.publisher ?? 'external'} ↗</span>}</h3>
+          <p>{p.data.description}</p>
+          <div class="tags mono">{p.data.tags.map((t) => <span>#{t}</span>)}</div>
+        </div>
+        <span class="arrow" aria-hidden="true">{p.data.external ? '↗' : '→'}</span>
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .posts { list-style: none; padding: 0; border-top: 1px solid var(--border); }
+  .posts a { display: grid; grid-template-columns: 120px 1fr 24px; gap: 20px; padding: 22px 0; border-bottom: 1px solid var(--border); align-items: start; }
+  time { font-size: 12px; color: var(--muted); padding-top: 4px; }
+  h3 { font-size: 19px; letter-spacing: -0.02em; font-weight: 600; transition: color .15s; }
+  .pub { display: inline-block; margin-left: 10px; vertical-align: 3px; font-size: 10.5px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--border-2); border-radius: 5px; padding: 2px 6px; }
+  p { color: var(--text-2); font-size: 15px; margin-top: 4px; }
+  .tags { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; font-size: 11.5px; color: var(--faint); }
+  .arrow { color: var(--faint); padding-top: 2px; transition: transform .2s, color .2s; }
+  .posts a:hover h3, .posts a:hover .arrow { color: var(--accent); }
+  .posts a:hover .arrow { transform: translateX(4px); }
+  @media (max-width: 620px) { .posts a { grid-template-columns: 1fr; gap: 6px; } .arrow { display: none; } }
+</style>

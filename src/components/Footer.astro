@@ -1,0 +1,36 @@
+---
+import { profile } from '../data/profile';
+const built = new Date().toISOString().slice(0, 10);
+---
+
+<footer class="foot">
+  <div class="wrap foot-inner">
+    <div class="status mono">
+      <span class="dot" aria-hidden="true"></span>
+      <span>all systems operational</span>
+      <span class="sep">·</span>
+      <span>build {built}</span>
+    </div>
+    <nav class="foot-links mono" aria-label="Footer">
+      {profile.socials.map((s) => <a href={s.url} target={s.url.startsWith('http') ? '_blank' : undefined} rel="noopener">{s.name}</a>)}
+      <a href="/rss.xml">RSS</a>
+      <a href="/llms.txt">llms.txt</a>
+    </nav>
+    <p class="copy">
+      © {new Date().getFullYear()} {profile.name}.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .foot { border-top: 1px solid var(--border); padding-block: 36px 48px; margin-top: 40px; }
+  .foot-inner { display: grid; gap: 18px; grid-template-columns: 1fr auto; align-items: center; }
+  .status { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); }
+  .sep { color: var(--faint); }
+  .foot-links { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12px; }
+  .foot-links a { color: var(--muted); }
+  .foot-links a:hover { color: var(--accent); }
+  .copy { grid-column: 1 / -1; color: var(--faint); font-size: 13px; }
+  .copy a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+  @media (max-width: 720px) { .foot-inner { grid-template-columns: 1fr; } }
+</style>
