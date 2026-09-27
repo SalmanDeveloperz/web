@@ -38,7 +38,16 @@ const termData = {
 <section class="hero wrap" aria-labelledby="hero-title">
   <div class="hero-copy">
     <div class="id rise">
-      <h1 id="hero-title" class="hand">Hi, I’m <Mark>Salman</Mark>.</h1>
+      <h1 id="hero-title" class="hand" aria-label="Hi, I’m Salman." data-type-h1>
+        <span class="l1" aria-hidden="true">Hi,</span>
+        <span class="l2" aria-hidden="true">{[...'I’m '].map((c) => <span class="ch">{c}</span>)}<Mark>{[...'Salman'].map((c) => <span class="ch">{c}</span>)}</Mark><span class="ch">.</span></span>
+      </h1>
+      <script is:inline>
+        (function () {
+          var h = document.querySelector('[data-type-h1]');
+          if (h && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) h.classList.add('typing');
+        })();
+      </script>
     </div>
 
     <p class="headline rise">
@@ -106,11 +115,11 @@ const termData = {
         <label for="term-input" class="pr">salman@env:~$</label>
         <input id="term-input" data-term-input spellcheck="false" autocapitalize="off" aria-label="Terminal command. Type help for a list." />
       </form>
-      <div class="suggest" data-term-suggest>
-        {['help', 'projects', 'oss', 'experience', 'contact', 'resume'].map((c) => (
-          <button type="button" class="chip" data-cmd={c}>{c}</button>
-        ))}
-      </div>
+    </div>
+    <div class="suggest" data-term-suggest>
+      {['help', 'projects', 'oss', 'experience', 'contact', 'resume'].map((c) => (
+        <button type="button" class="chip" data-cmd={c}>{c}</button>
+      ))}
     </div>
   </div>
   </div>
@@ -127,6 +136,25 @@ const termData = {
   const input = root?.querySelector<HTMLInputElement>('[data-term-input]');
   const data = JSON.parse(document.getElementById('term-data')?.textContent || '{}');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // 0. Greeting: type "I'm Salman." once, then hand off to the underline
+  const h1 = document.querySelector<HTMLElement>('[data-type-h1]');
+  if (h1?.classList.contains('typing')) {
+    const chars = Array.from(h1.querySelectorAll<HTMLElement>('.ch'));
+    let i = 0;
+    const step = () => {
+      chars[i - 1]?.classList.remove('cur');
+      if (i >= chars.length) {
+        chars[chars.length - 1].classList.add('cur');
+        setTimeout(() => { chars[chars.length - 1].classList.remove('cur'); h1.classList.add('typed'); }, 1300);
+        return;
+      }
+      chars[i].classList.add('on', 'cur');
+      i++;
+      setTimeout(step, chars[i - 1].textContent === ' ' ? 60 : 85 + Math.random() * 50);
+    };
+    setTimeout(step, 450);
+  }
 
   // 1. Typed intro
   if (intro && !reduce) {
@@ -249,9 +277,20 @@ const termData = {
 <style>
   .hero {
     display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 64px);
-    align-items: center; padding-block: clamp(36px, 6vh, 72px) clamp(28px, 4vh, 44px);
+    align-items: center; padding-block: clamp(24px, 4vh, 48px);
+    min-height: calc(100svh - 68px);
   }
-  h1 { font-size: clamp(44px, 5.2vw, 70px); line-height: 1.05; }
+  h1 { font-size: clamp(46px, 5.4vw, 72px); line-height: 1.02; }
+  h1 .l1, h1 .l2 { display: block; }
+  h1 .ch { white-space: pre; }
+  h1.typing .ch { opacity: 0; }
+  h1.typing .ch.on { opacity: 1; }
+  h1 .ch.cur { position: relative; }
+  h1 .ch.cur::after {
+    content: ''; position: absolute; right: -0.12em; top: 0.12em; width: 0.07em; height: 0.82em;
+    background: var(--accent); border-radius: 2px; animation: caret .9s steps(1) infinite;
+  }
+  @keyframes caret { 50% { opacity: 0; } }
   .term-wrap { position: relative; }
   .scribble { position: absolute; right: 8px; top: -52px; display: flex; align-items: flex-start; gap: 2px; font-size: 19px; color: var(--muted); transform: rotate(-3deg); pointer-events: none; }
   .scribble b { color: var(--accent); }
@@ -275,7 +314,7 @@ const termData = {
   .term-meta b { color: var(--accent); font-weight: 500; }
   .term-body { padding: 14px 18px 16px; line-height: 1.65; height: clamp(320px, 52vh, 420px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
   .term-body :global(.ln) { transition: opacity .2s; }
-  .term-body :global(.ln.pending), .prompt.pending, .prompt.pending + .suggest { opacity: 0; }
+  .term-body :global(.ln.pending), .prompt.pending { opacity: 0; }
   .term-body :global(.gap) { margin-top: 12px; }
   .term-body :global(.pr) { color: var(--accent); white-space: nowrap; }
   .term-body :global(.cmd) { color: var(--text); }
@@ -291,12 +330,13 @@ const termData = {
   .k { color: var(--blue); } .v { color: var(--amber); } .n { color: var(--green); }
   .prompt { display: flex; gap: 8px; align-items: center; }
   .prompt input { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: var(--text); font: inherit; caret-color: var(--accent); padding: 0; }
-  .suggest { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; transition: opacity .3s; }
+  .suggest { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 14px; border-top: 1px solid var(--border); background: var(--surface-2); }
   .suggest .chip { cursor: pointer; }
   .suggest .chip:hover { border-color: var(--accent); color: var(--accent); }
 
   @media (max-width: 980px) {
-    .hero { grid-template-columns: 1fr; }
+    .hero { grid-template-columns: 1fr; min-height: 0; padding-top: 0; }
+    .hero-copy { min-height: calc(100svh - 68px); display: flex; flex-direction: column; justify-content: center; padding-block: 24px; }
     .term-wrap { margin-top: 44px; }
     .term-body { height: 380px; }
     .scribble { top: -40px; font-size: 17px; }
