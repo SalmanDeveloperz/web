@@ -15,8 +15,8 @@ export const profile = {
   availability: 'Open to backend and platform roles, remote or relocation',
   headline: 'I build backend services and fix the pipelines nobody wants to touch.',
   intro: [
-    'Backend engineer at 9D Technologies, working in Python and FastAPI. Computer science graduate from UAF, where I took 1st place at the Byte & Battle hackathon.',
-    'In 2024 Google Summer of Code rejected me. I had no open source experience and didn’t know how Git really worked. A year later I was in the program, rebuilding FOSSology as microservices on Kubernetes. Since then my patches have shipped in official Jenkins releases.',
+    'Backend engineer at 9D Technologies, building APIs and services in Python and FastAPI. Computer science graduate from UAF, where I took 1st place at the Byte & Battle hackathon.',
+    'Google Summer of Code 2025 contributor: I took FOSSology from a single monolith to 10+ services on Kubernetes and made its builds 40% faster. My code ships in official Jenkins releases, OWASP made me a collaborator on Nest, and I mentor developers breaking into open source at Dev Weekends.',
   ],
   socials: [
     { name: 'GitHub', url: 'https://github.com/SalmanDeveloperz', short: 'gh', handle: '@SalmanDeveloperz' },
