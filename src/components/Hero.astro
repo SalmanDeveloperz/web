@@ -38,7 +38,6 @@ const termData = {
 <section class="hero wrap" aria-labelledby="hero-title">
   <div class="hero-copy">
     <div class="id rise">
-      <p class="kicker mono"><span class="k-dot" aria-hidden="true"></span>{profile.name} · {profile.role} · 9D Technologies</p>
       <h1 id="hero-title" class="hand">Hi, I’m <Mark>Salman</Mark>.</h1>
     </div>
 
@@ -252,9 +251,7 @@ const termData = {
     display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 64px);
     align-items: center; padding-block: clamp(48px, 8vw, 96px) clamp(32px, 4vw, 48px);
   }
-  .kicker { display: inline-flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--accent); letter-spacing: .02em; }
-  .k-dot { width: 7px; height: 7px; border-radius: 2px; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
-  h1 { font-size: clamp(56px, 8vw, 96px); line-height: 1; margin-top: 12px; }
+  h1 { font-size: clamp(56px, 8vw, 96px); line-height: 1; }
   .term-wrap { position: relative; }
   .scribble { position: absolute; right: 8px; top: -52px; display: flex; align-items: flex-start; gap: 2px; font-size: 19px; color: var(--muted); transform: rotate(-3deg); pointer-events: none; }
   .scribble b { color: var(--accent); }
