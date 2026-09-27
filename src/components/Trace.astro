@@ -1,0 +1,192 @@
+---
+import { spans, traceWindow } from '../data/profile';
+
+const toMonths = (s: string) => {
+  const [y, m] = s.split('-').map(Number);
+  return y * 12 + (m - 1);
+};
+const now = new Date();
+const nowM = now.getFullYear() * 12 + now.getMonth();
+const w0 = toMonths(traceWindow.start);
+const w1 = Math.max(toMonths(traceWindow.end), nowM + 2);
+const span = w1 - w0;
+const pct = (m: number) => ((m - w0) / span) * 100;
+
+const years: number[] = [];
+for (let y = Math.ceil(w0 / 12); y * 12 <= w1; y++) years.push(y);
+
+const fmt = (m: number) => {
+  const d = new Date(Math.floor(m / 12), m % 12, 1);
+  return d.toLocaleString('en', { month: 'short', year: 'numeric' });
+};
+const dur = (a: number, b: number) => {
+  const n = Math.max(1, b - a + 1);
+  const y = Math.floor(n / 12);
+  const mo = n % 12;
+  return [y ? `${y}y` : '', mo ? `${mo}mo` : ''].filter(Boolean).join(' ');
+};
+
+const rows = [...spans]
+  .map((s) => {
+    const a = toMonths(s.start);
+    const b = s.end ? toMonths(s.end) : nowM;
+    const left = pct(a);
+    const width = Math.max(pct(b + 1) - pct(a), 1.2);
+    const side = left + width <= 78 ? 'out' : left > 18 ? 'flip' : 'in';
+    return { ...s, a, b, left, width, open: !s.end, side };
+  })
+  .sort((x, y) => x.a - y.a);
+
+const kindLabel = { work: 'work', oss: 'open source', edu: 'education', award: 'award' } as const;
+const traceId = '5a1ma9c0de' + String(nowM).slice(-4);
+---
+
+<section id="trace" class="block">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">01 · experience</span>
+      <h2 class="h2">My career, rendered as a distributed trace.</h2>
+      <p class="lede">
+        Observability is how I debug everything, so here is my history the way Jaeger would show it. Every span is a role. Open one to read its attributes.
+      </p>
+    </div>
+
+    <div class="trace card reveal">
+      <div class="t-head mono">
+        <div class="t-meta">
+          <span class="t-name">salman.career</span>
+          <span class="muted">trace_id {traceId}</span>
+        </div>
+        <div class="legend">
+          {Object.entries(kindLabel).map(([k, v]) => <span class={`lg ${k}`}><i></i>{v}</span>)}
+        </div>
+      </div>
+
+      <div class="t-axis mono" aria-hidden="true">
+        <div class="t-label-col">service · operation</div>
+        <div class="t-lane">
+          {years.map((y) => <span class="tick" style={`left:${pct(y * 12)}%`}>{y}</span>)}
+          <span class="now" style={`left:${pct(nowM + 1)}%`}>now</span>
+        </div>
+      </div>
+
+      <div class="t-rows">
+        <div class="t-row root" aria-hidden="true">
+          <div class="t-label-col mono"><span class="svc">salman</span><span class="op">career</span></div>
+          <div class="t-lane">
+            {years.map((y) => <span class="grid-line" style={`left:${pct(y * 12)}%`}></span>)}
+            <span class="bar root-bar" style={`left:0%;width:${pct(nowM + 1)}%`}></span>
+          </div>
+        </div>
+
+        {rows.map((r, i) => (
+          <details class={`t-row ${r.kind}`} open={r.id === '9d'} name="trace-span">
+            <summary>
+              <div class="t-label-col mono">
+                <span class="indent" aria-hidden="true">{i === rows.length - 1 ? '└' : '├'}</span>
+                <span class="svc">{r.service}</span>
+                <span class="op">{r.op}</span>
+              </div>
+              <div class="t-lane">
+                {years.map((y) => <span class="grid-line" style={`left:${pct(y * 12)}%`}></span>)}
+                <span class:list={['bar', { live: r.open }]} style={`left:${r.left}%;width:${r.width}%`}>
+                  <span class:list={['dur', 'mono', r.side]}>{r.open ? `${dur(r.a, r.b)} · live` : dur(r.a, r.b)}</span>
+                </span>
+              </div>
+            </summary>
+            <div class="t-detail">
+              <div class="d-main">
+                <p class="d-role">{r.role}</p>
+                <p class="d-org mono">{r.org}{r.location ? ` · ${r.location}` : ''} · {fmt(r.a)} → {r.open ? 'present' : fmt(r.b)}</p>
+                <p class="d-sum">{r.summary}</p>
+                {r.points && (
+                  <ul class="d-points">{r.points.map((p) => <li>{p}</li>)}</ul>
+                )}
+                {r.link && <a class="link-arrow" href={r.link} target="_blank" rel="noopener">View evidence ↗</a>}
+              </div>
+              <dl class="d-attrs mono">
+                <div><dt>span.kind</dt><dd>{kindLabel[r.kind]}</dd></div>
+                {Object.entries(r.attrs).map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+                <div><dt>duration</dt><dd>{dur(r.a, r.b)}</dd></div>
+              </dl>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .trace { overflow: hidden; }
+  .t-head { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--border); font-size: 12px; background: var(--surface-2); }
+  .t-meta { display: flex; gap: 14px; flex-wrap: wrap; }
+  .t-name { color: var(--text); font-weight: 500; }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; color: var(--muted); }
+  .lg { display: inline-flex; align-items: center; gap: 6px; }
+  .lg i { width: 10px; height: 10px; border-radius: 3px; background: var(--c); }
+
+  .work { --c: var(--accent); } .oss { --c: var(--violet); } .edu { --c: var(--blue); } .award { --c: var(--amber); }
+
+  .t-axis, .t-row > summary, .t-row.root { display: grid; grid-template-columns: minmax(170px, 250px) 1fr; }
+  .t-axis { font-size: 11px; color: var(--faint); border-bottom: 1px solid var(--border); }
+  .t-axis .t-label-col { padding: 10px 18px; }
+  .t-lane { position: relative; min-height: 38px; margin-right: 18px; }
+  .t-axis .t-lane { min-height: 34px; }
+  .tick { position: absolute; top: 10px; transform: translateX(-50%); }
+  .now { position: absolute; top: 10px; transform: translateX(-50%); color: var(--green); }
+  .now::after { content: ''; position: absolute; left: 50%; top: 20px; width: 1px; height: 2000px; background: color-mix(in srgb, var(--green) 35%, transparent); }
+  .t-axis { position: relative; overflow: hidden; }
+  .t-rows { position: relative; overflow: hidden; }
+
+  .grid-line { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--border); opacity: .6; }
+  .t-row { border-bottom: 1px solid var(--border); }
+  .t-row:last-child { border-bottom: 0; }
+  .t-row > summary { list-style: none; cursor: pointer; align-items: center; transition: background .15s; }
+  .t-row > summary::-webkit-details-marker { display: none; }
+  .t-row > summary:hover { background: var(--surface-2); }
+  .t-row[open] > summary { background: var(--accent-soft); }
+  .t-label-col { padding: 10px 18px; font-size: 12px; display: flex; align-items: baseline; gap: 6px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .indent { color: var(--faint); }
+  .svc { color: var(--text); }
+  .op { color: var(--muted); overflow: hidden; text-overflow: ellipsis; }
+  .root .svc { font-weight: 600; }
+
+  .bar {
+    position: absolute; top: 50%; height: 16px; transform: translateY(-50%); border-radius: 4px;
+    background: color-mix(in srgb, var(--c) 30%, transparent); border: 1px solid var(--c);
+    display: flex; align-items: center; min-width: 8px;
+  }
+  .root-bar { --c: var(--faint); background: color-mix(in srgb, var(--text) 8%, transparent); border-color: var(--border-2); height: 10px; }
+  .bar.live { border-right: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; background: linear-gradient(90deg, color-mix(in srgb, var(--c) 35%, transparent), color-mix(in srgb, var(--c) 18%, transparent)); }
+  .bar.live::after { content: ''; position: absolute; right: -4px; top: 50%; width: 8px; height: 8px; border-radius: 50%; transform: translateY(-50%); background: var(--c); box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 25%, transparent); animation: pulse2 2s infinite; }
+  @keyframes pulse2 { 50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--c) 8%, transparent); } }
+  .dur { position: absolute; left: calc(100% + 10px); font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .bar.live .dur:not(.flip) { left: calc(100% + 14px); }
+
+  .t-detail { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 24px; padding: 20px 18px 24px; border-top: 1px dashed var(--border); background: var(--bg-2); }
+  .d-role { font-weight: 600; font-size: 17px; letter-spacing: -0.015em; }
+  .d-org { font-size: 12px; color: var(--c); margin-top: 4px; }
+  .d-sum { color: var(--text-2); margin-top: 12px; font-size: 15px; }
+  .d-points { margin-top: 12px; padding-left: 18px; color: var(--text-2); font-size: 14px; display: grid; gap: 4px; }
+  .d-points li::marker { color: var(--c); }
+  .t-detail .link-arrow { margin-top: 14px; }
+  .d-attrs { font-size: 12px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; align-self: start; background: var(--surface); }
+  .d-attrs div { display: grid; grid-template-columns: 110px 1fr; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  .d-attrs div:last-child { border-bottom: 0; }
+  .d-attrs dt { color: var(--faint); }
+  .d-attrs dd { color: var(--text-2); overflow-wrap: anywhere; }
+
+  .dur.flip { left: auto; right: calc(100% + 10px); }
+  .dur.in { left: auto; right: 10px; color: var(--text); }
+
+  @media (max-width: 760px) {
+    .t-axis, .t-row > summary, .t-row.root { grid-template-columns: 1fr; }
+    .t-axis .t-label-col, .t-row.root .t-label-col { display: none; }
+    .t-label-col { padding: 10px 16px 0; }
+    .t-lane { margin: 0 16px; }
+    .t-axis .t-lane { margin: 0 16px; }
+    .t-detail { grid-template-columns: 1fr; }
+    .dur { display: none; }
+  }
+</style>

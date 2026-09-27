@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://salman-ch.netlify.app/sitemap-index.xml

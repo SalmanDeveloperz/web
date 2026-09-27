@@ -1,0 +1,51 @@
+---
+import { profile } from '../data/profile';
+---
+
+<section id="contact" class="block">
+  <div class="wrap">
+    <div class="cta card reveal">
+      <span class="eyebrow">09 · contact</span>
+      <h2 class="cta-h">Have a backend or platform problem nobody wants to touch? <span class="hl">Send it my way.</span></h2>
+      <p class="lede">{profile.availability}. I usually reply within a day, {profile.timezone}.</p>
+      <div class="cta-row">
+        <a class="btn primary" href={`mailto:${profile.email}?subject=Let%E2%80%99s%20talk`}>Email me</a>
+        <button class="btn mono copy" type="button" data-copy={profile.email}>
+          <span data-copy-label>{profile.email}</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+        </button>
+        <a class="btn" href="https://www.linkedin.com/in/msalman199/" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn" href={profile.resume} target="_blank" rel="noopener">Résumé PDF</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((b) =>
+    b.addEventListener('click', async () => {
+      const label = b.querySelector<HTMLElement>('[data-copy-label]');
+      try {
+        await navigator.clipboard.writeText(b.dataset.copy || '');
+        if (label) {
+          const prev = label.textContent;
+          label.textContent = 'copied to clipboard ✓';
+          setTimeout(() => (label.textContent = prev), 1400);
+        }
+      } catch {
+        location.href = `mailto:${b.dataset.copy}`;
+      }
+    }),
+  );
+</script>
+
+<style>
+  .cta { padding: clamp(28px, 6vw, 72px); text-align: center; display: grid; justify-items: center; position: relative; overflow: hidden; }
+  .cta::before { content: ''; position: absolute; inset: auto -20% -60% -20%; height: 120%; background: radial-gradient(closest-side, var(--glow), transparent); pointer-events: none; }
+  .cta-h { font-size: clamp(28px, 4.4vw, 50px); line-height: 1.08; letter-spacing: -0.04em; font-weight: 600; max-width: 22ch; margin-top: 16px; position: relative; }
+  .hl { background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lede { margin-inline: auto; position: relative; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 30px; position: relative; }
+  .copy { font-size: 13px; max-width: 100%; }
+  .copy span { overflow: hidden; text-overflow: ellipsis; }
+</style>
