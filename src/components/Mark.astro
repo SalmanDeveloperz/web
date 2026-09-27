@@ -21,5 +21,7 @@ const paths = {
   :global(.in) path, :global(.rise) path, :global(.no-js) path { stroke-dashoffset: 0; }
   :global(.rise) path { animation: draw .9s cubic-bezier(.6,.1,.2,1) .5s both; }
   @keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  :global(.typing) path { animation: none; stroke-dashoffset: 1; transition: stroke-dashoffset .8s cubic-bezier(.6,.1,.2,1); }
+  :global(.typing.typed) path { stroke-dashoffset: 0; }
   @media (prefers-reduced-motion: reduce) { path { stroke-dashoffset: 0; transition: none; animation: none !important; } }
 </style>
