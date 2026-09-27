@@ -4,6 +4,7 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://salman-ch.netlify.app',
   integrations: [sitemap()],
+  devToolbar: { enabled: false },
   markdown: {
     shikiConfig: { themes: { light: 'github-light', dark: 'github-dark-dimmed' } },
   },
