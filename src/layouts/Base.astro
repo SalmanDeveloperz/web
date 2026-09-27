@@ -14,7 +14,7 @@ interface Props {
 
 const {
   title,
-  description = `${profile.name}, ${profile.role} in ${profile.location}. Google Summer of Code 2025 at FOSSology, Jenkins contributor shipped in official releases, builder of Ezvor.`,
+  description = `${profile.name}, backend software engineer in ${profile.location}. Python and FastAPI at 9D Technologies, Google Summer of Code 2025 at FOSSology, Jenkins contributor.`,
   type = 'website',
   published,
 } = Astro.props;
@@ -28,7 +28,6 @@ const personLd = {
   '@type': 'Person',
   name: profile.name,
   url: profile.site,
-  image: new URL(profile.photo, Astro.site).toString(),
   jobTitle: profile.role,
   worksFor: { '@type': 'Organization', name: '9D Technologies' },
   alumniOf: { '@type': 'CollegeOrUniversity', name: 'University of Agriculture, Faisalabad' },

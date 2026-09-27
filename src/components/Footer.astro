@@ -6,10 +6,11 @@ const built = new Date().toISOString().slice(0, 10);
 <footer class="foot">
   <div class="wrap foot-inner">
     <div class="status mono">
-      <span class="dot" aria-hidden="true"></span>
-      <span>all systems operational</span>
+      <span>{profile.location}</span>
       <span class="sep">·</span>
-      <span>build {built}</span>
+      <span>{profile.timezone}</span>
+      <span class="sep">·</span>
+      <span>updated {built}</span>
     </div>
     <nav class="foot-links mono" aria-label="Footer">
       {profile.socials.map((s) => <a href={s.url} target={s.url.startsWith('http') ? '_blank' : undefined} rel="noopener">{s.name}</a>)}

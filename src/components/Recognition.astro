@@ -6,8 +6,8 @@ import { awards, stack } from '../data/profile';
   <div class="wrap split">
     <div>
       <div class="section-head reveal">
-        <span class="eyebrow">06 · recognition</span>
-        <h2 class="h2">Selected, funded, and ranked.</h2>
+        <span class="eyebrow">06 · awards</span>
+        <h2 class="h2">Awards</h2>
       </div>
       <ol class="awards">
         {awards.map((a) => (
@@ -24,8 +24,8 @@ import { awards, stack } from '../data/profile';
 
     <div id="stack">
       <div class="section-head reveal">
-        <span class="eyebrow">07 · toolbox</span>
-        <h2 class="h2">What I reach for.</h2>
+        <span class="eyebrow">07 · skills</span>
+        <h2 class="h2">Skills</h2>
       </div>
       <dl class="stack reveal">
         {stack.map((g) => (
@@ -42,7 +42,7 @@ import { awards, stack } from '../data/profile';
 <style>
   .split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 6vw, 80px); }
   .awards { list-style: none; padding: 0; border-top: 1px solid var(--border); }
-  .awards li { display: grid; grid-template-columns: 64px 1fr; gap: 12px; padding: 18px 0; border-bottom: 1px solid var(--border); }
+  .awards li { display: grid; grid-template-columns: 84px 1fr; gap: 12px; padding: 18px 0; border-bottom: 1px solid var(--border); }
   .yr { font-size: 12px; color: var(--accent); padding-top: 3px; }
   .awards h3 { font-size: 17px; font-weight: 600; letter-spacing: -0.015em; }
   .awards p { color: var(--muted); font-size: 14.5px; margin-top: 2px; }

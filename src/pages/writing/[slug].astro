@@ -32,10 +32,9 @@ const date = post.data.date.toLocaleDateString('en', { year: 'numeric', month: '
       <Content />
     </div>
     <footer class="post-foot">
-      <img src={profile.photo} alt="" width="48" height="48" />
       <div>
         <p class="by">Written by {profile.name}</p>
-        <p class="muted">{profile.role}. <a href="/#contact">Get in touch</a> or follow on <a href="https://github.com/SalmanDeveloperz" target="_blank" rel="noopener">GitHub</a>.</p>
+        <p class="muted">{profile.role}, {profile.location}. <a href="/#contact">Contact</a> · <a href="https://github.com/SalmanDeveloperz" target="_blank" rel="noopener">GitHub</a></p>
       </div>
     </footer>
   </article>
@@ -51,7 +50,6 @@ const date = post.data.date.toLocaleDateString('en', { year: 'numeric', month: '
   .desc { color: var(--text-2); font-size: 18px; margin-top: 14px; }
   .tags { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; font-size: 12px; color: var(--accent); }
   .post-foot { display: flex; gap: 14px; align-items: center; margin-top: 56px; padding: 20px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
-  .post-foot img { width: 48px; height: 48px; border-radius: 12px; object-fit: cover; }
   .by { font-weight: 600; }
   .post-foot .muted { font-size: 14px; }
   .post-foot a { color: var(--accent); }

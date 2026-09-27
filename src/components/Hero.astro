@@ -4,8 +4,8 @@ import { profile, credentials } from '../data/profile';
 const rows = [
   ['jenkins/docker', 'env-var-subst', 'Shipped', '2.565 · LTS 2.568.1'],
   ['jenkins/core', 'a11y · kbd-nav', 'Merged', 'weekly'],
-  ['fossology', '19 PRs', 'Merged', "GSoC '25"],
-  ['owasp/nest', 'collaborator', 'Active', "GSoC '26 mentor"],
+  ['fossology', '22+ PRs', 'Merged', 'GSoC 2025'],
+  ['owasp/nest', 'collaborator', 'Active', '-'],
   ['sktime', 'forecasting', 'Review', '-'],
 ];
 ---
@@ -18,17 +18,14 @@ const rows = [
     </a>
 
     <div class="id rise">
-      <img src={profile.photo} alt={`Portrait of ${profile.name}`} width="64" height="64" class="avatar" />
-      <div>
-        <h1 id="hero-title">{profile.name}</h1>
-        <p class="role mono">{profile.role} <span class="muted">· {profile.location}</span></p>
-      </div>
+      <h1 id="hero-title">{profile.name}</h1>
+      <p class="role mono">{profile.role} <span class="muted">· {profile.location}</span></p>
     </div>
 
     <p class="headline rise">
       I build backend services and fix the <span class="hl">pipelines nobody wants to touch.</span>
     </p>
-    <p class="intro rise">{profile.intro}</p>
+    <div class="intro rise">{profile.intro.map((p) => <p>{p}</p>)}</div>
 
     <div class="ctas rise">
       <a class="btn primary" href="#work">
@@ -52,7 +49,7 @@ const rows = [
     </div>
     <div class="term-body mono" data-term>
       <p class="ln"><span class="pr">salman@lahore:~$</span> <span class="cmd">whoami</span></p>
-      <p class="ln out">{profile.name}, backend &amp; infrastructure engineer</p>
+      <p class="ln out">backend engineer · 9D Technologies · Lahore</p>
 
       <p class="ln gap"><span class="pr">salman@lahore:~$</span> <span class="cmd">kubectl get contributions -n open-source</span></p>
       <div class="ln out tbl" role="table" aria-label="Open source contributions">
@@ -66,12 +63,11 @@ const rows = [
         ))}
       </div>
 
-      <p class="ln gap"><span class="pr">salman@lahore:~$</span> <span class="cmd">curl -s /api/impact | jq</span></p>
+      <p class="ln gap"><span class="pr">salman@lahore:~$</span> <span class="cmd">cat impact.json</span></p>
       <pre class="ln out json">{'{'}
   <span class="k">"trace_volume"</span>: <span class="v">"-81%"</span>,
   <span class="k">"ci_time"</span>: <span class="v">"-40%"</span>,
-  <span class="k">"services_on_k8s"</span>: <span class="v">"10+"</span>,
-  <span class="k">"hireable"</span>: <span class="b">true</span>
+  <span class="k">"services_on_k8s"</span>: <span class="v">"10+"</span>
 {'}'}</pre>
       <p class="ln gap"><span class="pr">salman@lahore:~$</span> <span class="cursor" aria-hidden="true"></span></p>
     </div>
@@ -128,13 +124,12 @@ const rows = [
     padding: 7px 14px 7px 12px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface);
   }
   .status:hover { border-color: var(--border-2); }
-  .id { display: flex; align-items: center; gap: 16px; margin-top: 28px; }
-  .avatar { width: 64px; height: 64px; border-radius: 16px; object-fit: cover; border: 1px solid var(--border-2); }
+  .id { margin-top: 28px; }
   h1 { font-size: clamp(34px, 5vw, 56px); line-height: 1; letter-spacing: -0.045em; font-weight: 700; }
   .role { font-size: 13px; color: var(--accent); margin-top: 8px; }
   .headline { font-size: clamp(22px, 2.6vw, 30px); line-height: 1.25; letter-spacing: -0.025em; margin-top: 28px; font-weight: 500; max-width: 22ch; }
   .hl { background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .intro { color: var(--text-2); margin-top: 18px; max-width: 58ch; }
+  .intro { color: var(--text-2); margin-top: 18px; max-width: 58ch; display: grid; gap: 12px; }
   .ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
   @media (max-width: 620px) { .ghost-k { display: none; } }
   .ghost-k kbd { font-family: var(--font-mono); font-size: 12px; opacity: 1; color: var(--muted); }

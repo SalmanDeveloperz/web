@@ -7,14 +7,14 @@ const total = p.groups.reduce((a, g) => a + g.n, 0);
   <div class="wrap">
     <div class="pdf card reveal">
       <div class="pdf-copy">
-        <span class="eyebrow">04 · shipped at {p.org}</span>
-        <h2 class="h2">{p.name}: {total} document tools, zero uploads.</h2>
-        <p class="lede">{p.pitch}</p>
+        <span class="eyebrow">04 · built at {p.org}</span>
+        <h2 class="h2">{p.name}</h2>
+        <p class="lede">{p.story}</p>
         <div class="stats mono">
           <div><b>{total}</b><span>tools</span></div>
           <div><b>50M+</b><span>app installs</span></div>
           <div><b>4.8★</b><span>Play rating</span></div>
-          <div><b>0</b><span>bytes uploaded</span></div>
+          <div><b>0</b><span>server uploads</span></div>
         </div>
         <div class="chips">{p.stack.map((s) => <span class="chip">{s}</span>)}</div>
         <div class="ctas">
