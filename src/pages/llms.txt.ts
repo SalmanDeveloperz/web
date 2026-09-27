@@ -10,7 +10,7 @@ export async function GET() {
   const L: string[] = [];
 
   L.push(`# ${profile.name}`, '');
-  L.push(`> ${profile.role} in ${profile.location}. ${profile.intro}`, '');
+  L.push(`> ${profile.role} in ${profile.location}. ${profile.intro.join(' ')}`, '');
   L.push(`Availability: ${profile.availability}.`);
   L.push(`Contact: ${profile.email}`);
   L.push(`Resume: ${site}${profile.resume}`, '');
@@ -28,8 +28,8 @@ export async function GET() {
   }
 
   L.push('## Projects', '');
-  L.push(`- [${ezvor.name}](${ezvor.live}): ${ezvor.pitch} Code: ${ezvor.repo}`);
-  L.push(`- [${pdfScanner.name}](${pdfScanner.live}): ${pdfScanner.pitch}`);
+  L.push(`- [${ezvor.name}](${ezvor.live}): ${ezvor.story} Code: ${ezvor.repo}`);
+  L.push(`- [${pdfScanner.name}](${pdfScanner.live}): ${pdfScanner.story}`);
   for (const p of projects) L.push(`- [${p.name}](${p.live ?? p.repo}): ${p.body}`);
 
   L.push('', '## Awards', '');

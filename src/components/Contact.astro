@@ -6,8 +6,8 @@ import { profile } from '../data/profile';
   <div class="wrap">
     <div class="cta card reveal">
       <span class="eyebrow">09 · contact</span>
-      <h2 class="cta-h">Have a backend or platform problem nobody wants to touch? <span class="hl">Send it my way.</span></h2>
-      <p class="lede">{profile.availability}. I usually reply within a day, {profile.timezone}.</p>
+      <h2 class="cta-h">Get in touch</h2>
+      <p class="lede">I’m looking for backend and platform roles, remote or with relocation. Email is the fastest way to reach me, and I usually reply within a day ({profile.timezone}).</p>
       <div class="cta-row">
         <a class="btn primary" href={`mailto:${profile.email}?subject=Let%E2%80%99s%20talk`}>Email me</a>
         <button class="btn mono copy" type="button" data-copy={profile.email}>
@@ -43,7 +43,6 @@ import { profile } from '../data/profile';
   .cta { padding: clamp(28px, 6vw, 72px); text-align: center; display: grid; justify-items: center; position: relative; overflow: hidden; }
   .cta::before { content: ''; position: absolute; inset: auto -20% -60% -20%; height: 120%; background: radial-gradient(closest-side, var(--glow), transparent); pointer-events: none; }
   .cta-h { font-size: clamp(28px, 4.4vw, 50px); line-height: 1.08; letter-spacing: -0.04em; font-weight: 600; max-width: 22ch; margin-top: 16px; position: relative; }
-  .hl { background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .lede { margin-inline: auto; position: relative; }
   .cta-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 30px; position: relative; }
   .copy { font-size: 13px; max-width: 100%; }

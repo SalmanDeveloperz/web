@@ -12,8 +12,8 @@ const posts = (await getCollection('writing', ({ data }) => !data.draft)).sort(
   <section class="block wrap page">
     <div class="section-head">
       <span class="eyebrow">writing</span>
-      <h1 class="h2">Notes from the debugging trenches.</h1>
-      <p class="lede">Long-form write-ups of real problems: what broke, what I tried, and what finally worked. Also available as <a href="/rss.xml">RSS</a>.</p>
+      <h1 class="h2">Writing</h1>
+      <p class="lede">Write-ups of problems I worked through: what broke, what I tried, and what fixed it. There’s also an <a href="/rss.xml">RSS feed</a>.</p>
     </div>
     <WritingList posts={posts} />
   </section>
