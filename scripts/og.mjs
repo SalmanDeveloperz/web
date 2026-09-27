@@ -23,7 +23,7 @@ const chips = tags
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
 <defs><radialGradient id="g" cx="80%" cy="0%" r="70%"><stop offset="0" stop-color="#2ec4b6" stop-opacity=".28"/><stop offset="1" stop-color="#2ec4b6" stop-opacity="0"/></radialGradient></defs>
 <rect width="1200" height="630" fill="#07090c"/>${grid}<rect width="1200" height="630" fill="url(#g)"/>
-<text x="80" y="118" font-family="Consolas,monospace" font-size="24" fill="#2ec4b6">salman@lahore:~$ whoami</text>
+<text x="80" y="118" font-family="Consolas,monospace" font-size="24" fill="#2ec4b6">salman@env:~$ whoami</text>
 <text x="1120" y="118" text-anchor="end" font-family="Consolas,monospace" font-size="22" fill="#4a5563">salman-ch.netlify.app</text>
 <text x="80" y="236" font-family="Segoe UI,Arial,sans-serif" font-size="92" font-weight="700" fill="#e6edf3" letter-spacing="-3">Muhammad Salman</text>
 <text x="80" y="304" font-family="Segoe UI,Arial,sans-serif" font-size="38" fill="#b3bfcc">Backend Software Engineer · Python, FastAPI, Kubernetes</text>

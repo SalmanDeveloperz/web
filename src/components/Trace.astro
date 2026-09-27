@@ -81,7 +81,7 @@ const traceId = '5a1ma9c0de' + String(nowM).slice(-4);
           <details class={`t-row ${r.kind}`} open={r.id === '9d'} name="trace-span">
             <summary>
               <div class="t-label-col mono">
-                <span class="indent" aria-hidden="true">{i === rows.length - 1 ? '└' : '├'}</span>
+                <span class="indent" aria-hidden="true">{i === rows.length - 1 ? '└─' : '├─'}</span>
                 <span class="svc">{r.service}</span>
                 <span class="op">{r.op}</span>
               </div>
@@ -126,7 +126,7 @@ const traceId = '5a1ma9c0de' + String(nowM).slice(-4);
 
   .work { --c: var(--accent); } .oss { --c: var(--violet); } .edu { --c: var(--blue); } .award { --c: var(--amber); }
 
-  .t-axis, .t-row > summary, .t-row.root { display: grid; grid-template-columns: minmax(170px, 250px) 1fr; }
+  .t-axis, .t-row > summary, .t-row.root { display: grid; grid-template-columns: minmax(190px, 240px) 1fr; }
   .t-axis { font-size: 11px; color: var(--faint); border-bottom: 1px solid var(--border); }
   .t-axis .t-label-col { padding: 10px 18px; }
   .t-lane { position: relative; min-height: 38px; margin-right: 18px; }
@@ -159,7 +159,7 @@ const traceId = '5a1ma9c0de' + String(nowM).slice(-4);
   .bar.live { border-right: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; background: linear-gradient(90deg, color-mix(in srgb, var(--c) 35%, transparent), color-mix(in srgb, var(--c) 18%, transparent)); }
   .bar.live::after { content: ''; position: absolute; right: -4px; top: 50%; width: 8px; height: 8px; border-radius: 50%; transform: translateY(-50%); background: var(--c); box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 25%, transparent); animation: pulse2 2s infinite; }
   @keyframes pulse2 { 50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--c) 8%, transparent); } }
-  .dur { position: absolute; left: calc(100% + 10px); font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .dur { position: absolute; left: calc(100% + 10px); font-size: 11px; color: var(--text-2); white-space: nowrap; }
   .bar.live .dur:not(.flip) { left: calc(100% + 14px); }
 
   .t-detail { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 24px; padding: 20px 18px 24px; border-top: 1px dashed var(--border); background: var(--bg-2); }
@@ -185,6 +185,6 @@ const traceId = '5a1ma9c0de' + String(nowM).slice(-4);
     .t-lane { margin: 0 16px; }
     .t-axis .t-lane { margin: 0 16px; }
     .t-detail { grid-template-columns: 1fr; }
-    .dur { display: none; }
+    .dur { font-size: 10.5px; }
   }
 </style>

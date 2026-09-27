@@ -1,22 +1,39 @@
 ---
 import { profile } from '../data/profile';
+import Icon from './Icon.astro';
+const socials = profile.socials.filter((s) => s.url.startsWith('http'));
 ---
 
 <section id="contact" class="block">
   <div class="wrap">
     <div class="cta card reveal">
-      <span class="eyebrow">09 · contact</span>
+      <span class="status">
+        <span class="dot" aria-hidden="true"></span>
+        {profile.availability}
+      </span>
       <h2 class="cta-h">Get in touch</h2>
-      <p class="lede">I’m looking for backend and platform roles, remote or with relocation. Email is the fastest way to reach me, and I usually reply within a day ({profile.timezone}).</p>
+      <p class="lede">Email is the fastest way to reach me. I usually reply within a day ({profile.timezone}).</p>
+
       <div class="cta-row">
-        <a class="btn primary" href={`mailto:${profile.email}?subject=Let%E2%80%99s%20talk`}>Email me</a>
-        <button class="btn mono copy" type="button" data-copy={profile.email}>
+        <a class="btn primary" href={`mailto:${profile.email}?subject=Let%E2%80%99s%20talk`}><Icon name="email" size={16} /> Email me</a>
+        <button class="btn mono copy" type="button" data-copy={profile.email} aria-label="Copy email address">
           <span data-copy-label>{profile.email}</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          <Icon name="copy" size={14} />
         </button>
-        <a class="btn" href="https://www.linkedin.com/in/msalman199/" target="_blank" rel="noopener">LinkedIn</a>
-        <a class="btn" href={profile.resume} target="_blank" rel="noopener">Résumé PDF</a>
+        <a class="btn" href={profile.resume} target="_blank" rel="noopener"><Icon name="file" size={16} /> Résumé</a>
       </div>
+
+      <ul class="soc" aria-label="Profiles">
+        {socials.map((s) => (
+          <li>
+            <a href={s.url} target="_blank" rel="noopener">
+              <Icon name={s.name.toLowerCase()} size={15} />
+              <span>{s.name}</span>
+              <span class="h mono">{s.handle}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
   </div>
 </section>
@@ -40,11 +57,20 @@ import { profile } from '../data/profile';
 </script>
 
 <style>
-  .cta { padding: clamp(28px, 6vw, 72px); text-align: center; display: grid; justify-items: center; position: relative; overflow: hidden; }
+  .cta { padding: clamp(28px, 6vw, 64px); text-align: center; display: grid; justify-items: center; position: relative; overflow: hidden; }
   .cta::before { content: ''; position: absolute; inset: auto -20% -60% -20%; height: 120%; background: radial-gradient(closest-side, var(--glow), transparent); pointer-events: none; }
-  .cta-h { font-size: clamp(28px, 4.4vw, 50px); line-height: 1.08; letter-spacing: -0.04em; font-weight: 600; max-width: 22ch; margin-top: 16px; position: relative; }
+  .status {
+    position: relative; display: inline-flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-2);
+    padding: 7px 14px 7px 12px; border: 1px solid var(--border-2); border-radius: 999px; background: var(--bg-2);
+  }
+  .cta-h { font-size: clamp(32px, 4.6vw, 52px); line-height: 1.05; letter-spacing: -0.04em; font-weight: 600; margin-top: 20px; position: relative; }
   .lede { margin-inline: auto; position: relative; }
-  .cta-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 30px; position: relative; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 28px; position: relative; }
   .copy { font-size: 13px; max-width: 100%; }
   .copy span { overflow: hidden; text-overflow: ellipsis; }
+  .soc { position: relative; list-style: none; padding: 0; margin-top: 28px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .soc a { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); font-size: 13px; color: var(--text-2); transition: border-color .15s, color .15s; }
+  .soc a:hover { border-color: var(--accent); color: var(--text); }
+  .soc .h { font-size: 11px; color: var(--muted); }
+  @media (max-width: 560px) { .soc .h { display: none; } }
 </style>

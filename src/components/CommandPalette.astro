@@ -1,11 +1,12 @@
 ---
-import { profile } from '../data/profile';
+import { profile, allPrsUrl } from '../data/profile';
 
 const commands = [
   { group: 'Navigate', label: 'Experience trace', hint: '/#trace', action: 'go', value: '/#trace' },
   { group: 'Navigate', label: 'Open source contributions', hint: '/#open-source', action: 'go', value: '/#open-source' },
   { group: 'Navigate', label: 'Ezvor', hint: '/#ezvor', action: 'go', value: '/#ezvor' },
   { group: 'Navigate', label: 'PDF Scanner Web', hint: '/#pdf-scanner', action: 'go', value: '/#pdf-scanner' },
+  { group: 'Navigate', label: 'PoS-OTel, OpenTelemetry for Jenkins', hint: '/#pos-otel', action: 'go', value: '/#pos-otel' },
   { group: 'Navigate', label: 'All projects', hint: '/#work', action: 'go', value: '/#work' },
   { group: 'Navigate', label: 'Awards', hint: '/#awards', action: 'go', value: '/#awards' },
   { group: 'Navigate', label: 'Writing', hint: '/writing', action: 'go', value: '/writing/' },
@@ -16,6 +17,7 @@ const commands = [
   ...profile.socials
     .filter((s) => s.url.startsWith('http'))
     .map((s) => ({ group: 'Links', label: `Open ${s.name}`, hint: s.url.replace('https://', ''), action: 'open', value: s.url })),
+  { group: 'Links', label: 'Every PR I have authored', hint: 'github.com/search', action: 'open', value: allPrsUrl },
   { group: 'Links', label: 'Ezvor live app', hint: 'ezvor.lovable.app', action: 'open', value: 'https://ezvor.lovable.app' },
   { group: 'Links', label: 'PDF Scanner live', hint: 'docs-scan.netlify.app', action: 'open', value: 'https://docs-scan.netlify.app/' },
 ];

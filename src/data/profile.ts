@@ -1,5 +1,7 @@
 // Single source of truth for the whole site.
 // Edit this file to update copy, links, experience, projects and contributions.
+import { counts, allPrsUrl } from './github';
+export { allPrsUrl };
 
 export const profile = {
   name: 'Muhammad Salman',
@@ -17,27 +19,42 @@ export const profile = {
     'In 2024 Google Summer of Code rejected me. I had no open source experience and didn’t know how Git really worked. A year later I was in the program, rebuilding FOSSology as microservices on Kubernetes. Since then my patches have shipped in official Jenkins releases.',
   ],
   socials: [
-    { name: 'GitHub', url: 'https://github.com/SalmanDeveloperz', short: 'gh' },
-    { name: 'LinkedIn', url: 'https://www.linkedin.com/in/msalman199/', short: 'in' },
-    { name: 'X', url: 'https://x.com/sam_env', short: 'x' },
-    { name: 'Medium', url: 'https://medium.com/@msamdev', short: 'md' },
-    { name: 'Email', url: 'mailto:chsalmanramzan422@gmail.com', short: '@' },
+    { name: 'GitHub', url: 'https://github.com/SalmanDeveloperz', short: 'gh', handle: '@SalmanDeveloperz' },
+    { name: 'LinkedIn', url: 'https://www.linkedin.com/in/msalman199/', short: 'in', handle: 'in/msalman199' },
+    { name: 'X', url: 'https://x.com/sam_env', short: 'x', handle: '@sam_env' },
+    { name: 'Medium', url: 'https://medium.com/@msamdev', short: 'md', handle: '@msamdev' },
+    { name: 'Email', url: 'mailto:chsalmanramzan422@gmail.com', short: '@', handle: 'email' },
   ],
 };
 
 export const credentials = [
-  { label: 'Google Summer of Code', detail: '2025 · FOSSology' },
-  { label: 'Linux Foundation', detail: 'LiFT Scholar · LFD259' },
-  { label: 'Jenkins', detail: 'Weekly 2.565 · LTS 2.568.1' },
-  { label: 'OWASP Nest', detail: 'Collaborator' },
-  { label: 'Dev Weekends', detail: 'Mentor' },
+  {
+    mark: 'GSoC', color: '#f9ab00', label: 'Google Summer of Code', title: 'Contributor', detail: 'FOSSology · microservices', year: '2025',
+    proof: 'https://summerofcode.withgoogle.com/archive/2025/projects/MjOyiOj7',
+  },
+  {
+    mark: 'LF', color: '#3b82f6', label: 'Linux Foundation', title: 'LiFT Scholar', detail: 'Kubernetes LFD259 + exam', year: '2025',
+    proof: 'https://training.linuxfoundation.org/about/scholarships/',
+  },
+  {
+    mark: 'JK', color: '#d24939', label: 'Jenkins', title: 'Code in releases', detail: 'Weekly 2.565 · LTS 2.568.1', year: '2026',
+    proof: 'https://github.com/jenkinsci/docker/releases/tag/2.568.1',
+  },
+  {
+    mark: 'OW', color: '#a78bfa', label: 'OWASP Nest', title: 'Collaborator', detail: 'Accessibility · GSoC 2026 mentor list', year: '2026',
+    proof: 'https://github.com/OWASP/Nest/pull/3605',
+  },
+  {
+    mark: 'DW', color: '#2ec4b6', label: 'Dev Weekends', title: 'Mentor', detail: 'Open source and GSoC guidance', year: 'now',
+    proof: 'https://devweekends.com',
+  },
 ];
 
 export const metrics = [
   { value: '81%', label: 'less trace data', note: 'Tail sampling on Jenkins CI telemetry' },
   { value: '40%', label: 'faster builds', note: 'FOSSology, Make to CMake' },
   { value: '10+', label: 'services', note: 'FOSSology monolith split onto Kubernetes' },
-  { value: '27+', label: 'merged PRs', note: 'Jenkins and FOSSology' },
+  { value: `${counts.merged}`, label: 'merged upstream PRs', note: `Across ${counts.orgs} orgs, synced from GitHub at build` },
   { value: '2', label: 'Jenkins releases', note: 'Weekly 2.565 and LTS 2.568.1' },
 ];
 
@@ -65,7 +82,7 @@ export const spans: Span[] = [
   {
     id: '9d',
     service: '9d-technologies',
-    op: 'backend.engineer',
+    op: 'backend',
     org: '9D Technologies',
     role: 'Backend Software Engineer',
     start: '2026-08',
@@ -84,7 +101,7 @@ export const spans: Span[] = [
   {
     id: 'jenkins',
     service: 'jenkins',
-    op: 'oss.contributor',
+    op: 'contrib',
     org: 'Jenkins project',
     role: 'Open Source Contributor',
     start: '2026-01',
@@ -103,7 +120,7 @@ export const spans: Span[] = [
   {
     id: 'owasp',
     service: 'owasp-nest',
-    op: 'oss.collaborator',
+    op: 'collab',
     org: 'OWASP Foundation',
     role: 'Collaborator, OWASP Nest',
     start: '2026-01',
@@ -116,8 +133,8 @@ export const spans: Span[] = [
   },
   {
     id: 'lift',
-    service: 'linux-foundation',
-    op: 'scholarship.lift',
+    service: 'linux-fdn',
+    op: 'lift.scholar',
     org: 'Linux Foundation',
     role: 'LiFT Scholar',
     start: '2025-07',
@@ -129,7 +146,7 @@ export const spans: Span[] = [
   {
     id: 'gsoc',
     service: 'fossology',
-    op: 'gsoc.microservices',
+    op: 'gsoc.k8s',
     org: 'Google Summer of Code',
     role: 'Software Engineer (Open Source), FOSSology',
     start: '2025-02',
@@ -149,7 +166,7 @@ export const spans: Span[] = [
   {
     id: 'fiverr',
     service: 'fiverr',
-    op: 'freelance.engineer',
+    op: 'freelance',
     org: 'Fiverr and direct clients',
     role: 'Freelance Software Engineer',
     start: '2023-10',
@@ -162,7 +179,7 @@ export const spans: Span[] = [
   {
     id: 'hywiz',
     service: 'hywiz',
-    op: 'fullstack.intern',
+    op: 'intern',
     org: 'Hywiz Technologies',
     role: 'Software Engineer Intern',
     start: '2023-05',
@@ -175,7 +192,7 @@ export const spans: Span[] = [
   {
     id: 'uaf',
     service: 'uaf',
-    op: 'bs.computer-science',
+    op: 'bs.cs',
     org: 'University of Agriculture, Faisalabad',
     role: 'BS Computer Science',
     start: '2022-09',
@@ -192,7 +209,7 @@ export type Contribution = {
   title: string;
   ref: string;
   url: string;
-  status: 'merged' | 'open' | 'issue' | 'shipped' | 'private';
+  status: 'merged' | 'open' | 'closed' | 'issue' | 'shipped' | 'private';
 };
 
 export type Org = {
@@ -228,7 +245,7 @@ export const openSource: Org[] = [
     name: 'FOSSology',
     slug: 'fossology',
     blurb: 'License compliance scanner. Microservices work, plus the copyright, nomos and cp2foss agents.',
-    highlight: '22+ PRs merged',
+    highlight: `${counts.fossologyCode} code PRs + ${counts.fossologyDocs} GSoC reports merged`,
     all: 'https://github.com/search?q=author%3ASalmanDeveloperz+org%3Afossology&type=pullrequests',
     items: [
       { title: 'Copyright agent URL regex matched invalid characters', ref: '#3212', url: gh('fossology/fossology', 3212), status: 'merged' },
@@ -244,18 +261,31 @@ export const openSource: Org[] = [
     blurb: 'OWASP’s directory of security projects and chapters.',
     highlight: 'Collaborator since Jan 2026',
     items: [
-      { title: 'Security issue, reported privately to the maintainers', ref: 'private', url: 'https://github.com/OWASP/Nest/security', status: 'private' },
+      { title: 'Security issue, reported privately to the maintainers', ref: 'private', url: '', status: 'private' },
       { title: 'Added to MENTORS.md for GSoC 2026', ref: '#3605', url: gh('OWASP/Nest', 3605), status: 'merged' },
       { title: 'Focus outlines clipped and inconsistent across Header and Footer', ref: '#3561', url: gh('OWASP/Nest', 3561, 'issues'), status: 'issue' },
       { title: 'Search hint text could be selected with mouse and keyboard', ref: '#5602', url: gh('OWASP/Nest', 5602, 'issues'), status: 'issue' },
     ],
   },
   {
-    name: 'sktime',
-    slug: 'sktime',
-    blurb: 'Python framework for machine learning with time series.',
+    name: 'Python & data',
+    slug: 'python',
+    blurb: 'Time series ML toolkits, and the NumFOCUS community guide.',
     items: [
       { title: 'BoxCoxBiasAdjustedForecaster threw sporadic optimization bracket errors', ref: 'sktime#10316', url: gh('sktime/sktime', 10316), status: 'open' },
+      { title: 'Tone and typo fixes in the DISCOVER Cookbook', ref: 'numfocus#73', url: gh('numfocus/DISCOVER-Cookbook', 73), status: 'merged' },
+      { title: 'Re-enabled RDSTRegressor and RISTRegressor tests after verifying Ubuntu CI', ref: 'aeon#2599', url: gh('aeon-toolkit/aeon', 2599), status: 'closed' },
+      { title: 'Example notebook: aeon distances with sklearn clusterers', ref: 'aeon#2511', url: gh('aeon-toolkit/aeon', 2511), status: 'closed' },
+    ],
+  },
+  {
+    name: 'Earlier work',
+    slug: 'earlier',
+    blurb: 'Where I started: Hacktoberfest 2024 and first PRs to other people’s code.',
+    items: [
+      { title: 'Reworked the testing framework docs and removed deprecated Nimut references', ref: 'TYPO3/tea#1480', url: gh('TYPO3BestPractices/tea', 1480), status: 'merged' },
+      { title: 'LMPOP command with unit tests, in C++', ref: 'dragonfly#3925', url: gh('dragonflydb/dragonfly', 3925), status: 'closed' },
+      { title: 'Contributor profile for the Meshery community', ref: 'meshery#12248', url: gh('meshery/meshery', 12248), status: 'merged' },
     ],
   },
 ];
@@ -310,16 +340,22 @@ export type Project = {
   repo?: string;
   live?: string;
   metric?: string;
+  featured?: boolean;
+  note?: string;
+  discussion?: string;
 };
 
 export const projects: Project[] = [
   {
-    name: 'OpenTelemetry pipeline for Jenkins CI',
-    kind: 'Observability',
-    body: 'During GSoC I spent whole afternoons matching container logs by hand. This is the tool I wanted then. Jenkins traces go through a collector with tail sampling into Jaeger, and span metrics go to Prometheus and Grafana, with alert rules included.',
-    stack: ['OpenTelemetry', 'Jaeger', 'Prometheus', 'Grafana', 'Python', 'Docker Compose'],
+    name: 'PoS-OTel: OpenTelemetry for Jenkins CI',
+    kind: 'GSoC 2026 proof of concept',
+    featured: true,
+    body: 'During GSoC 2025 I spent whole afternoons matching container logs by hand, so this is the tool I wanted then. Jenkins sends traces over OTLP to a collector. Tail sampling keeps every failed build, every build over 30 seconds, and 20% of the rest. Jaeger stores the traces, and span metrics go to Prometheus and Grafana, with alert rules included. A pipeline simulator keeps the dashboards populated on day one.',
+    note: 'I built this as the proof of concept for my GSoC 2026 proposal to Jenkins. The project wasn’t selected this year, but the stack runs on its own with one docker compose up.',
+    stack: ['OpenTelemetry Collector', 'Jaeger', 'Prometheus', 'Grafana', 'Python', 'Docker Compose'],
     repo: 'https://github.com/SalmanDeveloperz/PoS-OTel',
-    metric: '−81% data',
+    discussion: 'https://community.jenkins.io/t/gsoc-2026-opentelemetry-scaling-strategies/36647/3',
+    metric: '−81% trace data',
   },
   {
     name: 'SigNoz AI SRE',

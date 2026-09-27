@@ -1,5 +1,15 @@
 ---
 import { projects } from '../data/profile';
+const featured = projects.find((p) => p.featured);
+const rest = projects.filter((p) => !p.featured);
+
+// Pipeline diagram nodes (x, y in a 560x220 box)
+const nodes = [
+  { id: 'jenkins', x: 16, y: 88, w: 104, label: 'Jenkins', sub: 'OTLP traces' },
+  { id: 'col', x: 170, y: 72, w: 150, label: 'OTel Collector', sub: 'tail_sampling · spanmetrics', tall: true },
+  { id: 'jaeger', x: 380, y: 22, w: 160, label: 'Jaeger', sub: 'errors · slow · 20%' },
+  { id: 'prom', x: 380, y: 150, w: 160, label: 'Prometheus → Grafana', sub: 'RED metrics · alerts' },
+];
 ---
 
 <section id="work" class="block">
@@ -10,16 +20,57 @@ import { projects } from '../data/profile';
       <p class="lede">Mostly things I built because I needed them.</p>
     </div>
 
+    {featured && (
+      <article class="feat card reveal" id="pos-otel">
+        <div class="f-copy">
+          <div class="p-top">
+            <span class="p-kind mono">{featured.kind}</span>
+            {featured.metric && <span class="p-metric mono">{featured.metric}</span>}
+          </div>
+          <h3>{featured.name}</h3>
+          <p class="p-body">{featured.body}</p>
+          {featured.note && <p class="note"><span class="mono">note</span>{featured.note}</p>}
+          <div class="chips">{featured.stack.map((s) => <span class="chip">{s}</span>)}</div>
+          <div class="f-ctas">
+            {featured.repo && <a class="btn primary" href={featured.repo} target="_blank" rel="noopener">View repository ↗</a>}
+            {featured.discussion && <a class="btn" href={featured.discussion} target="_blank" rel="noopener">Jenkins community thread</a>}
+          </div>
+        </div>
+        <figure class="diagram" aria-label="Jenkins sends OTLP traces to an OpenTelemetry Collector, which tail-samples into Jaeger and exports span metrics to Prometheus and Grafana.">
+          <svg viewBox="0 0 560 220" role="presentation">
+            <defs>
+              <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0 0 10 5 0 10z" fill="var(--border-2)" />
+              </marker>
+            </defs>
+            <path id="p1" class="edge" d="M120 110 H168" marker-end="url(#arr)" />
+            <path id="p2" class="edge" d="M320 96 C 350 96, 350 48, 378 48" marker-end="url(#arr)" />
+            <path id="p3" class="edge" d="M320 126 C 350 126, 350 176, 378 176" marker-end="url(#arr)" />
+            <circle r="3.5" class="pkt"><animateMotion dur="1.6s" repeatCount="indefinite"><mpath href="#p1" /></animateMotion></circle>
+            <circle r="3.5" class="pkt err"><animateMotion dur="2.2s" begin=".4s" repeatCount="indefinite"><mpath href="#p2" /></animateMotion></circle>
+            <circle r="3.5" class="pkt"><animateMotion dur="2.4s" begin="1s" repeatCount="indefinite"><mpath href="#p3" /></animateMotion></circle>
+            {nodes.map((n) => (
+              <g>
+                <rect x={n.x} y={n.y} width={n.w} height={n.tall ? 76 : 48} rx="9" class:list={['node', { core: n.tall }]} />
+                <text x={n.x + 12} y={n.y + 21} class="n-label">{n.label}</text>
+                <text x={n.x + 12} y={n.y + 38} class="n-sub">{n.sub}</text>
+                {n.tall && <text x={n.x + 12} y={n.y + 60} class="n-drop">cuts ~81% of trace data</text>}
+              </g>
+            ))}
+          </svg>
+          <figcaption class="mono">keep: status=ERROR · latency&gt;30s · 20% baseline</figcaption>
+        </figure>
+      </article>
+    )}
+
     <div class="grid">
-      {projects.map((p, i) => (
+      {rest.map((p, i) => (
         <article class="proj card reveal" style={`transition-delay:${(i % 3) * 60}ms`}>
           <div class="p-top">
             <span class="p-kind mono">{p.kind}</span>
             {p.metric && <span class="p-metric mono">{p.metric}</span>}
           </div>
-          <h3>
-            <a href={p.live ?? p.repo} target="_blank" rel="noopener" class="stretch">{p.name}</a>
-          </h3>
+          <h3>{p.name}</h3>
           <p class="p-body">{p.body}</p>
           <div class="chips">{p.stack.map((s) => <span class="chip">{s}</span>)}</div>
           <div class="p-links mono">
@@ -37,21 +88,41 @@ import { projects } from '../data/profile';
 </section>
 
 <style>
-  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-  .proj { position: relative; padding: 22px; display: flex; flex-direction: column; gap: 12px; transition: border-color .2s, transform .2s; }
+  .feat { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(24px, 4vw, 44px); padding: clamp(22px, 3.5vw, 36px); margin-bottom: 16px; align-items: center; }
+  .feat h3 { font-size: 24px; letter-spacing: -0.025em; font-weight: 600; margin-top: 10px; }
+  .feat .p-body { margin-top: 10px; }
+  .note { display: grid; grid-template-columns: auto 1fr; gap: 10px; margin: 16px 0; padding: 12px 14px; border-radius: 10px; border: 1px dashed var(--border-2); color: var(--text-2); font-size: 14px; background: var(--bg-2); }
+  .note .mono { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--amber); padding-top: 3px; }
+  .f-ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+
+  .diagram { border: 1px solid var(--border); border-radius: 12px; background: var(--bg-2); padding: 14px 12px 0; overflow: hidden; }
+  .diagram svg { width: 100%; height: auto; }
+  .edge { fill: none; stroke: var(--border-2); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  .pkt { fill: var(--accent); filter: drop-shadow(0 0 4px var(--accent)); }
+  .pkt.err { fill: var(--rose); filter: drop-shadow(0 0 4px var(--rose)); }
+  .node { fill: var(--surface); stroke: var(--border-2); }
+  .node.core { stroke: var(--accent); fill: color-mix(in srgb, var(--accent) 8%, var(--surface)); }
+  .n-label { font: 600 13px var(--font-sans); fill: var(--text); }
+  .n-sub { font: 10.5px var(--font-mono); fill: var(--muted); }
+  .n-drop { font: 10.5px var(--font-mono); fill: var(--green); }
+  .diagram figcaption { font-size: 11px; color: var(--muted); border-top: 1px solid var(--border); margin: 8px -12px 0; padding: 9px 14px; }
+  @media (prefers-reduced-motion: reduce) { .pkt { display: none; } }
+
+  .grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
+  .grid > .proj { grid-column: span 2; }
+  .grid > .proj:nth-last-child(-n + 2):nth-child(3n + 1), .grid > .proj:nth-last-child(1):nth-child(3n + 2) { grid-column: span 3; }
+  .proj { padding: 22px; display: flex; flex-direction: column; gap: 12px; transition: border-color .2s, transform .2s; }
   .proj:hover { border-color: var(--border-2); transform: translateY(-3px); }
-  .proj:hover h3 a { color: var(--accent); }
   .p-top { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
   .p-kind { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
   .p-metric { font-size: 11px; color: var(--green); background: color-mix(in srgb, var(--green) 12%, transparent); padding: 3px 8px; border-radius: 99px; white-space: nowrap; }
-  h3 { font-size: 19px; letter-spacing: -0.02em; font-weight: 600; }
-  h3 a { transition: color .15s; }
-  .stretch::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius); }
-  .p-body { color: var(--text-2); font-size: 14.5px; flex: 1; }
-  .p-links { display: flex; gap: 14px; font-size: 12px; position: relative; z-index: 1; }
-  .p-links a { color: var(--muted); }
-  .p-links a:hover { color: var(--accent); }
+  .proj h3 { font-size: 19px; letter-spacing: -0.02em; font-weight: 600; }
+  .p-body { color: var(--text-2); font-size: 14.5px; }
+  .proj .p-body { flex: 1; }
+  .p-links { display: flex; gap: 16px; font-size: 12.5px; }
+  .p-links a { color: var(--accent); }
+  .p-links a:hover { text-decoration: underline; text-underline-offset: 3px; }
   .more { margin-top: 28px; }
-  @media (max-width: 980px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 980px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .grid > .proj, .grid > .proj:nth-child(n) { grid-column: auto; } .feat { grid-template-columns: 1fr; } }
   @media (max-width: 620px) { .grid { grid-template-columns: 1fr; } }
 </style>

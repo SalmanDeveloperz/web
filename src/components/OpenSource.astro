@@ -1,22 +1,61 @@
 ---
-import { openSource } from '../data/profile';
+import { openSource, allPrsUrl } from '../data/profile';
+import { liveState, counts, synced } from '../data/github';
 
-const statusLabel = { merged: 'merged', shipped: 'shipped', open: 'in review', issue: 'reported', private: 'disclosed' } as const;
+const label = { merged: 'merged', shipped: 'shipped', open: 'in review', closed: 'closed', issue: 'reported', private: 'disclosed' } as const;
+
+// Live status from GitHub wins over the hand-written one, except "shipped" (a merged PR that is in a release).
+const orgs = openSource.map((o) => ({
+  ...o,
+  items: o.items.map((it) => {
+    const live = liveState(it.url);
+    const status = it.status === 'shipped' && live === 'merged' ? 'shipped' : live ?? it.status;
+    return { ...it, status };
+  }),
+}));
+
+const all = orgs.flatMap((o) => o.items);
+const tally = (s: string[]) => all.filter((i) => s.includes(i.status)).length;
+const filters = [
+  { key: 'all', label: 'All', n: all.length },
+  { key: 'merged', label: 'Merged & shipped', n: tally(['merged', 'shipped']) },
+  { key: 'open', label: 'In review', n: tally(['open']) },
+  { key: 'issue', label: 'Reported', n: tally(['issue', 'private']) },
+];
+const group = (s: string) => (s === 'shipped' ? 'merged' : s === 'private' ? 'issue' : s);
 ---
 
 <section id="open-source" class="block">
   <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow">02 · contributions</span>
-      <h2 class="h2">Open source</h2>
-      <p class="lede">
-        Most of these began as bugs I hit myself. I reproduce the bug, write it up, and then send the fix. Some had been open for years. Every row links to its PR or issue.
-      </p>
+    <div class="section-head head-row reveal">
+      <div>
+        <span class="eyebrow">02 · contributions</span>
+        <h2 class="h2">Open source</h2>
+        <p class="lede">
+          Most of these began as bugs I hit myself. I reproduce the bug, write it up, and then send the fix. Some had been open for years. Every row links to its PR or issue.
+        </p>
+      </div>
+      <a class="all-prs card" href={allPrsUrl} target="_blank" rel="noopener">
+        <span class="ap-n">{counts.merged}</span>
+        <span class="ap-l">merged PRs across {counts.orgs} orgs</span>
+        <span class="ap-cta mono">every PR on GitHub ↗</span>
+      </a>
     </div>
 
-    <div class="orgs">
-      {openSource.map((o, i) => (
-        <article class:list={['org', 'card', 'reveal', { wide: i === 0 || (i === openSource.length - 1 && openSource.length % 2 === 0) }]} id={`oss-${o.slug}`}>
+    <div class="filters reveal" role="toolbar" aria-label="Filter contributions">
+      {filters.map((f, i) => (
+        <button type="button" class="f" data-filter={f.key} aria-pressed={i === 0 ? 'true' : 'false'}>
+          {f.label}<span class="f-n mono">{f.n}</span>
+        </button>
+      ))}
+      <span class="sync mono" title="Statuses are fetched from the GitHub API on every deploy">
+        <span class:list={['sd', { off: !synced }]} aria-hidden="true"></span>{synced ? 'status synced from GitHub' : 'status from last sync'}
+      </span>
+    </div>
+
+    <div class="orgs" data-orgs>
+      {orgs.map((o, i) => (
+        <article class:list={['org', 'card', 'reveal', { wide: i === 0 }]} id={`oss-${o.slug}`}>
           <header class="org-head">
             <div>
               <h3>{o.name}</h3>
@@ -25,50 +64,101 @@ const statusLabel = { merged: 'merged', shipped: 'shipped', open: 'in review', i
             {o.highlight && <span class="org-hl mono">{o.highlight}</span>}
           </header>
           <ul class="prs">
-            {o.items.map((it) => (
-              <li>
-                <a href={it.url} target="_blank" rel="noopener">
-                  <span class={`st ${it.status} mono`}>{statusLabel[it.status]}</span>
+            {o.items.map((it) => {
+              const inner = (
+                <>
+                  <span class={`st ${it.status} mono`}>{label[it.status]}</span>
                   <span class="pr-title">{it.title}</span>
                   <span class="pr-ref mono">{it.ref}</span>
-                </a>
-              </li>
-            ))}
+                </>
+              );
+              return (
+                <li data-group={group(it.status)}>
+                  {it.url ? <a href={it.url} target="_blank" rel="noopener">{inner}</a> : <div class="row">{inner}</div>}
+                </li>
+              );
+            })}
           </ul>
-          {o.all && <a class="link-arrow all" href={o.all} target="_blank" rel="noopener">Full history on GitHub ↗</a>}
+          <p class="empty mono" hidden>nothing in this filter</p>
+          {o.all && <a class="link-arrow all" href={o.all} target="_blank" rel="noopener">Full history ↗</a>}
         </article>
       ))}
     </div>
   </div>
 </section>
 
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const orgs = document.querySelectorAll<HTMLElement>('[data-orgs] .org');
+  buttons.forEach((b) =>
+    b.addEventListener('click', () => {
+      const key = b.dataset.filter!;
+      buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      orgs.forEach((org) => {
+        const rows = org.querySelectorAll<HTMLElement>('li[data-group]');
+        let shown = 0;
+        rows.forEach((r) => {
+          const on = key === 'all' || r.dataset.group === key;
+          r.hidden = !on;
+          if (on) shown++;
+        });
+        org.classList.toggle('dim', shown === 0);
+        const empty = org.querySelector<HTMLElement>('.empty');
+        if (empty) empty.hidden = shown !== 0;
+      });
+    }),
+  );
+</script>
+
 <style>
+  .head-row { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+  .all-prs { display: grid; gap: 2px; padding: 18px 20px; min-width: 230px; transition: border-color .2s, transform .2s; }
+  .all-prs:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .ap-n { font-size: 40px; font-weight: 600; letter-spacing: -0.05em; line-height: 1; }
+  .ap-l { font-size: 13px; color: var(--text-2); margin-top: 4px; }
+  .ap-cta { font-size: 11.5px; color: var(--accent); margin-top: 8px; }
+
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 18px; }
+  .f { display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); font-size: 13px; transition: border-color .15s, color .15s, background .15s; }
+  .f:hover { border-color: var(--border-2); color: var(--text); }
+  .f[aria-pressed='true'] { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 45%, transparent); color: var(--accent); }
+  .f-n { font-size: 11px; color: var(--muted); }
+  .f[aria-pressed='true'] .f-n { color: var(--accent); }
+  .sync { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--muted); }
+  .sd { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+  .sd.off { background: var(--amber); }
+
   .orgs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-  .org { padding: 22px; display: flex; flex-direction: column; }
+  .org { padding: 22px; display: flex; flex-direction: column; transition: opacity .2s; }
+  .org.dim { opacity: .45; }
   .org.wide { grid-column: 1 / -1; }
   .org-head { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 14px; }
   h3 { font-size: 20px; letter-spacing: -0.02em; font-weight: 600; }
   .org-blurb { color: var(--muted); font-size: 14px; margin-top: 2px; }
   .org-hl { font-size: 11.5px; color: var(--accent); background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); padding: 6px 10px; border-radius: 999px; white-space: nowrap; }
-  .prs { list-style: none; padding: 0; display: grid; }
-  .wide .prs { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; }
-  .prs a { display: grid; grid-template-columns: 84px 1fr auto; gap: 12px; align-items: baseline; padding: 10px 0; border-top: 1px solid var(--border); font-size: 14px; }
+  .prs { list-style: none; padding: 0; display: grid; align-content: start; }
+  .wide .prs { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; }
+  .prs a, .prs .row { display: grid; grid-template-columns: 86px 1fr auto; gap: 12px; align-items: baseline; padding: 11px 0; border-top: 1px solid var(--border); font-size: 14px; }
   .prs a:hover .pr-title { color: var(--accent); }
   .pr-title { color: var(--text-2); transition: color .15s; }
-  .pr-ref { font-size: 11.5px; color: var(--faint); white-space: nowrap; }
+  .pr-ref { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
   .st { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; padding: 3px 7px; border-radius: 5px; text-align: center; border: 1px solid currentColor; line-height: 1.3; }
   .st.shipped { color: var(--accent); background: var(--accent-soft); }
   .st.merged { color: var(--violet); }
   .st.open { color: var(--amber); }
+  .st.closed { color: var(--muted); }
   .st.issue { color: var(--blue); }
   .st.private { color: var(--rose); }
+  .empty { font-size: 12px; color: var(--muted); padding-top: 12px; border-top: 1px solid var(--border); }
   .all { margin-top: auto; padding-top: 14px; }
   @media (max-width: 860px) {
     .orgs, .wide .prs { grid-template-columns: 1fr; }
     .org-head { flex-direction: column; }
+    .sync { margin-left: 0; width: 100%; }
   }
   @media (max-width: 480px) {
-    .prs a { grid-template-columns: 1fr; gap: 4px; }
+    .prs a, .prs .row { grid-template-columns: 1fr; gap: 4px; }
     .st { justify-self: start; }
+    .all-prs { width: 100%; }
   }
 </style>
