@@ -25,6 +25,7 @@
 
   --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-hand: 'Kalam', 'Segoe Print', 'Comic Sans MS', cursive;
 
   --radius: 14px;
   --radius-sm: 8px;
@@ -109,15 +110,18 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 section.block { padding-block: clamp(56px, 8vw, 96px); position: relative; }
 
 .eyebrow {
-  display: inline-flex; align-items: center; gap: 10px;
-  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--accent);
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.01em;
+  color: var(--muted);
 }
-.eyebrow::before { content: ''; width: 18px; height: 1px; background: currentColor; }
+.eyebrow::before { content: '//'; color: var(--accent); }
 
+.h2, .hand {
+  font-family: var(--font-hand); font-weight: 700; letter-spacing: -0.01em;
+}
 .h2 {
-  font-size: clamp(30px, 4.4vw, 48px); line-height: 1.08; letter-spacing: -0.035em; font-weight: 600;
-  margin-top: 14px; max-width: 20ch;
+  font-size: clamp(38px, 5.2vw, 58px); line-height: 1.05;
+  margin-top: 10px; max-width: 22ch; text-wrap: balance;
 }
 .lede { color: var(--text-2); font-size: clamp(16px, 1.6vw, 18px); max-width: 60ch; margin-top: 16px; }
 .section-head { margin-bottom: clamp(32px, 5vw, 56px); }

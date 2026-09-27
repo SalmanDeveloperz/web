@@ -1,0 +1,25 @@
+---
+// Hand-drawn underline for one word in a heading. It draws itself when the heading scrolls into view.
+interface Props { variant?: 1 | 2 | 3 }
+const { variant = 1 } = Astro.props;
+const paths = {
+  1: 'M3 9 C 28 3, 52 13, 82 7 S 132 2, 162 8 S 190 10, 197 5',
+  2: 'M3 7 C 40 12, 80 2, 120 8 S 180 11, 197 4',
+  3: 'M3 10 Q 50 1, 100 7 T 197 6',
+};
+---
+
+<span class="mark"><slot /><svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path d={paths[variant]} pathLength="1" /></svg></span>
+
+<style>
+  .mark { position: relative; display: inline-block; white-space: nowrap; }
+  svg { position: absolute; left: -2%; bottom: -0.16em; width: 104%; height: 0.32em; overflow: visible; pointer-events: none; }
+  path {
+    fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linecap: round;
+    stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset .9s cubic-bezier(.6,.1,.2,1) .25s;
+  }
+  :global(.in) path, :global(.rise) path, :global(.no-js) path { stroke-dashoffset: 0; }
+  :global(.rise) path { animation: draw .9s cubic-bezier(.6,.1,.2,1) .5s both; }
+  @keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  @media (prefers-reduced-motion: reduce) { path { stroke-dashoffset: 0; transition: none; animation: none !important; } }
+</style>

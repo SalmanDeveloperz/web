@@ -15,7 +15,7 @@ export const profile = {
   availability: 'Open to backend and platform roles, remote or relocation',
   headline: 'I build backend services and fix the pipelines nobody wants to touch.',
   intro: [
-    'Backend engineer at 9D Technologies, working in Python and FastAPI.',
+    'Backend engineer at 9D Technologies, working in Python and FastAPI. Computer science graduate from UAF, where I took 1st place at the Byte & Battle hackathon.',
     'In 2024 Google Summer of Code rejected me. I had no open source experience and didn’t know how Git really worked. A year later I was in the program, rebuilding FOSSology as microservices on Kubernetes. Since then my patches have shipped in official Jenkins releases.',
   ],
   socials: [
@@ -43,6 +43,10 @@ export const credentials = [
   {
     mark: 'OW', color: '#a78bfa', label: 'OWASP Nest', title: 'Collaborator', detail: 'Accessibility · GSoC 2026 mentor list', year: '2026',
     proof: 'https://github.com/OWASP/Nest/pull/3605',
+  },
+  {
+    mark: '1st', color: '#f5b544', label: 'Byte & Battle Hackathon', title: '1st place', detail: 'University-wide · 3rd at district level', year: '2025',
+    proof: '#awards',
   },
   {
     mark: 'DW', color: '#2ec4b6', label: 'Dev Weekends', title: 'Mentor', detail: 'Open source and GSoC guidance', year: 'now',
@@ -399,7 +403,7 @@ export const projects: Project[] = [
 export const awards = [
   { year: 'Jul 2025', title: 'Linux Foundation LiFT Scholar', body: 'Full scholarship for the Kubernetes (LFD259) course and certification exam.' },
   { year: 'Mar 2025', title: 'Google Summer of Code 2025', body: 'Selected for FOSSology. Acceptance rate is under 5%.' },
-  { year: 'Mar 2025', title: 'Byte & Battle Hackathon', body: '1st place university-wide and 3rd place at district level.' },
+  { year: 'Mar 2025', title: 'Byte & Battle Hackathon', body: 'Speed programming competition. Won the university round, then placed 3rd against teams from across the district.', badges: ['1st · university', '3rd · district'] },
   { year: '2022–26', title: 'PEEF Scholarship', body: '80% fee scholarship from the Government of Punjab.' },
 ];
 

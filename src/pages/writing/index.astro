@@ -1,4 +1,5 @@
 ---
+import Mark from '../../components/Mark.astro';
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import WritingList from '../../components/WritingList.astro';
@@ -12,7 +13,7 @@ const posts = (await getCollection('writing', ({ data }) => !data.draft)).sort(
   <section class="block wrap page">
     <div class="section-head">
       <span class="eyebrow">writing</span>
-      <h1 class="h2">Writing</h1>
+      <h1 class="h2">Notes & <Mark variant={2}>write-ups</Mark></h1>
       <p class="lede">Write-ups of problems I worked through: what broke, what I tried, and what fixed it. There’s also an <a href="/rss.xml">RSS feed</a>.</p>
     </div>
     <WritingList posts={posts} />
