@@ -1,0 +1,234 @@
+---
+// Replays signoz-ai-sre's control flow. Scenarios live in src/data/ai.ts.
+import { scenarios, providers } from '../data/ai';
+
+const stages = [
+  { id: 'worker', label: 'worker-service', sub: 'the thing that breaks' },
+  { id: 'signoz', label: 'SigNoz', sub: 'alert rules · query API' },
+  { id: 'watcher', label: 'watcher · diagnose()', sub: 'never calls the worker' },
+  { id: 'tier', branch: [
+    { id: 'rules', label: 'tier 1 · rules', sub: 'plain if / else' },
+    { id: 'llm', label: 'tier 2 · LLM', sub: '2 read-only tools' },
+  ] },
+  { id: 'guard', label: 'guardrails', sub: 'allowlist · safetyCheck · 10s timeout' },
+  { id: 'control', label: 'control-plane', sub: '3 switches in Postgres' },
+  { id: 'log', label: 'incident log', sub: 'written every time' },
+] as const;
+---
+
+<div class="sim card" data-sim>
+  <div class="sim-bar">
+    <div class="scen" role="group" aria-label="Pick a failure">
+      {scenarios.map((s, i) => (
+        <button type="button" data-scen={s.id} aria-pressed={i === 0 ? 'true' : 'false'} class:list={[{ whatif: s.whatIf }]}>
+          <span class="s-label">{s.label}</span>
+          <span class="s-hint mono">{s.hint}</span>
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <div class="sim-body">
+    <ol class="flow" aria-label="Pipeline">
+      {stages.map((s) =>
+        'branch' in s ? (
+          <li class="branch">
+            {s.branch.map((b) => (
+              <div class="stage" data-stage={b.id}>
+                <span class="st-dot" aria-hidden="true"></span>
+                <span class="st-label mono">{b.label}</span>
+                <span class="st-sub">{b.sub}</span>
+              </div>
+            ))}
+          </li>
+        ) : (
+          <li class="stage" data-stage={s.id}>
+            <span class="st-dot" aria-hidden="true"></span>
+            <span class="st-label mono">{s.label}</span>
+            <span class="st-sub">{s.sub}</span>
+          </li>
+        ),
+      )}
+    </ol>
+
+    <div class="console mono">
+      <div class="con-head">
+        <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>watcher-service · logs</span>
+        <div class="prov" role="group" aria-label="LLM provider for tier 2">
+          <span class="muted">LLM_PROVIDER=</span>
+          {Object.entries(providers).map(([k, p], i) => (
+            <button type="button" data-prov={k} aria-pressed={i === 0 ? 'true' : 'false'}>{p.label.toLowerCase()}</button>
+          ))}
+        </div>
+        <button type="button" class="replay" data-replay aria-label="Replay scenario">↻</button>
+      </div>
+      <ol class="lines" data-lines aria-live="polite"></ol>
+      <div class="outcome" data-outcome hidden></div>
+    </div>
+  </div>
+  <p class="sim-foot mono">replays the real control flow of <a href="https://github.com/SalmanDeveloperz/signoz-ai-sre" target="_blank" rel="noopener">signoz-ai-sre</a> · timings compressed, logic unchanged · “prompt-inject” is a what-if</p>
+</div>
+
+<script is:inline type="application/json" id="sim-data" set:html={JSON.stringify({ scenarios, providers })} />
+
+<script>
+  type Step = { at: string; text: string; tone?: string };
+  type Scen = { id: string; label: string; tier: 1 | 2; steps: Step[]; outcome: string; whatIf?: boolean };
+  const root = document.querySelector<HTMLElement>('[data-sim]');
+  if (root) {
+    const data = JSON.parse(document.getElementById('sim-data')!.textContent!) as {
+      scenarios: Scen[];
+      providers: Record<string, { label: string; model: string; pkg: string }>;
+    };
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const stageEls = new Map(Array.from(root.querySelectorAll<HTMLElement>('[data-stage]')).map((e) => [e.dataset.stage!, e]));
+    const lines = root.querySelector<HTMLOListElement>('[data-lines]')!;
+    const outcome = root.querySelector<HTMLElement>('[data-outcome]')!;
+    let scen = data.scenarios[0];
+    let prov = 'gemini';
+    let run = 0;
+    let timer = 0;
+
+    const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+    const fill = (t: string) => t.replace('{model}', data.providers[prov].model).replace('{pkg}', data.providers[prov].pkg);
+
+    const reset = () => {
+      clearTimeout(timer);
+      lines.innerHTML = '';
+      outcome.hidden = true;
+      stageEls.forEach((e) => e.classList.remove('active', 'done', 'skip'));
+    };
+
+    const finish = () => {
+      stageEls.forEach((e) => e.classList.remove('active'));
+      const p = data.providers[prov];
+      const span =
+        scen.tier === 2
+          ? `<div class="span"><span class="sp-name">investigate.tier2</span><span>gen_ai.request.model=<b>${esc(p.model)}</b></span><span>tools=${scen.whatIf ? 0 : 1}</span><span>action=${scen.whatIf ? 'blocked' : 'null'}</span><span>audit=written</span></div>`
+          : `<div class="span"><span class="sp-name">remediation.tier1</span><span>llm_calls=<b>0</b></span><span>cost=$0</span><span>audit=written</span></div>`;
+      outcome.innerHTML = `<p><b>${scen.tier === 1 ? 'Healed by rules.' : scen.whatIf ? 'Guard held.' : 'Declined to guess.'}</b> ${esc(scen.outcome)}</p>${span}`;
+      outcome.hidden = false;
+    };
+
+    const play = () => {
+      reset();
+      const id = ++run;
+      stageEls.get(scen.tier === 1 ? 'llm' : 'rules')?.classList.add('skip');
+      let i = 0;
+      const step = () => {
+        if (id !== run) return;
+        if (i >= scen.steps.length) return finish();
+        const s = scen.steps[i];
+        stageEls.forEach((e) => e.classList.remove('active'));
+        stageEls.get(s.at)?.classList.add('active', 'done');
+        const li = document.createElement('li');
+        li.className = `tone-${s.tone ?? 'plain'}`;
+        li.innerHTML = `<span class="ix">${String(i + 1).padStart(2, '0')}</span><span class="tag">${esc(s.at)}</span><span class="msg">${esc(fill(s.text))}</span>`;
+        lines.appendChild(li);
+        lines.scrollTop = lines.scrollHeight;
+        i++;
+        timer = window.setTimeout(step, reduce ? 0 : 560);
+      };
+      step();
+    };
+
+    root.querySelectorAll<HTMLButtonElement>('[data-scen]').forEach((b) =>
+      b.addEventListener('click', () => {
+        root.querySelectorAll('[data-scen]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        scen = data.scenarios.find((s) => s.id === b.dataset.scen)!;
+        play();
+      }),
+    );
+    root.querySelectorAll<HTMLButtonElement>('[data-prov]').forEach((b) =>
+      b.addEventListener('click', () => {
+        root.querySelectorAll('[data-prov]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        prov = b.dataset.prov!;
+        if (scen.tier === 2) play();
+      }),
+    );
+    root.querySelector('[data-replay]')!.addEventListener('click', play);
+
+    // Auto-play once, the first time it scrolls into view.
+    const io = new IntersectionObserver((es) => {
+      if (es.some((e) => e.isIntersecting)) { io.disconnect(); play(); }
+    }, { threshold: 0.35 });
+    io.observe(root);
+  }
+</script>
+
+<style>
+  .sim { overflow: hidden; }
+  .sim-bar { padding: 14px; border-bottom: 1px solid var(--border); background: var(--surface-2); }
+  .scen { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .scen button {
+    display: grid; gap: 2px; text-align: left; padding: 10px 12px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--surface); transition: border-color .15s, background .15s, transform .15s;
+  }
+  .scen button:hover { border-color: var(--border-2); transform: translateY(-1px); }
+  .scen button[aria-pressed='true'] { border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: var(--accent-soft); }
+  .scen button.whatif[aria-pressed='true'] { border-color: color-mix(in srgb, var(--rose) 55%, transparent); background: color-mix(in srgb, var(--rose) 8%, transparent); }
+  .s-label { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+  .s-hint { font-size: 11px; color: var(--muted); }
+
+  .sim-body { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr); }
+  .flow { list-style: none; padding: 18px; margin: 0; display: grid; gap: 8px; position: relative; border-right: 1px solid var(--border); }
+  .branch { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stage {
+    position: relative; display: grid; grid-template-columns: 12px 1fr; column-gap: 10px; row-gap: 1px; align-items: center;
+    padding: 9px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-2);
+    transition: border-color .25s, background .25s, opacity .25s, transform .25s;
+  }
+  .st-dot { grid-row: span 2; width: 9px; height: 9px; border-radius: 50%; background: var(--border-2); transition: background .25s, box-shadow .25s; }
+  .st-label { font-size: 12.5px; color: var(--text); }
+  .st-sub { font-size: 11.5px; color: var(--muted); grid-column: 2; }
+  .stage.done { border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); }
+  .stage.done .st-dot { background: var(--accent); }
+  .stage.active { border-color: var(--accent); background: var(--accent-soft); transform: translateX(3px); }
+  .stage.active .st-dot { box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 22%, transparent); }
+  .stage[data-stage='llm'].done { border-color: color-mix(in srgb, var(--violet) 45%, var(--border)); }
+  .stage[data-stage='llm'].done .st-dot { background: var(--violet); }
+  .stage[data-stage='llm'].active { border-color: var(--violet); background: color-mix(in srgb, var(--violet) 10%, transparent); }
+  .stage.skip { opacity: .35; }
+
+  .console { display: flex; flex-direction: column; min-height: 420px; background: var(--bg); font-size: 12px; }
+  .con-head { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--muted); font-size: 11.5px; flex-wrap: wrap; }
+  .lights { display: flex; gap: 5px; }
+  .lights i { width: 9px; height: 9px; border-radius: 50%; background: var(--border-2); }
+  .prov { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+  .prov button, .replay { font: inherit; font-size: 11px; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); color: var(--text-2); }
+  .prov button[aria-pressed='true'] { color: var(--violet); border-color: color-mix(in srgb, var(--violet) 55%, transparent); background: color-mix(in srgb, var(--violet) 10%, transparent); }
+  .replay:hover, .prov button:hover { border-color: var(--border-2); color: var(--text); }
+  .lines { list-style: none; margin: 0; padding: 12px 14px; display: grid; gap: 6px; align-content: start; flex: 1; max-height: 330px; overflow-y: auto; scrollbar-width: thin; }
+  .lines :global(li) { display: grid; grid-template-columns: 22px 64px 1fr; gap: 8px; line-height: 1.5; animation: line-in .25s ease-out; }
+  @keyframes line-in { from { opacity: 0; transform: translateY(4px); } }
+  .lines :global(.ix) { color: var(--faint); }
+  .lines :global(.tag) { color: var(--muted); }
+  .lines :global(.msg) { color: var(--text-2); overflow-wrap: anywhere; }
+  .lines :global(.tone-err .msg) { color: var(--rose); }
+  .lines :global(.tone-warn .msg) { color: var(--amber); }
+  .lines :global(.tone-ok .msg) { color: var(--green); }
+  .lines :global(.tone-ai .msg) { color: var(--violet); }
+  .lines :global(.tone-dim .msg) { color: var(--muted); }
+  .outcome { border-top: 1px solid var(--border); padding: 12px 14px 14px; font-family: var(--font-sans); font-size: 14px; color: var(--text-2); animation: line-in .3s ease-out; }
+  .outcome :global(b) { color: var(--text); }
+  .outcome :global(.span) { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); padding: 8px 10px; border-radius: 8px; border: 1px dashed var(--border-2); }
+  .outcome :global(.sp-name) { color: var(--accent); }
+  .outcome :global(.span b) { color: var(--violet); font-weight: 500; }
+  .sim-foot { font-size: 11px; color: var(--muted); padding: 10px 14px; border-top: 1px solid var(--border); background: var(--surface-2); }
+  .sim-foot a { color: var(--accent); }
+
+  @media (max-width: 960px) {
+    .scen { grid-template-columns: 1fr 1fr; }
+    .sim-body { grid-template-columns: 1fr; }
+    .flow { border-right: 0; border-bottom: 1px solid var(--border); grid-template-columns: 1fr 1fr; }
+    .flow > .branch { grid-column: 1 / -1; }
+    .console { min-height: 360px; }
+  }
+  @media (max-width: 520px) {
+    .flow { grid-template-columns: 1fr; }
+    .st-sub { display: none; }
+    .lines :global(li) { grid-template-columns: 20px 1fr; }
+    .lines :global(.tag) { display: none; }
+  }
+</style>

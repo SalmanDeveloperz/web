@@ -1,24 +1,18 @@
 ---
 import Mark from './Mark.astro';
+import TailSampler from './TailSampler.astro';
 import { projects } from '../data/profile';
 const featured = projects.find((p) => p.featured);
 const rest = projects.filter((p) => !p.featured);
 
-// Pipeline diagram nodes (x, y in a 560x220 box)
-const nodes = [
-  { id: 'jenkins', x: 8, y: 86, w: 100, label: 'Jenkins', sub: 'OTLP traces' },
-  { id: 'col', x: 148, y: 72, w: 190, label: 'OTel Collector', sub: 'tail_sampling · spanmetrics', tall: true },
-  { id: 'jaeger', x: 386, y: 22, w: 166, label: 'Jaeger', sub: 'errors · slow · 20%' },
-  { id: 'prom', x: 386, y: 150, w: 166, label: 'Prometheus → Grafana', sub: 'RED metrics · alerts' },
-];
 ---
 
 <section id="work" class="block">
   <div class="wrap">
     <div class="section-head reveal">
-      <span class="eyebrow">05 · projects</span>
+      <span class="eyebrow">06 · projects</span>
       <h2 class="h2">More things I’ve <Mark variant={2}>built</Mark></h2>
-      <p class="lede">Mostly things I built because I needed them.</p>
+      <p class="lede">Every one of these exists because something broke, or was slow, or lied to me, and I wanted to see why. The first one is running below: move the sliders.</p>
     </div>
 
     {featured && (
@@ -37,30 +31,7 @@ const nodes = [
             {featured.discussion && <a class="btn" href={featured.discussion} target="_blank" rel="noopener">Jenkins community thread</a>}
           </div>
         </div>
-        <figure class="diagram" aria-label="Jenkins sends OTLP traces to an OpenTelemetry Collector, which tail-samples into Jaeger and exports span metrics to Prometheus and Grafana.">
-          <svg viewBox="0 0 560 220" role="presentation">
-            <defs>
-              <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-                <path d="M0 0 10 5 0 10z" fill="var(--border-2)" />
-              </marker>
-            </defs>
-            <path id="p1" class="edge" d="M108 110 H146" marker-end="url(#arr)" />
-            <path id="p2" class="edge" d="M338 96 C 362 96, 362 46, 384 46" marker-end="url(#arr)" />
-            <path id="p3" class="edge" d="M338 126 C 362 126, 362 174, 384 174" marker-end="url(#arr)" />
-            <circle r="3.5" class="pkt"><animateMotion dur="1.6s" repeatCount="indefinite"><mpath href="#p1" /></animateMotion></circle>
-            <circle r="3.5" class="pkt err"><animateMotion dur="2.2s" begin=".4s" repeatCount="indefinite"><mpath href="#p2" /></animateMotion></circle>
-            <circle r="3.5" class="pkt"><animateMotion dur="2.4s" begin="1s" repeatCount="indefinite"><mpath href="#p3" /></animateMotion></circle>
-            {nodes.map((n) => (
-              <g>
-                <rect x={n.x} y={n.y} width={n.w} height={n.tall ? 76 : 48} rx="9" class:list={['node', { core: n.tall }]} />
-                <text x={n.x + 12} y={n.y + 21} class="n-label">{n.label}</text>
-                <text x={n.x + 12} y={n.y + 38} class="n-sub">{n.sub}</text>
-                {n.tall && <text x={n.x + 12} y={n.y + 60} class="n-drop">cuts ~81% of trace data</text>}
-              </g>
-            ))}
-          </svg>
-          <figcaption class="mono">keep: status=ERROR · latency&gt;30s · 20% baseline</figcaption>
-        </figure>
+        <TailSampler />
       </article>
     )}
 
@@ -89,25 +60,13 @@ const nodes = [
 </section>
 
 <style>
-  .feat { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(24px, 4vw, 44px); padding: clamp(22px, 3.5vw, 36px); margin-bottom: 16px; align-items: center; }
+  .feat { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(24px, 4vw, 44px); padding: clamp(22px, 3.5vw, 36px); margin-bottom: 16px; align-items: start; }
   .feat h3 { font-size: 24px; letter-spacing: -0.025em; font-weight: 600; margin-top: 10px; }
   .feat .p-body { margin-top: 10px; }
   .note { display: grid; grid-template-columns: auto 1fr; gap: 10px; margin: 16px 0; padding: 12px 14px; border-radius: 10px; border: 1px dashed var(--border-2); color: var(--text-2); font-size: 14px; background: var(--bg-2); }
   .note .mono { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--amber); padding-top: 3px; }
   .f-ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
 
-  .diagram { border: 1px solid var(--border); border-radius: 12px; background: var(--bg-2); padding: 14px 12px 0; overflow: hidden; }
-  .diagram svg { width: 100%; height: auto; }
-  .edge { fill: none; stroke: var(--border-2); stroke-width: 1.5; stroke-dasharray: 4 4; }
-  .pkt { fill: var(--accent); filter: drop-shadow(0 0 4px var(--accent)); }
-  .pkt.err { fill: var(--rose); filter: drop-shadow(0 0 4px var(--rose)); }
-  .node { fill: var(--surface); stroke: var(--border-2); }
-  .node.core { stroke: var(--accent); fill: color-mix(in srgb, var(--accent) 8%, var(--surface)); }
-  .n-label { font: 600 13px var(--font-sans); fill: var(--text); }
-  .n-sub { font: 10.5px var(--font-mono); fill: var(--muted); }
-  .n-drop { font: 10.5px var(--font-mono); fill: var(--green); }
-  .diagram figcaption { font-size: 11px; color: var(--muted); border-top: 1px solid var(--border); margin: 8px -12px 0; padding: 9px 14px; }
-  @media (prefers-reduced-motion: reduce) { .pkt { display: none; } }
 
   .grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
   .grid > .proj { grid-column: span 2; }

@@ -1,6 +1,6 @@
 // Machine-readable profile for AI agents and recruiters' tooling (https://llmstxt.org).
 import { getCollection } from 'astro:content';
-import { profile, spans, openSource, ezvor, pdfScanner, projects, awards, stack } from '../data/profile';
+import { profile, now, spans, openSource, ezvor, pdfScanner, projects, awards, lanes, alsoUsed, aiPrinciples, changelog } from '../data/profile';
 
 export async function GET() {
   const posts = (await getCollection('writing', ({ data }) => !data.draft)).sort(
@@ -14,6 +14,8 @@ export async function GET() {
   L.push(`Availability: ${profile.availability}.`);
   L.push(`Contact: ${profile.email}`);
   L.push(`Resume: ${site}${profile.resume}`, '');
+  L.push(`Now: shipping ${now.shipping}; building ${now.building}; exploring ${now.exploring}. (updated ${now.updated})`, '');
+  L.push(`Retrieval corpus of this site, as JSON: ${site}/rag.json`, '');
 
   L.push('## Experience', '');
   for (const s of [...spans].sort((a, b) => b.start.localeCompare(a.start))) {
@@ -27,7 +29,10 @@ export async function GET() {
     L.push('');
   }
 
-  L.push('## Projects', '');
+  L.push('## How I build with LLMs', '');
+  for (const p of aiPrinciples) L.push(`- **${p.title}.** ${p.body} Proof: ${p.proof.href}`);
+
+  L.push('', '## Projects', '');
   L.push(`- [${ezvor.name}](${ezvor.live}): ${ezvor.story} Code: ${ezvor.repo}`);
   L.push(`- [${pdfScanner.name}](${pdfScanner.live}): ${pdfScanner.story}`);
   for (const p of projects) L.push(`- [${p.name}](${p.live ?? p.repo}): ${p.body}`);
@@ -36,7 +41,11 @@ export async function GET() {
   for (const a of awards) L.push(`- ${a.year}, ${a.title}: ${a.body}`);
 
   L.push('', '## Skills', '');
-  for (const g of stack) L.push(`- ${g.group}: ${g.items.join(', ')}`);
+  for (const l of lanes) L.push(`- ${l.title}: ${l.skills.map((s) => s.name).join(', ')}`);
+  L.push(`- Also: ${alsoUsed.join(', ')}`);
+
+  L.push('', '## Changelog', '');
+  for (const e of [...changelog].sort((a, b) => b.date.localeCompare(a.date))) L.push(`- ${e.date} [${e.type}] ${e.text}${e.href ? ` ${e.href}` : ''}`);
 
   L.push('', '## Writing', '');
   for (const p of posts) L.push(`- [${p.data.title}](${p.data.external ?? `${site}/writing/${p.id}/`}): ${p.data.description}`);

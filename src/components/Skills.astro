@@ -1,0 +1,96 @@
+---
+import Mark from './Mark.astro';
+import { lanes, alsoUsed } from '../data/profile';
+
+const first = lanes.find((l) => l.id === 'ai')!.skills[0];
+const data = Object.fromEntries(lanes.flatMap((l) => l.skills.map((s) => [`${l.id}:${s.name}`, { lane: l.title, ...s }])));
+---
+
+<section id="skills" class="block">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">08 · skills</span>
+      <h2 class="h2">Skills, with <Mark variant={3}>proof</Mark></h2>
+      <p class="lede">A skill list is a claim. Click any one to see where I actually used it.</p>
+    </div>
+
+    <div class="sk reveal" data-sk>
+      <div class="lanes">
+        {lanes.map((l) => (
+          <div class={`lane card l-${l.id}`}>
+            <h3>{l.title}</h3>
+            <p class="lb">{l.blurb}</p>
+            <div class="chips">
+              {l.skills.map((s) => (
+                <button type="button" class="skill" data-skill={`${l.id}:${s.name}`} aria-pressed={s === first ? 'true' : 'false'}>
+                  {s.name}<span class="cnt mono">{s.proof.length}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="proof card" aria-live="polite">
+        <p class="pf-head mono"><span class="pr">$</span> grep -r "<span data-pf-name>{first.name}</span>" ./work</p>
+        <ul data-pf-list>
+          {first.proof.map((p) => (
+            <li><a href={p.href} target={p.href.startsWith('http') ? '_blank' : undefined} rel="noopener"><span class="arrow">→</span>{p.label}</a></li>
+          ))}
+        </ul>
+        <p class="also mono">also used: {alsoUsed.join(' · ')}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline type="application/json" id="skill-data" set:html={JSON.stringify(data)} />
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-sk]');
+  if (root) {
+    const data = JSON.parse(document.getElementById('skill-data')!.textContent!) as Record<string, { name: string; proof: { label: string; href: string }[] }>;
+    const name = root.querySelector<HTMLElement>('[data-pf-name]')!;
+    const list = root.querySelector<HTMLElement>('[data-pf-list]')!;
+    const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+    root.querySelectorAll<HTMLButtonElement>('[data-skill]').forEach((b) =>
+      b.addEventListener('click', () => {
+        const s = data[b.dataset.skill!];
+        root.querySelectorAll('[data-skill]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        name.textContent = s.name;
+        list.innerHTML = s.proof
+          .map((p) => `<li><a href="${esc(p.href)}"${p.href.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}><span class="arrow">→</span>${esc(p.label)}</a></li>`)
+          .join('');
+        list.animate?.([{ opacity: 0, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }], { duration: 220, easing: 'ease-out' });
+      }),
+    );
+  }
+</script>
+
+<style>
+  .sk { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+  .lanes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .lane { padding: 18px; --c: var(--accent); }
+  .l-ai { --c: var(--violet); } .l-devops { --c: var(--amber); } .l-fullstack { --c: var(--blue); }
+  .lane h3 { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .lane h3::before { content: ''; width: 8px; height: 8px; border-radius: 2px; background: var(--c); }
+  .lb { font-size: 13px; color: var(--muted); margin: 4px 0 12px; }
+  .skill {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 6px 10px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--surface-2); color: var(--text-2); transition: border-color .15s, color .15s, background .15s;
+  }
+  .skill:hover { border-color: var(--c); color: var(--text); }
+  .skill[aria-pressed='true'] { border-color: var(--c); color: var(--text); background: color-mix(in srgb, var(--c) 12%, transparent); }
+  .cnt { font-size: 10px; color: var(--muted); }
+  .proof { position: sticky; top: 88px; padding: 18px; }
+  .pf-head { font-size: 12px; color: var(--muted); }
+  .pf-head span[data-pf-name] { color: var(--amber); }
+  .pr { color: var(--accent); }
+  .proof ul { list-style: none; padding: 0; margin-top: 12px; display: grid; gap: 6px; }
+  .proof :global(li a) { display: flex; gap: 10px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-2); font-size: 14px; color: var(--text-2); transition: border-color .15s, color .15s; }
+  .proof :global(li a:hover) { border-color: var(--accent); color: var(--text); }
+  .proof :global(.arrow) { color: var(--accent); font-family: var(--font-mono); }
+  .also { font-size: 11px; color: var(--muted); margin-top: 14px; line-height: 1.7; }
+  @media (max-width: 1000px) { .sk { grid-template-columns: 1fr; } .proof { position: static; } }
+  @media (max-width: 620px) { .lanes { grid-template-columns: 1fr; } }
+</style>

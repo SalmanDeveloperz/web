@@ -23,10 +23,11 @@ const chips = tags
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
 <defs><radialGradient id="g" cx="80%" cy="0%" r="70%"><stop offset="0" stop-color="#2ec4b6" stop-opacity=".28"/><stop offset="1" stop-color="#2ec4b6" stop-opacity="0"/></radialGradient></defs>
 <rect width="1200" height="630" fill="#07090c"/>${grid}<rect width="1200" height="630" fill="url(#g)"/>
-<text x="80" y="118" font-family="Consolas,monospace" font-size="24" fill="#2ec4b6">salman@env:~$ whoami</text>
+<g transform="translate(80 84) scale(1.6)"><rect x=".75" y=".75" width="30.5" height="30.5" rx="8.5" fill="#0f1319" stroke="#283241" stroke-width="1.5"/><path d="M23 9.5H12.75a3.25 3.25 0 0 0 0 6.5h6.5a3.25 3.25 0 0 1 0 6.5H9" fill="none" stroke="#2ec4b6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="22.5" r="1.6" fill="#2ec4b6" opacity=".55"/><circle cx="23" cy="9.5" r="2.4" fill="#4ade80"/></g>
+<text x="148" y="118" font-family="Consolas,monospace" font-size="24" fill="#2ec4b6">salman@env:~$ whoami</text>
 <text x="1120" y="118" text-anchor="end" font-family="Consolas,monospace" font-size="22" fill="#4a5563">salman-ch.netlify.app</text>
 <text x="80" y="236" font-family="Segoe UI,Arial,sans-serif" font-size="92" font-weight="700" fill="#e6edf3" letter-spacing="-3">Muhammad Salman</text>
-<text x="80" y="304" font-family="Segoe UI,Arial,sans-serif" font-size="38" fill="#b3bfcc">Backend Software Engineer · Python, FastAPI, Kubernetes</text>
+<text x="80" y="304" font-family="Segoe UI,Arial,sans-serif" font-size="38" fill="#b3bfcc">Software Engineer · Backend · AI · DevOps</text>
 <text x="80" y="386" font-family="Segoe UI,Arial,sans-serif" font-size="30" fill="#7d8a99">I build backend services and fix the pipelines nobody wants to touch.</text>
 ${chips}
 </svg>`;

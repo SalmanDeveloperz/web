@@ -8,7 +8,7 @@ const total = p.groups.reduce((a, g) => a + g.n, 0);
   <div class="wrap">
     <div class="pdf card reveal">
       <div class="pdf-copy">
-        <span class="eyebrow">04 · pdf scanner web</span>
+        <span class="eyebrow">05 · pdf scanner web</span>
         <h2 class="h2">PDF Scanner, <Mark>shipped</Mark> at 9D</h2>
         <p class="lede">{p.story}</p>
         <div class="stats mono">
@@ -25,10 +25,12 @@ const total = p.groups.reduce((a, g) => a + g.n, 0);
       </div>
 
       <div class="pdf-ui">
-        <div class="drop mono" aria-hidden="true">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 18v-6M9 15l3-3 3 3"/></svg>
-          <span>drop a PDF · it never leaves this tab</span>
-        </div>
+        <label class="drop mono" data-drop>
+          <input type="file" accept="application/pdf,.pdf" data-file class="sr" />
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 18v-6M9 15l3-3 3 3"/></svg>
+          <span class="d-title">Drop a PDF to test the claim</span>
+          <span class="d-sub" data-drop-out>it gets fingerprinted right here. open your network tab: nothing leaves.</span>
+        </label>
         <ul class="groups">
           {p.groups.map((g) => (
             <li>
@@ -51,8 +53,15 @@ const total = p.groups.reduce((a, g) => a + g.n, 0);
   .stats span { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
   .ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
   .pdf-ui { display: grid; gap: 12px; align-content: center; }
-  .drop { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 26px; border: 1.5px dashed var(--border-2); border-radius: 12px; color: var(--muted); font-size: 12px; text-align: center; background: var(--bg-2); }
+  .drop { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 22px; border: 1.5px dashed var(--border-2); border-radius: 12px; color: var(--muted); font-size: 12px; text-align: center; background: var(--bg-2); cursor: pointer; transition: border-color .2s, background .2s; }
+  .drop:hover, .drop.over { border-color: var(--accent); background: var(--accent-soft); }
+  .drop:focus-within { outline: 2px solid var(--accent); outline-offset: 3px; }
   .drop svg { color: var(--accent); }
+  .d-title { font-family: var(--font-sans); font-size: 14px; font-weight: 600; color: var(--text); }
+  .d-sub { max-width: 44ch; line-height: 1.5; overflow-wrap: anywhere; }
+  .d-sub :global(b) { color: var(--green); font-weight: 500; }
+  .d-sub :global(.h) { color: var(--violet); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .groups { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .groups li { border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; background: var(--surface-2); transition: border-color .15s, transform .15s; }
   .groups li:hover { border-color: var(--accent); transform: translateY(-2px); }
@@ -63,3 +72,35 @@ const total = p.groups.reduce((a, g) => a + g.n, 0);
   @media (max-width: 900px) { .pdf { grid-template-columns: 1fr; } }
   @media (max-width: 480px) { .stats { grid-template-columns: 1fr 1fr; } .groups { grid-template-columns: 1fr; } }
 </style>
+
+<script>
+  const drop = document.querySelector<HTMLElement>('[data-drop]');
+  if (drop) {
+    const input = drop.querySelector<HTMLInputElement>('[data-file]')!;
+    const out = drop.querySelector<HTMLElement>('[data-drop-out]')!;
+    const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+    const size = (n: number) => (n > 1048576 ? `${(n / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1024))} KB`);
+    const inspect = async (f: File) => {
+      const t0 = performance.now();
+      const buf = await f.arrayBuffer();
+      const hash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', buf)), (b) => b.toString(16).padStart(2, '0')).join('');
+      // Read the header and count page objects. Good enough for a demo, no parser shipped.
+      const text = new TextDecoder('latin1').decode(buf);
+      const version = text.match(/^%PDF-(\d\.\d)/)?.[1];
+      const pages = (text.match(/\/Type\s*\/Page(?!s)/g) ?? []).length;
+      const ms = performance.now() - t0;
+      out.innerHTML = version
+        ? `<b>✓ ${esc(f.name)}</b> · ${size(f.size)} · PDF ${version}${pages ? ` · ${pages} page${pages > 1 ? 's' : ''}` : ''}<br>sha256 <span class="h">${hash.slice(0, 12)}…${hash.slice(-6)}</span> · ${ms.toFixed(0)} ms · <b>0 bytes uploaded</b>`
+        : `${esc(f.name)} isn’t a PDF, but it was still hashed locally: <span class="h">${hash.slice(0, 12)}…</span> · <b>0 bytes uploaded</b>`;
+    };
+    input.addEventListener('change', () => input.files?.[0] && inspect(input.files[0]));
+    drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('over'); });
+    drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+    drop.addEventListener('drop', (e) => {
+      e.preventDefault();
+      drop.classList.remove('over');
+      const f = e.dataTransfer?.files?.[0];
+      if (f) inspect(f);
+    });
+  }
+</script>

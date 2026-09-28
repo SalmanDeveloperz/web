@@ -1,0 +1,152 @@
+---
+import Mark from './Mark.astro';
+import { changelog, logTypes, awards } from '../data/profile';
+
+// Stable short "commit hash" per entry (FNV-1a), so hashes don't change between builds.
+const sha = (s: string) => {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+  return (h >>> 0).toString(16).padStart(8, '0').slice(0, 7);
+};
+const entries = [...changelog].sort((a, b) => b.date.localeCompare(a.date)).map((e) => ({ ...e, sha: sha(e.date + e.text) }));
+const SHOW = 10;
+const types = Object.entries(logTypes).map(([k, v]) => ({ k, ...v, n: entries.filter((e) => e.type === k).length }));
+---
+
+<section id="changelog" class="block">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">07 · changelog</span>
+      <h2 class="h2">The <Mark>changelog</Mark></h2>
+      <p class="lede">Append-only, newest first. Every merge, ship and win, with the link that proves it.</p>
+    </div>
+
+    <div class="cols">
+      <div class="log card reveal" data-log>
+        <div class="log-head mono">
+          <span class="cmd"><span class="pr">$</span> git log --oneline --graph</span>
+          <div class="lf" role="toolbar" aria-label="Filter changelog">
+            <button type="button" data-lf="all" aria-pressed="true">all <span>{entries.length}</span></button>
+            {types.map((t) => <button type="button" data-lf={t.k} aria-pressed="false" class={`t-${t.k}`}>{t.label} <span>{t.n}</span></button>)}
+          </div>
+        </div>
+        <ol class="commits">
+          {entries.map((e, i) => (
+            <li data-type={e.type} class:list={[`t-${e.type}`, { extra: i >= SHOW }]}>
+              <span class="graph" aria-hidden="true"><i></i></span>
+              <span class="sha mono">{e.sha}</span>
+              <span class="date mono">{e.date}</span>
+              <span class="verb mono">{logTypes[e.type].verb}:</span>
+              {e.href ? (
+                <a class="msg" href={e.href} target={e.href.startsWith('http') ? '_blank' : undefined} rel="noopener">{e.text}</a>
+              ) : (
+                <span class="msg">{e.text}</span>
+              )}
+              {e.ref && <span class="ref mono">{e.ref}</span>}
+            </li>
+          ))}
+        </ol>
+        {entries.length > SHOW && (
+          <button type="button" class="more mono" data-more aria-expanded="false">
+            <span class="pr">$</span> git log --all <span class="muted">· {entries.length - SHOW} older</span>
+          </button>
+        )}
+      </div>
+
+      <aside id="awards" class="shelf reveal">
+        <span class="eyebrow">trophy shelf</span>
+        <ol class="awards">
+          {awards.map((a) => (
+            <li>
+              <span class="yr mono">{a.year}</span>
+              <div>
+                <h3>{a.title}</h3>
+                {a.badges && <div class="badges">{a.badges.map((b) => <span class="medal mono">{b}</span>)}</div>}
+                <p>{a.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<script>
+  const log = document.querySelector<HTMLElement>('[data-log]');
+  if (log) {
+    const items = Array.from(log.querySelectorAll<HTMLElement>('.commits li'));
+    const more = log.querySelector<HTMLButtonElement>('[data-more]');
+    let expanded = false;
+    let filter = 'all';
+    const apply = () => {
+      let shown = 0;
+      items.forEach((li) => {
+        const match = filter === 'all' || li.dataset.type === filter;
+        // Filters always show everything that matches; "all" respects the fold.
+        const visible = match && (filter !== 'all' || expanded || !li.classList.contains('extra'));
+        li.hidden = !visible;
+        if (visible) shown++;
+      });
+      if (more) more.hidden = filter !== 'all' || expanded;
+    };
+    log.querySelectorAll<HTMLButtonElement>('[data-lf]').forEach((b) =>
+      b.addEventListener('click', () => {
+        filter = b.dataset.lf!;
+        log.querySelectorAll('[data-lf]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        apply();
+      }),
+    );
+    more?.addEventListener('click', () => { expanded = true; more.setAttribute('aria-expanded', 'true'); apply(); });
+    apply();
+  }
+</script>
+
+<style>
+  .cols { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: clamp(20px, 3vw, 36px); align-items: start; }
+  .log { overflow: hidden; }
+  .log-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--surface-2); font-size: 12px; }
+  .pr { color: var(--accent); }
+  .lf { display: flex; flex-wrap: wrap; gap: 4px; }
+  .lf button { font: inherit; font-size: 11px; padding: 3px 8px; border-radius: 99px; border: 1px solid var(--border); color: var(--text-2); }
+  .lf button span { color: var(--muted); }
+  .lf button:hover { border-color: var(--border-2); }
+  .lf button[aria-pressed='true'] { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 50%, transparent); background: var(--accent-soft); }
+
+  .commits { list-style: none; margin: 0; padding: 8px 16px 10px; }
+  .commits li { --c: var(--muted); display: grid; grid-template-columns: 16px 64px 84px 50px 1fr auto; align-items: baseline; gap: 10px; padding: 8px 0; font-size: 14px; border-bottom: 1px dashed var(--border); }
+  .commits li:last-child { border-bottom: 0; }
+  .t-ship { --c: var(--accent); } .t-merge { --c: var(--violet); } .t-win { --c: var(--amber); } .t-role { --c: var(--blue); } .t-write { --c: var(--green); }
+  .graph { position: relative; align-self: stretch; }
+  .graph::before { content: ''; position: absolute; left: 7px; top: -9px; bottom: -9px; width: 2px; background: var(--border-2); }
+  .commits li:first-child .graph::before { top: 50%; }
+  .graph i { position: absolute; left: 3px; top: 50%; width: 10px; height: 10px; margin-top: -5px; border-radius: 50%; background: var(--bg); border: 2px solid var(--c); }
+  .sha { font-size: 12px; color: var(--amber); }
+  .date { font-size: 12px; color: var(--muted); }
+  .verb { font-size: 12px; color: var(--c); }
+  .msg { color: var(--text-2); transition: color .15s; }
+  a.msg:hover { color: var(--accent); }
+  .ref { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .more { display: block; width: 100%; text-align: left; font-size: 12px; padding: 12px 16px; border-top: 1px solid var(--border); background: var(--surface-2); color: var(--text-2); }
+  .more:hover { color: var(--text); }
+  .muted { color: var(--muted); }
+
+  .shelf { position: sticky; top: 88px; }
+  .awards { list-style: none; padding: 0; margin-top: 12px; border-top: 1px solid var(--border); }
+  .awards li { display: grid; grid-template-columns: 72px 1fr; gap: 10px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .yr { font-size: 11.5px; color: var(--accent); padding-top: 3px; }
+  .awards h3 { font-size: 16px; font-weight: 600; letter-spacing: -0.015em; }
+  .awards p { color: var(--muted); font-size: 14px; margin-top: 2px; }
+  .badges { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0 4px; }
+  .medal { font-size: 11px; padding: 3px 8px; border-radius: 99px; color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 45%, transparent); background: color-mix(in srgb, var(--amber) 10%, transparent); }
+  .medal:first-child { color: var(--bg); background: var(--amber); border-color: transparent; font-weight: 500; }
+
+  @media (max-width: 1000px) { .cols { grid-template-columns: 1fr; } .shelf { position: static; } }
+  @media (max-width: 720px) {
+    .commits li { grid-template-columns: 16px 58px 1fr; row-gap: 2px; }
+    .date { grid-column: 3; grid-row: 1; justify-self: end; }
+    .verb { display: none; }
+    .msg { grid-column: 2 / -1; }
+    .ref { grid-column: 2 / -1; }
+  }
+</style>

@@ -1,0 +1,78 @@
+---
+import Mark from './Mark.astro';
+import AgentSim from './AgentSim.astro';
+import AskResume from './AskResume.astro';
+import { aiPrinciples } from '../data/ai';
+
+const work = [
+  { name: 'SigNoz AI SRE', what: 'Tier-2 agent with two read-only tools, allowlisted actions and traced model calls.', href: 'https://github.com/SalmanDeveloperz/signoz-ai-sre' },
+  { name: 'Ezvor', what: 'AI advisor behind a model gateway with a Gemini fallback. The readiness score is AI-free on purpose.', href: '#ezvor' },
+  { name: 'failuretwin-ai#12', what: 'Live model path in front, deterministic engine behind it, no secrets in the client bundle.', href: 'https://github.com/kaulastudies/failuretwin-ai/pull/12' },
+  { name: 'This page', what: 'Retrieval with citations, in the browser. The honest half of RAG, with no generation to go wrong.', href: '#ask' },
+];
+---
+
+<section id="ai" class="block">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">03 · ai engineering</span>
+      <h2 class="h2">LLMs on a <Mark variant={2}>short leash</Mark></h2>
+      <p class="lede">
+        I put models where judgment helps and keep them out of where correctness matters. Rules handle what’s known. The LLM gets read-only tools for what isn’t. Whatever it proposes goes through the same guard a human would. Pick a failure and watch the loop run.
+      </p>
+    </div>
+
+    <div class="reveal"><AgentSim /></div>
+
+    <ol class="principles">
+      {aiPrinciples.map((p, i) => (
+        <li class="card reveal" style={`transition-delay:${i * 60}ms`}>
+          <span class="pk mono">{p.k}</span>
+          <h3>{p.title}</h3>
+          <p>{p.body}</p>
+          <a class="link-arrow mono" href={p.proof.href} target={p.proof.href.startsWith('http') ? '_blank' : undefined} rel="noopener">{p.proof.label} ↗</a>
+        </li>
+      ))}
+    </ol>
+
+    <div class="split">
+      <div class="reveal"><AskResume /></div>
+      <div class="where card reveal">
+        <p class="w-head mono">where AI shows up in my work</p>
+        <ul>
+          {work.map((w) => (
+            <li>
+              <a href={w.href} target={w.href.startsWith('http') ? '_blank' : undefined} rel="noopener">
+                <span class="w-name">{w.name}</span>
+                <span class="w-what">{w.what}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p class="w-stack mono">ai sdk · gemini · claude · gpt · langchain · embeddings · bm25 · opentelemetry gen_ai.*</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .principles { list-style: none; padding: 0; margin: 16px 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .principles li { padding: 18px; display: flex; flex-direction: column; gap: 6px; }
+  .pk { font-size: 11px; color: var(--violet); }
+  .principles h3 { font-size: 16px; font-weight: 600; letter-spacing: -0.015em; }
+  .principles p { color: var(--text-2); font-size: 14px; flex: 1; }
+  .principles .link-arrow { font-size: 11.5px; margin-top: 6px; }
+  .split { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 16px; align-items: stretch; }
+  .split > div:first-child { display: flex; }
+  .split > div:first-child > :global(*) { flex: 1; }
+  .where { padding: 18px; display: flex; flex-direction: column; }
+  .w-head { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .where ul { list-style: none; padding: 0; margin-top: 10px; display: grid; gap: 4px; flex: 1; }
+  .where a { display: grid; gap: 2px; padding: 12px 0; border-top: 1px solid var(--border); }
+  .where a:hover .w-name { color: var(--accent); }
+  .w-name { font-weight: 600; font-size: 15px; transition: color .15s; }
+  .w-what { font-size: 13.5px; color: var(--text-2); }
+  .w-stack { font-size: 11px; color: var(--muted); border-top: 1px solid var(--border); padding-top: 12px; }
+  @media (max-width: 1000px) { .principles { grid-template-columns: 1fr 1fr; } .split { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .principles { grid-template-columns: 1fr; } }
+</style>
