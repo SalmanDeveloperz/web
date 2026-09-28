@@ -47,17 +47,17 @@ const traceId = '5a1ma9c0de' + String(nowM).slice(-4);
     <div class="section-head reveal">
       <span class="eyebrow">01 · experience</span>
       <h2 class="h2">The road <Mark>so far</Mark></h2>
-      <p class="lede">Laid out like a trace in Jaeger, because that’s how I read systems. Each bar is a role. Click one to open it.</p>
+      <p class="lede">Laid out like a trace in Jaeger, because that’s how I read systems. Every role is a span. Open one for its attributes: what I owned, what shipped, and what it ran on.</p>
     </div>
 
-    <div class="trace card reveal">
+    <div class="trace card reveal" data-trace>
       <div class="t-head mono">
         <div class="t-meta">
           <span class="t-name">salman.career</span>
           <span class="muted">trace_id {traceId}</span>
         </div>
         <div class="legend">
-          {Object.entries(kindLabel).map(([k, v]) => <span class={`lg ${k}`}><i></i>{v}</span>)}
+          {Object.entries(kindLabel).map(([k, v]) => <button type="button" class={`lg ${k}`} data-kind={k} aria-pressed="true" title={`Show or hide ${v}`}><i></i>{v}</button>)}
         </div>
       </div>
 
@@ -79,7 +79,7 @@ const traceId = '5a1ma9c0de' + String(nowM).slice(-4);
         </div>
 
         {rows.map((r, i) => (
-          <details class={`t-row ${r.kind}`} open={r.id === '9d'} name="trace-span">
+          <details class={`t-row ${r.kind}`} open={r.id === '9d'} name="trace-span" id={`span-${r.id}`} data-kind={r.kind}>
             <summary>
               <div class="t-label-col mono">
                 <span class="indent" aria-hidden="true">{i === rows.length - 1 ? '└─' : '├─'}</span>
@@ -88,7 +88,7 @@ const traceId = '5a1ma9c0de' + String(nowM).slice(-4);
               </div>
               <div class="t-lane">
                 {years.map((y) => <span class="grid-line" style={`left:${pct(y * 12)}%`}></span>)}
-                <span class:list={['bar', { live: r.open }]} style={`left:${r.left}%;width:${r.width}%`}>
+                <span class:list={['bar', { live: r.open }]} style={`left:${r.left}%;width:${r.width}%;--i:${i}`}>
                   <span class:list={['dur', 'mono', r.side]}>{r.open ? `${dur(r.a, r.b)} · live` : dur(r.a, r.b)}</span>
                 </span>
               </div>
@@ -116,13 +116,52 @@ const traceId = '5a1ma9c0de' + String(nowM).slice(-4);
   </div>
 </section>
 
+<script>
+  const trace = document.querySelector<HTMLElement>('[data-trace]');
+  if (trace) {
+    // Legend doubles as a filter.
+    trace.querySelectorAll<HTMLButtonElement>('[data-kind]').forEach((b) =>
+      b.addEventListener('click', () => {
+        const on = b.getAttribute('aria-pressed') !== 'true';
+        b.setAttribute('aria-pressed', String(on));
+        trace.querySelectorAll<HTMLElement>(`details[data-kind="${b.dataset.kind}"]`).forEach((d) => (d.hidden = !on));
+      }),
+    );
+    // Deep links (#span-gsoc) open the right span and flash it.
+    const openFromHash = () => {
+      const el = location.hash.startsWith('#span-') ? document.getElementById(location.hash.slice(1)) : null;
+      if (el instanceof HTMLDetailsElement) {
+        el.hidden = false;
+        el.open = true;
+        el.classList.remove('flash');
+        void el.offsetWidth;
+        el.classList.add('flash');
+      }
+    };
+    addEventListener('hashchange', openFromHash);
+    document.addEventListener('click', (e) => {
+      const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#span-"]');
+      if (a && a.hash === location.hash) openFromHash();
+    });
+    openFromHash();
+  }
+</script>
+
 <style>
   .trace { overflow: hidden; }
   .t-head { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--border); font-size: 12px; background: var(--surface-2); }
   .t-meta { display: flex; gap: 14px; flex-wrap: wrap; }
   .t-name { color: var(--text); font-weight: 500; }
   .legend { display: flex; gap: 14px; flex-wrap: wrap; color: var(--muted); }
-  .lg { display: inline-flex; align-items: center; gap: 6px; }
+  .lg { display: inline-flex; align-items: center; gap: 6px; font: inherit; color: inherit; padding: 2px 6px; border-radius: 6px; border: 1px solid transparent; cursor: pointer; transition: opacity .15s, border-color .15s; }
+  .lg:hover { border-color: var(--border-2); }
+  .lg[aria-pressed='false'] { opacity: .4; text-decoration: line-through; }
+  .trace .bar { transform-origin: left center; }
+  :global(.in) .bar:not(.root-bar) { animation: bar-grow .8s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 70ms + 150ms); }
+  @keyframes bar-grow { from { transform: translateY(-50%) scaleX(0); } to { transform: translateY(-50%) scaleX(1); } }
+  .t-row.flash > summary { animation: flash 1.6s ease-out; }
+  @keyframes flash { 0%, 30% { background: color-mix(in srgb, var(--accent) 22%, transparent); } }
+  @media (prefers-reduced-motion: reduce) { :global(.in) .bar { animation: none !important; } }
   .lg i { width: 10px; height: 10px; border-radius: 3px; background: var(--c); }
 
   .work { --c: var(--accent); } .oss { --c: var(--violet); } .edu { --c: var(--blue); } .award { --c: var(--amber); }

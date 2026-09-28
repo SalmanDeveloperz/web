@@ -1,5 +1,6 @@
 ---
 import Mark from './Mark.astro';
+import PrChart from './PrChart.astro';
 import { openSource, allPrsUrl } from '../data/profile';
 import { liveState, counts, synced } from '../data/github';
 
@@ -33,7 +34,7 @@ const group = (s: string) => (s === 'shipped' ? 'merged' : s === 'private' ? 'is
         <span class="eyebrow">02 · contributions</span>
         <h2 class="h2">Code I got <Mark variant={2}>merged</Mark></h2>
         <p class="lede">
-          Most of these began as bugs I hit myself. I reproduce the bug, write it up, and then send the fix. Some had been open for years. Every row links to its PR or issue.
+          I go after the bugs people have learned to live with: an issue open since 2017, keyboard traps nobody reproduced, a build nobody wanted to migrate. Reproduce it, write it up, ship the fix upstream. Every row links to the PR.
         </p>
       </div>
       <a class="all-prs card" href={allPrsUrl} target="_blank" rel="noopener">
@@ -42,6 +43,8 @@ const group = (s: string) => (s === 'shipped' ? 'merged' : s === 'private' ? 'is
         <span class="ap-cta mono">every PR on GitHub ↗</span>
       </a>
     </div>
+
+    <div class="reveal"><PrChart /></div>
 
     <div class="filters reveal" role="toolbar" aria-label="Filter contributions">
       {filters.map((f, i) => (

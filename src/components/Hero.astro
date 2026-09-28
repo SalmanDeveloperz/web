@@ -1,7 +1,7 @@
 ---
 import Mark from './Mark.astro';
-import { profile, projects, openSource, spans, stack, allPrsUrl } from '../data/profile';
-import { counts } from '../data/github';
+import { profile, projects, openSource, spans, lanes, now, changelog, logTypes, allPrsUrl } from '../data/profile';
+import { counts, inReview } from '../data/github';
 import Icon from './Icon.astro';
 
 const rows = [
@@ -30,9 +30,24 @@ const termData = {
     ...projects.map((p) => `${p.name.split(':')[0].toLowerCase().replace(/\s+/g, '-').slice(0, 14).padEnd(15)}${p.kind.toLowerCase()}`),
   ],
   oss: openSource.map((o) => `${o.name.padEnd(15)}${o.items.length} items${o.highlight ? ` · ${o.highlight}` : ''}`),
-  stack: stack.map((g) => `${g.group.padEnd(15)}${g.items.join(', ')}`),
+  stack: lanes.map((l) => `${l.title.padEnd(15)}${l.skills.map((s) => s.name).join(', ')}`),
   merged: counts.merged,
+  now: { ...now, in_review: inReview },
+  gitlog: [...changelog]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 8)
+    .map((e) => `${e.date.padEnd(10)}  ${(logTypes[e.type].verb + ':').padEnd(7)}${e.text}`),
+  fetch: [
+    ['role', profile.role.toLowerCase()],
+    ['lanes', 'backend · ai/llm · devops · full stack'],
+    ['stack', 'python fastapi k8s otel llm-agents'],
+    ['oss', `${counts.merged} merged upstream PRs · ${counts.orgs} orgs`],
+    ['shipped', 'jenkins weekly 2.565 · lts 2.568.1'],
+    ['gsoc', 'fossology 2025 · monolith → 10+ services'],
+    ['location', 'lahore · utc+5'],
+  ],
 };
+const nowIntro = { shipping: now.shipping, building: now.building, in_review: inReview.slice(0, 3), open_to: now.open_to };
 ---
 
 <section class="hero wrap" aria-labelledby="hero-title">
@@ -48,6 +63,9 @@ const termData = {
           if (h && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) h.classList.add('typing');
         })();
       </script>
+      <p class="lanes-row mono">
+        {profile.disciplines.map((d, i) => <>{i > 0 && <span class="sep" aria-hidden="true">/</span>}<a href={d.href}>{d.label}</a></>)}
+      </p>
     </div>
 
     <p class="headline rise">
@@ -89,7 +107,7 @@ const termData = {
     <div class="term-body mono" data-term-body tabindex="-1">
       <div data-term-intro>
         <p class="ln"><span class="pr">salman@env:~$</span> <span class="cmd">whoami</span></p>
-        <p class="ln out">backend engineer · 9D Technologies · Lahore</p>
+        <p class="ln out">software engineer · backend, ai, devops · 9D Technologies · Lahore</p>
 
         <p class="ln gap"><span class="pr">salman@env:~$</span> <span class="cmd">kubectl get contributions -n open-source</span></p>
         <div class="ln out tbl" role="table" aria-label="Open source contributions">
@@ -103,12 +121,12 @@ const termData = {
           ))}
         </div>
 
-        <p class="ln gap"><span class="pr">salman@env:~$</span> <span class="cmd">cat impact.json</span></p>
+        <p class="ln gap"><span class="pr">salman@env:~$</span> <span class="cmd">cat now.json</span></p>
         <pre class="ln out json">{'{'}
-  <span class="k">"trace_volume"</span>: <span class="v">"-81%"</span>,
-  <span class="k">"build_time"</span>: <span class="v">"-40%"</span>,
-  <span class="k">"merged_upstream_prs"</span>: <span class="n">{counts.merged}</span>
-{'}'}</pre>
+{Object.entries(nowIntro).map(([k, v], i, a) => (
+<>  <span class="k">"{k}"</span>: {Array.isArray(v) ? <>[{v.map((x, j) => <><span class="v">"{x}"</span>{j < v.length - 1 ? ', ' : ''}</>)}]</> : <span class="v">"{v}"</span>}{i < a.length - 1 ? ',' : ''}
+</>
+))}{'}'}</pre>
       </div>
       <div data-term-log aria-live="polite"></div>
       <form class="ln gap prompt" data-term-form autocomplete="off">
@@ -117,7 +135,7 @@ const termData = {
       </form>
     </div>
     <div class="suggest" data-term-suggest>
-      {['help', 'projects', 'oss', 'experience', 'contact', 'resume'].map((c) => (
+      {['help', 'neofetch', 'ask kubernetes', 'git log', 'agent', 'resume'].map((c) => (
         <button type="button" class="chip" data-cmd={c}>{c}</button>
       ))}
     </div>
@@ -186,24 +204,60 @@ const termData = {
 
   // 2. Interactive shell
   const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+  const scroll = () => body?.scrollTo({ top: body.scrollHeight, behavior: reduce ? 'auto' : 'smooth' });
   const print = (cmd: string, html: string) => {
-    if (!log) return;
     const block = document.createElement('div');
-    block.innerHTML = `<p class="ln gap"><span class="pr">salman@env:~$</span> <span class="cmd">${esc(cmd)}</span></p>${html ? `<div class="ln out">${html}</div>` : ''}`;
-    log.appendChild(block);
-    body?.scrollTo({ top: body.scrollHeight, behavior: reduce ? 'auto' : 'smooth' });
+    block.innerHTML = `<p class="ln gap"><span class="pr">salman@env:~$</span> <span class="cmd">${esc(cmd)}</span></p><div class="ln out">${html}</div>`;
+    log?.appendChild(block);
+    scroll();
+    return block.lastElementChild as HTMLElement;
   };
   const list = (rows: string[]) => `<pre class="json">${rows.map(esc).join('\n')}</pre>`;
   const go = (hash: string) => document.querySelector(hash)?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
 
-  const commands: Record<string, { help: string; run: (args: string[]) => string }> = {
+  const commands: Record<string, { help: string; run: (args: string[]) => string | Promise<string> }> = {
     help: {
       help: 'list commands',
       run: () =>
         list(Object.entries(commands).map(([k, v]) => `${k.padEnd(12)}${v.help}`)) +
         `<span class="dim">tab completes, ↑ recalls history</span>`,
     },
-    whoami: { help: 'short bio', run: () => 'Muhammad Salman. Backend engineer at 9D Technologies, GSoC 2025 at FOSSology, Jenkins contributor. Lahore, UTC+5.' },
+    whoami: { help: 'short bio', run: () => 'Muhammad Salman. Software engineer at 9D Technologies: backend, AI and DevOps. GSoC 2025 at FOSSology, code in official Jenkins releases. Lahore, UTC+5.' },
+    ask: {
+      help: 'ask <question>: retrieval over my data, cited',
+      run: async (args) => {
+        const q = args.join(' ');
+        if (!q) return 'usage: ask <question>   e.g. ask how do you keep LLMs safe';
+        const { ask } = await import('../scripts/retrieve');
+        const a = await ask(q);
+        if (!a.sentence) return `no confident answer in my data. I'd rather say that than guess. <span class="dim">(${a.ms.toFixed(1)} ms, ${a.corpus} chunks)</span>`;
+        const src = a.hits
+          .map((h, i) => `<span class="dim">[${i + 1}]</span> ${h.chunk.href ? `<a href="${esc(h.chunk.href)}">${esc(h.chunk.title)}</a>` : esc(h.chunk.title)} <span class="dim">${h.score.toFixed(2)}</span>`)
+          .join('<br>');
+        return `${esc(a.sentence)} <span class="dim">[1]</span><br>${src}<br><span class="dim">bm25 · ${a.corpus} chunks · ${a.ms.toFixed(1)} ms · no model call</span>`;
+      },
+    },
+    now: { help: 'what I’m on right now', run: () => `<pre class="json">${esc(JSON.stringify(data.now, null, 2))}</pre>` },
+    neofetch: {
+      help: 'system info, but it’s me',
+      run: () => {
+        const art = ['╭─────────╮', '│  ━━━━━● │', '│  ┃      │', '│  ━━━━━  │', '│      ┃  │', '│  ━━━━━  │', '╰─────────╯', ''];
+        const rows = [['', '<b class="ok">salman</b>@<b class="ok">env</b>'], ['', '──────────'], ...data.fetch];
+        return `<pre class="json">${rows.map((r: string[], i: number) => `<span class="art">${art[i] ?? ' '.repeat(11)}</span>   ${r[0] ? `<span class="k">${esc(r[0].padEnd(9))}</span>${esc(r[1])}` : r[1]}`).join('\n')}</pre>`;
+      },
+    },
+    git: {
+      help: 'git log: latest from the changelog',
+      run: (args) => (args[0] && args[0] !== 'log' ? `git: '${esc(args[0])}' is not a git command here. try <b>git log</b>` : (go('#changelog'), list(data.gitlog))),
+    },
+    agent: {
+      help: 'run the LLM agent demo',
+      run: () => {
+        go('#ai');
+        setTimeout(() => document.querySelector<HTMLButtonElement>('[data-scen="unknown"]')?.click(), reduce ? 0 : 700);
+        return 'scrolling to the agent · firing an unknown alert at tier 2…';
+      },
+    },
     experience: { help: 'roles, newest first', run: () => (go('#trace'), list(data.experience)) },
     projects: { help: 'what I built', run: () => (go('#ezvor'), list(data.projects)) },
     oss: { help: 'open source summary', run: () => (go('#open-source'), list(data.oss) + `<a href="${data.allPrs}" target="_blank" rel="noopener">all ${data.merged} merged PRs on GitHub ↗</a>`) },
@@ -235,7 +289,7 @@ const termData = {
           : 'usage: sudo hire salman',
     },
   };
-  const aliases: Record<string, string> = { ls: 'projects', email: 'contact', cv: 'resume', exp: 'experience', skills: 'stack', cls: 'clear' };
+  const aliases: Record<string, string> = { ls: 'projects', email: 'contact', cv: 'resume', exp: 'experience', skills: 'stack', cls: 'clear', fetch: 'neofetch', log: 'git', ai: 'agent', '?': 'ask' };
 
   const history: string[] = [];
   let hIdx = 0;
@@ -248,7 +302,11 @@ const termData = {
     const key = aliases[name.toLowerCase()] ?? name.toLowerCase();
     const c = commands[key];
     if (key === 'clear') { c.run(args); return; }
-    print(line, c ? c.run(args) : `command not found: ${esc(name)}. try <b>help</b>`);
+    if (!c) { print(line, `command not found: ${esc(name)}. try <b>help</b>`); return; }
+    const out = c.run(args);
+    if (typeof out === 'string') { print(line, out); return; }
+    const el = print(line, '<span class="dim">…</span>');
+    out.then((h) => { el.innerHTML = h; scroll(); }).catch(() => { el.innerHTML = 'something failed. try again.'; });
   };
 
   form?.addEventListener('submit', (e) => {
@@ -278,7 +336,7 @@ const termData = {
   .hero {
     display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 64px);
     align-items: center; padding-block: clamp(24px, 4vh, 48px);
-    min-height: calc(100svh - 68px);
+    min-height: min(calc(100svh - 68px), 980px);
   }
   h1 { font-size: clamp(46px, 5.4vw, 72px); line-height: 1.02; }
   h1 .l1, h1 .l2 { display: block; }
@@ -299,6 +357,11 @@ const termData = {
   .headline { font-size: clamp(20px, 2vw, 25px); line-height: 1.3; letter-spacing: -0.02em; margin-top: 18px; font-weight: 500; max-width: 26ch; text-wrap: balance; }
   .hl { color: var(--accent); }
   .intro { color: var(--text-2); margin-top: 14px; max-width: 58ch; display: grid; gap: 10px; }
+  .lanes-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 12px; font-size: 13px; }
+  .lanes-row a { color: var(--text-2); padding: 3px 9px; border-radius: 99px; border: 1px solid var(--border); background: var(--surface); transition: color .15s, border-color .15s; }
+  .lanes-row a:hover { color: var(--accent); border-color: var(--accent); }
+  .lanes-row .sep { color: var(--faint); }
+  .term-body :global(.art) { color: var(--accent); }
   .ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 22px; }
   .socials { list-style: none; padding: 0; display: flex; gap: 4px; margin-left: 6px; }
   .icon-link { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; color: var(--muted); border: 1px solid transparent; transition: color .15s, border-color .15s, background .15s; }
@@ -336,7 +399,7 @@ const termData = {
 
   @media (max-width: 980px) {
     .hero { grid-template-columns: 1fr; min-height: 0; padding-top: 0; }
-    .hero-copy { min-height: calc(100svh - 68px); display: flex; flex-direction: column; justify-content: center; padding-block: 24px; }
+    .hero-copy { min-height: min(calc(100svh - 68px), 980px); display: flex; flex-direction: column; justify-content: center; padding-block: 24px; }
     .term-wrap { margin-top: 44px; }
     .term-body { height: 380px; }
     .scribble { top: -40px; font-size: 17px; }

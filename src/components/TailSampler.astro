@@ -1,0 +1,153 @@
+---
+// Interactive tail-sampling simulator for PoS-OTel. Simulated CI traffic flows
+// through the same three policies the real collector uses. Pure DOM, ~3 KB.
+const N = 56; // bars on screen
+---
+
+<figure class="ts" data-ts aria-label="Tail sampling simulator">
+  <div class="ts-head mono">
+    <span><span class="live" aria-hidden="true"></span>otel-collector · tail_sampling</span>
+    <span class="muted">simulated jenkins traffic</span>
+  </div>
+
+  <div class="stream" data-stream aria-hidden="true">
+    {Array.from({ length: N }).map(() => <i></i>)}
+    <span class="thr" data-thr><span class="mono">30s</span></span>
+  </div>
+  <div class="legend mono" aria-hidden="true">
+    <span><i class="k err"></i>error · kept</span><span><i class="k slow"></i>slow · kept</span><span><i class="k base"></i>sampled</span><span><i class="k drop"></i>dropped</span>
+  </div>
+
+  <div class="ctrl">
+    <label class="tg"><input type="checkbox" checked data-p="errors" /><span>keep errors</span></label>
+    <label class="tg"><input type="checkbox" checked data-p="slow" /><span>keep slow &gt; <output data-o="slow">30</output>s</span>
+      <input type="range" min="5" max="60" step="1" value="30" data-r="slow" aria-label="Slow threshold in seconds" /></label>
+    <label class="tg"><input type="checkbox" checked data-p="base" /><span>baseline <output data-o="base">20</output>%</span>
+      <input type="range" min="0" max="100" step="5" value="20" data-r="base" aria-label="Baseline sampling percentage" /></label>
+  </div>
+
+  <div class="stats mono">
+    <div><b data-s="seen">0</b><span>traces seen</span></div>
+    <div><b data-s="kept">0</b><span>kept</span></div>
+    <div><b data-s="err">0/0</b><span>errors kept</span></div>
+    <div class="big"><b data-s="saved">0%</b><span>fewer traces stored</span></div>
+  </div>
+
+  <pre class="yaml mono" data-yaml></pre>
+  <figcaption class="mono">measured on real Jenkins runs: 81% less trace data, no failed or slow build lost</figcaption>
+</figure>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-ts]');
+  if (root) {
+    const bars = Array.from(root.querySelectorAll<HTMLElement>('[data-stream] i'));
+    const thr = root.querySelector<HTMLElement>('[data-thr]')!;
+    const yaml = root.querySelector<HTMLElement>('[data-yaml]')!;
+    const $ = (s: string) => root.querySelector<HTMLElement>(s)!;
+    const p = { errors: true, slow: true, base: true, slowS: 30, baseP: 20 };
+    const st = { seen: 0, kept: 0, err: 0, errKept: 0 };
+    const MAX = 90; // seconds mapped to full bar height
+    type T = { d: number; e: boolean; cls: string };
+    const tape: T[] = [];
+
+    // Log-normal build durations around ~12s, 2% errors.
+    const gauss = () => Math.sqrt(-2 * Math.log(1 - Math.random())) * Math.cos(2 * Math.PI * Math.random());
+    const next = (): T => {
+      const d = Math.min(MAX, Math.exp(Math.log(12) + 0.55 * gauss()));
+      const e = Math.random() < 0.02;
+      let cls = 'drop';
+      if (p.errors && e) cls = 'err';
+      else if (p.slow && d > p.slowS) cls = 'slow';
+      else if (p.base && Math.random() * 100 < p.baseP) cls = 'base';
+      st.seen++;
+      if (e) st.err++;
+      if (cls !== 'drop') { st.kept++; if (e) st.errKept++; }
+      return { d, e, cls };
+    };
+
+    const paint = () => {
+      bars.forEach((b, i) => {
+        const t = tape[i];
+        if (!t) { b.className = ''; b.style.height = '0'; return; }
+        b.className = t.cls + (t.e ? ' e' : '');
+        b.style.height = `${Math.max(6, (t.d / MAX) * 100)}%`;
+      });
+      $('[data-s="seen"]').textContent = st.seen.toLocaleString();
+      $('[data-s="kept"]').textContent = st.kept.toLocaleString();
+      $('[data-s="err"]').textContent = `${st.errKept}/${st.err}`;
+      $('[data-s="saved"]').textContent = st.seen ? `${Math.round((1 - st.kept / st.seen) * 100)}%` : '0%';
+      thr.style.bottom = `${(p.slowS / MAX) * 100}%`;
+      thr.style.opacity = p.slow ? '1' : '.2';
+      (thr.firstElementChild as HTMLElement).textContent = `${p.slowS}s`;
+    };
+
+    const writeYaml = () => {
+      const line = (on: boolean, s: string) => (on ? `    ${s}` : `  # ${s}`);
+      yaml.innerHTML = [
+        '<span class="c">processors:</span>',
+        '  <span class="c">tail_sampling:</span>',
+        '    <span class="c">policies:</span>',
+        line(p.errors, `- { name: errors,   type: status_code,   status_codes: [<span class="v">ERROR</span>] }`),
+        line(p.slow, `- { name: slow,     type: latency,       threshold_ms: <span class="v">${p.slowS * 1000}</span> }`),
+        line(p.base, `- { name: baseline, type: probabilistic, sampling_percentage: <span class="v">${p.baseP}</span> }`),
+      ].join('\n');
+    };
+
+    const resetStats = () => { st.seen = st.kept = st.err = st.errKept = 0; };
+    root.querySelectorAll<HTMLInputElement>('[data-p]').forEach((c) =>
+      c.addEventListener('change', () => { (p as any)[c.dataset.p!] = c.checked; resetStats(); writeYaml(); paint(); }),
+    );
+    root.querySelectorAll<HTMLInputElement>('[data-r]').forEach((r) =>
+      r.addEventListener('input', () => {
+        if (r.dataset.r === 'slow') p.slowS = +r.value; else p.baseP = +r.value;
+        $(`[data-o="${r.dataset.r}"]`).textContent = r.value;
+        resetStats(); writeYaml(); paint();
+      }),
+    );
+
+    // Pre-fill so it never looks empty, then stream only while visible.
+    for (let i = 0; i < bars.length; i++) tape.unshift(next());
+    for (let i = 0; i < 400; i++) next();
+    writeYaml();
+    paint();
+
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let timer = 0;
+    const tick = () => { tape.unshift(next()); tape.length = bars.length; for (let i = 0; i < 4; i++) next(); paint(); };
+    new IntersectionObserver(([e]) => {
+      clearInterval(timer);
+      if (e.isIntersecting && !reduce) timer = window.setInterval(tick, 180);
+    }).observe(root);
+  }
+</script>
+
+<style>
+  .ts { border: 1px solid var(--border); border-radius: 12px; background: var(--bg-2); overflow: hidden; margin: 0; }
+  .ts-head { display: flex; justify-content: space-between; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 11.5px; color: var(--text-2); flex-wrap: wrap; }
+  .live { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green); margin-right: 8px; animation: pulse 2.4s infinite; }
+  .stream { position: relative; height: 120px; margin: 14px 14px 6px; display: flex; align-items: flex-end; gap: 2px; border-bottom: 1px solid var(--border); }
+  .stream i { flex: 1; min-width: 2px; border-radius: 2px 2px 0 0; background: var(--border-2); opacity: .35; transition: height .18s ease-out; }
+  .stream i.err { background: var(--rose); opacity: 1; }
+  .stream i.slow { background: var(--amber); opacity: 1; }
+  .stream i.base { background: var(--accent); opacity: .9; }
+  .stream i.drop.e { background: var(--rose); opacity: .35; outline: 1px dashed var(--rose); }
+  .thr { position: absolute; left: 0; right: 0; border-top: 1px dashed var(--amber); transition: bottom .2s, opacity .2s; pointer-events: none; }
+  .thr span { position: absolute; right: 0; top: -16px; font-size: 10px; color: var(--amber); background: var(--bg-2); padding: 0 4px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; padding: 0 14px 10px; font-size: 10.5px; color: var(--muted); }
+  .k { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+  .k.err { background: var(--rose); } .k.slow { background: var(--amber); } .k.base { background: var(--accent); } .k.drop { background: var(--border-2); }
+  .ctrl { display: grid; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--border); }
+  .tg { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 4px 10px; font-size: 13px; color: var(--text-2); cursor: pointer; }
+  .tg input[type='checkbox'] { accent-color: var(--accent); width: 15px; height: 15px; }
+  .tg input[type='range'] { grid-column: 2; accent-color: var(--accent); width: 100%; }
+  .tg output { color: var(--text); font-family: var(--font-mono); }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border-top: 1px solid var(--border); }
+  .stats div { background: var(--surface); padding: 10px 12px; display: grid; }
+  .stats b { font-family: var(--font-sans); font-size: 18px; font-variant-numeric: tabular-nums; }
+  .stats .big b { color: var(--green); }
+  .stats span { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  .yaml { margin: 0; padding: 12px 14px; font-size: 11.5px; line-height: 1.6; color: var(--text-2); border-top: 1px solid var(--border); overflow-x: auto; white-space: pre; background: var(--bg); }
+  .yaml :global(.c) { color: var(--blue); } .yaml :global(.v) { color: var(--amber); }
+  figcaption { font-size: 10.5px; color: var(--muted); padding: 9px 14px; border-top: 1px solid var(--border); }
+  @media (max-width: 520px) { .stats { grid-template-columns: 1fr 1fr; } }
+</style>

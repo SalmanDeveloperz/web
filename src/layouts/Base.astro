@@ -1,4 +1,11 @@
 ---
+// Fonts are self-hosted (same origin, immutable cache). Only the latin subsets
+// are ever downloaded, thanks to unicode-range in the fontsource CSS.
+import '@fontsource-variable/geist/wght.css';
+import '@fontsource-variable/geist-mono/wght.css';
+import '@fontsource/kalam/latin-700.css';
+import geistUrl from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
+import kalamUrl from '@fontsource/kalam/files/kalam-latin-700-normal.woff2?url';
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -14,7 +21,7 @@ interface Props {
 
 const {
   title,
-  description = `${profile.name}, backend software engineer in ${profile.location}. Python and FastAPI at 9D Technologies, Google Summer of Code 2025 at FOSSology, Jenkins contributor.`,
+  description = `${profile.name}, software engineer in ${profile.location}: backend, AI and DevOps. Python and FastAPI at 9D Technologies, Google Summer of Code 2025 at FOSSology, code in official Jenkins releases.`,
   type = 'website',
   published,
 } = Astro.props;
@@ -34,9 +41,11 @@ const personLd = {
   address: { '@type': 'PostalAddress', addressLocality: 'Lahore', addressCountry: 'PK' },
   email: `mailto:${profile.email}`,
   sameAs: profile.socials.filter((s) => s.url.startsWith('http')).map((s) => s.url),
-  knowsAbout: ['Backend engineering', 'FastAPI', 'Kubernetes', 'CI/CD', 'Jenkins', 'OpenTelemetry', 'Observability', 'Open source'],
+  knowsAbout: ['Backend engineering', 'FastAPI', 'LLM agents', 'RAG', 'Kubernetes', 'CI/CD', 'Jenkins', 'OpenTelemetry', 'Observability', 'Open source'],
   award: ['Google Summer of Code 2025', 'Linux Foundation LiFT Scholar 2025'],
 };
+
+const speculation = { prefetch: [{ source: 'list', urls: ['/writing/'] }] };
 ---
 
 <!doctype html>
@@ -48,7 +57,12 @@ const personLd = {
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <meta name="author" content={profile.name} />
-    <meta name="theme-color" content="#07090c" />
+    <meta name="theme-color" content="#07090c" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#fbfbf9" media="(prefers-color-scheme: light)" />
+    <meta name="color-scheme" content="dark light" />
+
+    <link rel="preload" href={geistUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={kalamUrl} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:type" content={type} />
     <meta property="og:title" content={fullTitle} />
@@ -66,14 +80,8 @@ const personLd = {
     <link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Kalam:wght@700&display=swap"
-      rel="stylesheet"
-    />
-
     <script type="application/ld+json" set:html={JSON.stringify(personLd)} />
+    <script type="speculationrules" set:html={JSON.stringify(speculation)} />
 
     <script is:inline>
       (function () {

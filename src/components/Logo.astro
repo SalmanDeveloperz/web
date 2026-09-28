@@ -1,0 +1,31 @@
+---
+// The mark: an "S" drawn as a single trace route with a live span head.
+// Draws itself on load and again on hover. Pure SVG + CSS.
+interface Props { size?: number }
+const { size = 34 } = Astro.props;
+---
+
+<span class="logo" style={`--s:${size}px`} aria-hidden="true">
+  <svg viewBox="0 0 32 32" width={size} height={size}>
+    <rect class="tile" x="0.75" y="0.75" width="30.5" height="30.5" rx="8.5" />
+    <path class="route" d="M23 9.5 H12.75 a3.25 3.25 0 0 0 0 6.5 H19.25 a3.25 3.25 0 0 1 0 6.5 H9" pathLength="1" />
+    <circle class="tail" cx="9" cy="22.5" r="1.6" />
+    <circle class="head" cx="23" cy="9.5" r="2.4" />
+  </svg>
+</span>
+
+<style>
+  .logo { display: inline-grid; width: var(--s); height: var(--s); flex: none; }
+  .tile { fill: var(--surface); stroke: var(--border-2); stroke-width: 1.5; transition: stroke .2s; }
+  .route {
+    fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+    stroke-dasharray: 1; stroke-dashoffset: 0; animation: route 1.1s cubic-bezier(.6,.1,.2,1) .15s both;
+  }
+  .tail { fill: var(--accent); opacity: .55; }
+  .head { fill: var(--green); transform-origin: 23px 9.5px; animation: beat 2.4s ease-in-out infinite; }
+  @keyframes route { from { stroke-dashoffset: 1; } }
+  @keyframes beat { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.35); opacity: .7; } }
+  :global(a:hover) > .logo .route, :global(a:focus-visible) > .logo .route { animation: route .8s cubic-bezier(.6,.1,.2,1) both; }
+  :global(a:hover) > .logo .tile { stroke: var(--accent); }
+  @media (prefers-reduced-motion: reduce) { .route, .head { animation: none !important; } }
+</style>

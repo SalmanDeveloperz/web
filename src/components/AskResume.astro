@@ -1,0 +1,112 @@
+---
+// "Ask my résumé": BM25 retrieval over /rag.json, in the browser, with citations.
+const samples = [
+  'Have you used Kubernetes in production?',
+  'How do you keep LLM agents safe?',
+  'What have you shipped in Jenkins?',
+  'Tell me about GSoC',
+  'Any hackathon wins?',
+];
+---
+
+<div class="ask card" id="ask" data-ask>
+  <div class="ask-head mono">
+    <span><span class="fn">ask</span>(<span class="arg">resume</span>, q)</span>
+    <span class="muted">bm25 · runs in your browser · cited</span>
+  </div>
+  <form class="ask-form" data-ask-form autocomplete="off">
+    <label for="ask-q" class="sr">Ask a question about my work</label>
+    <input id="ask-q" data-ask-q placeholder="Ask anything about my work…" maxlength="160" />
+    <button class="btn primary" type="submit">Ask</button>
+  </form>
+  <div class="samples">
+    {samples.map((s) => <button type="button" class="chip" data-sample={s}>{s}</button>)}
+  </div>
+
+  <div class="out" data-ask-out aria-live="polite">
+    <p class="idle mono">// ask something. the index loads on first question.</p>
+  </div>
+
+  <p class="ask-foot mono">retrieval only, no model call: every answer is a cited line from this site’s own data, so there’s nothing to hallucinate.</p>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-ask]');
+  if (root) {
+    const form = root.querySelector<HTMLFormElement>('[data-ask-form]')!;
+    const input = root.querySelector<HTMLInputElement>('[data-ask-q]')!;
+    const out = root.querySelector<HTMLElement>('[data-ask-out]')!;
+    // Warm the index as soon as the user shows intent.
+    const warm = () => import('../scripts/retrieve').then((m) => m.loadIndex());
+    input.addEventListener('focus', warm, { once: true });
+    root.addEventListener('pointerenter', warm, { once: true });
+
+    const render = async (q: string) => {
+      const { ask, highlight, escapeHtml } = await import('../scripts/retrieve');
+      out.innerHTML = '<p class="idle mono">// retrieving…</p>';
+      const a = await ask(q);
+      const max = a.hits[0]?.score || 1;
+      const pipe = `<p class="pipe mono"><span>query</span> → <span>${a.tokens.length} tokens</span> → <span>bm25 over ${a.corpus} chunks</span> → <span>top ${a.hits.length}</span> → <span class="ok">${a.ms.toFixed(2)} ms</span></p>`;
+      const answer = a.sentence
+        ? `<p class="answer">${highlight(a.sentence, a.tokens)} <sup>[1]</sup></p>`
+        : `<p class="answer none">Nothing in my data answers that. I’d rather say so than guess. Try the terminal, or <a href="#contact">ask me directly</a>.</p>`;
+      const srcs = a.hits
+        .map((h, i) => {
+          const text = h.chunk.text.length > 190 ? h.chunk.text.slice(0, 190) + '…' : h.chunk.text;
+          const link = h.chunk.href ? `href="${escapeHtml(h.chunk.href)}"${h.chunk.href.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}` : '';
+          return `<li><a ${link}><span class="n mono">[${i + 1}]</span><span class="t"><b>${escapeHtml(h.chunk.title)}</b><span class="k mono">${escapeHtml(h.chunk.kind)}</span></span><span class="bar" style="--w:${Math.round((h.score / max) * 100)}%"><i></i><span class="mono">${h.score.toFixed(2)}</span></span><span class="snip">${highlight(text, a.tokens)}</span></a></li>`;
+        })
+        .join('');
+      out.innerHTML = pipe + answer + (srcs ? `<ol class="srcs">${srcs}</ol>` : '');
+    };
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const q = input.value.trim();
+      if (q) render(q);
+    });
+    root.querySelectorAll<HTMLButtonElement>('[data-sample]').forEach((b) =>
+      b.addEventListener('click', () => {
+        input.value = b.dataset.sample!;
+        render(input.value);
+      }),
+    );
+  }
+</script>
+
+<style>
+  .ask { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+  .ask-head { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--surface-2); font-size: 12px; }
+  .fn { color: var(--violet); } .arg { color: var(--amber); }
+  .ask-form { display: flex; gap: 8px; padding: 16px 16px 10px; }
+  .ask-form input {
+    flex: 1; min-width: 0; height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--border-2);
+    background: var(--bg-2); color: var(--text); font: inherit; font-size: 15px; outline: none; transition: border-color .15s, box-shadow .15s;
+  }
+  .ask-form input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .samples { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 16px 14px; }
+  .samples .chip { cursor: pointer; }
+  .samples .chip:hover { color: var(--accent); border-color: var(--accent); }
+  .out { padding: 14px 16px; border-top: 1px solid var(--border); min-height: 180px; flex: 1; }
+  .out :global(.idle) { font-size: 12px; color: var(--muted); }
+  .out :global(.pipe) { font-size: 11.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px; }
+  .out :global(.pipe span) { color: var(--text-2); }
+  .out :global(.pipe .ok) { color: var(--green); }
+  .out :global(.answer) { font-size: 16px; line-height: 1.55; color: var(--text); margin-top: 10px; }
+  .out :global(.answer.none) { color: var(--text-2); }
+  .out :global(.answer a) { color: var(--accent); text-decoration: underline; }
+  .out :global(sup) { color: var(--accent); font-family: var(--font-mono); font-size: 11px; }
+  .out :global(mark) { background: color-mix(in srgb, var(--amber) 22%, transparent); color: inherit; border-radius: 3px; padding: 0 2px; }
+  .out :global(.srcs) { list-style: none; padding: 0; margin-top: 12px; display: grid; gap: 8px; }
+  .out :global(.srcs a) { display: grid; grid-template-columns: 28px 1fr auto; gap: 4px 8px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-2); transition: border-color .15s; }
+  .out :global(.srcs a:hover) { border-color: var(--accent); }
+  .out :global(.n) { color: var(--accent); font-size: 12px; }
+  .out :global(.t) { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; font-size: 13.5px; }
+  .out :global(.k) { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  .out :global(.bar) { display: flex; align-items: center; gap: 6px; font-size: 10.5px; color: var(--muted); }
+  .out :global(.bar i) { display: block; width: 54px; height: 4px; border-radius: 99px; background: linear-gradient(90deg, var(--accent) var(--w), var(--border) var(--w)); }
+  .out :global(.snip) { grid-column: 2 / -1; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+  .ask-foot { font-size: 11px; color: var(--muted); padding: 10px 16px; border-top: 1px solid var(--border); background: var(--surface-2); }
+  @media (max-width: 520px) { .out :global(.bar) { display: none; } .out :global(.srcs a) { grid-template-columns: 24px 1fr; } }
+</style>

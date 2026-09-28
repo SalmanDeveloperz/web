@@ -1,0 +1,68 @@
+---
+// Merged upstream PRs per month, stacked by org. Data comes from the GitHub
+// sync at build time; hover or focus a month to see what merged.
+import { monthly } from '../data/github';
+
+const colors: Record<string, string> = {
+  jenkins: '#d24939', fossology: '#60a5fa', owasp: '#a78bfa', numfocus: '#4ade80',
+  typo3bestpractices: '#f5b544', meshery: '#2ec4b6', sktime: '#fb7185', 'aeon-toolkit': '#fb923c', dragonflydb: '#e879f9',
+};
+const names: Record<string, string> = { typo3bestpractices: 'typo3', 'aeon-toolkit': 'aeon', dragonflydb: 'dragonfly' };
+const max = Math.max(1, ...monthly.map((m) => m.total));
+const orgs = [...new Set(monthly.flatMap((m) => Object.keys(m.byOrg)))];
+const label = (m: string) => new Date(`${m}-01T00:00:00`).toLocaleString('en', { month: 'short', year: '2-digit' });
+---
+
+{monthly.length > 0 && (
+  <figure class="prc card" aria-label="Merged pull requests per month">
+    <div class="prc-head mono">
+      <span>merged PRs / month</span>
+      <span class="lg">{orgs.map((o) => <span><i style={`background:${colors[o] ?? 'var(--muted)'}`}></i>{names[o] ?? o}</span>)}</span>
+    </div>
+    <div class="cols">
+      {monthly.map((m, i) => (
+        <div class="col" tabindex={m.total ? 0 : -1} style={`--h:${(m.total / max) * 100}%`}>
+          <div class="stack">
+            {Object.entries(m.byOrg).map(([o, n]) => <i style={`flex:${n};background:${colors[o] ?? 'var(--muted)'}`}></i>)}
+          </div>
+          {(i === 0 || m.month.endsWith('-01') || i === monthly.length - 1) && <span class="x mono">{label(m.month)}</span>}
+          {m.total > 0 && (
+            <div class:list={['tip', { left: i > monthly.length * 0.65 }]} role="tooltip">
+              <b class="mono">{label(m.month)} · {m.total} merged</b>
+              <ul>{m.prs.slice(0, 5).map((p) => <li><span class="mono">{p.repo.split('/')[1]}</span> {p.title}</li>)}</ul>
+              {m.prs.length > 5 && <span class="mono more">+{m.prs.length - 5} more</span>}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </figure>
+)}
+
+<style>
+  .prc { padding: 14px 16px 26px; margin-bottom: 16px; }
+  .prc-head { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 11.5px; color: var(--text-2); }
+  .lg { display: flex; flex-wrap: wrap; gap: 10px; color: var(--muted); font-size: 10.5px; }
+  .lg i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+  .cols { display: flex; align-items: flex-end; gap: 3px; height: 110px; margin-top: 14px; border-bottom: 1px solid var(--border); }
+  .col { position: relative; flex: 1; height: 100%; display: flex; align-items: flex-end; outline: none; }
+  .stack { width: 100%; height: var(--h); min-height: 0; display: flex; flex-direction: column-reverse; border-radius: 3px 3px 0 0; overflow: hidden; transform-origin: bottom; transition: filter .15s; }
+  :global(.in) .stack, .prc .stack { animation: grow .8s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes grow { from { transform: scaleY(0); } }
+  .stack i { display: block; min-height: 2px; }
+  .col:hover .stack, .col:focus-visible .stack { filter: brightness(1.25); }
+  .col:focus-visible { box-shadow: 0 0 0 2px var(--accent); border-radius: 3px; }
+  .x { position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--muted); white-space: nowrap; }
+  .tip {
+    position: absolute; bottom: calc(100% + 8px); left: 0; z-index: 5; width: max-content; max-width: 300px;
+    padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border-2); background: var(--surface); box-shadow: 0 20px 40px -20px rgba(0,0,0,.6);
+    font-size: 12px; color: var(--text-2); opacity: 0; transform: translateY(4px); pointer-events: none; transition: opacity .15s, transform .15s;
+  }
+  .tip.left { left: auto; right: 0; }
+  .tip b { font-weight: 500; color: var(--text); font-size: 11.5px; }
+  .tip ul { list-style: none; padding: 0; margin-top: 6px; display: grid; gap: 4px; }
+  .tip li span { color: var(--accent); font-size: 10.5px; }
+  .tip .more { font-size: 10.5px; color: var(--muted); }
+  .col:hover .tip, .col:focus-visible .tip { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .stack { animation: none !important; } }
+</style>

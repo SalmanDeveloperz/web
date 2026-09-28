@@ -10,7 +10,9 @@ import OpenSource from '../components/OpenSource.astro';
 import Ezvor from '../components/Ezvor.astro';
 import PdfScanner from '../components/PdfScanner.astro';
 import Projects from '../components/Projects.astro';
-import Recognition from '../components/Recognition.astro';
+import Ai from '../components/Ai.astro';
+import Changelog from '../components/Changelog.astro';
+import Skills from '../components/Skills.astro';
 import WritingList from '../components/WritingList.astro';
 import Contact from '../components/Contact.astro';
 
@@ -25,16 +27,18 @@ const posts = (await getCollection('writing', ({ data }) => !data.draft))
   <Metrics />
   <Trace />
   <OpenSource />
+  <Ai />
   <Ezvor />
   <PdfScanner />
   <Projects />
-  <Recognition />
+  <Changelog />
+  <Skills />
 
   <section id="writing" class="block">
     <div class="wrap">
       <div class="section-head head-row reveal">
         <div>
-          <span class="eyebrow">08 · writing</span>
+          <span class="eyebrow">09 · writing</span>
           <h2 class="h2">Notes & <Mark variant={2}>write-ups</Mark></h2>
         </div>
         <a class="link-arrow" href="/writing/">All posts →</a>
