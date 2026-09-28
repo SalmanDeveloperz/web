@@ -38,3 +38,9 @@
   [headers.values]
     Content-Disposition = "inline; filename=Muhammad_Salman_Resume.pdf"
     Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/*.sh"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+    Cache-Control = "public, max-age=300"
