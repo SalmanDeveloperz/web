@@ -285,7 +285,7 @@ const nowIntro = { shipping: now.shipping, building: now.building, in_review: in
       help: 'try it',
       run: (args) =>
         args.join(' ').startsWith('hire')
-          ? (setTimeout(() => (location.href = `mailto:${data.email}?subject=Let%E2%80%99s%20talk`), 600), '<span class="ok">permission granted.</span> opening your mail client…')
+          ? (setTimeout(() => (location.href = `mailto:${data.email}?subject=Let%E2%80%99s%20talk`), 600), '<span class="ok">permission granted.</span> opening your mail client…<br><span class="dim">want it in your real terminal?</span> curl -fsSL salman-ch.netlify.app/install.sh | sh')
           : 'usage: sudo hire salman',
     },
   };
