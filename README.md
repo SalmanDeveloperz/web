@@ -1,12 +1,9 @@
-# salman-ch.netlify.app
-
-My personal site. Static, fast, and boring where it matters.
-
+## My personal site. Static, fast, and boring where it matters.
 Live: **[salman-ch.netlify.app](https://salman-ch.netlify.app)**
 
 ```
 $ whoami
-backend engineer · 9D Technologies · Lahore
+Software engineer · 9D Technologies · Earth
 ```
 
 ---
