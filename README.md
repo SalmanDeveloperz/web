@@ -1,9 +1,10 @@
-## My personal site. Static, fast, and boring where it matters.
+## My personal site. Its static, fast and boring where it matters 👀
+
 Live: **[salman-ch.netlify.app](https://salman-ch.netlify.app)**
 
 ```
 $ whoami
-Software engineer · 9D Technologies · Earth
+Software engineer · 9D Technologies · localhost
 ```
 
 ---
