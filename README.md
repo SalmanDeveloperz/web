@@ -1,4 +1,4 @@
-## My personal site. Its static, fast and boring where it matters 👀
+## My portfolii site. Its static, fast and boring where it matters 👀
 
 Live 🔗: **[salman-ch.netlify.app](https://salman-ch.netlify.app)**
 
