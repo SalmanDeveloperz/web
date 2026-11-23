@@ -514,7 +514,7 @@ export function boot(root: HTMLElement, data: ShellData) {
         if (!u) return 'curl: try `curl /llms.txt` or `curl https://api.github.com/zen`';
         const url = new URL(u.startsWith('http') || u.startsWith('/') ? u : `https://${u}`, location.href);
         const t0 = performance.now();
-        const r = await fetch(url, { signal: live.signal, cache: 'no-store' }).catch((e) => { throw new Error(e.name === 'AbortError' ? 'aborted' : `curl: (7) failed to connect to ${url.host} (blocked by CORS or offline)`); });
+        const r = await fetch(url, { signal: live.signal, cache: 'no-store' }).catch((e) => { throw new Error(e.name === 'AbortError' ? 'aborted' : `curl: (7) ${url.host} is blocked: this site's security policy only allows itself and api.github.com`); });
         const ms = (performance.now() - t0).toFixed(0);
         if (flags.has('I')) return `HTTP ${r.status} ${r.statusText}\n${[...r.headers].map(([k, v]) => `${k}: ${v}`).join('\n')}\n\n(${ms} ms)`;
         const txt = await r.text();
