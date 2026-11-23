@@ -3,13 +3,16 @@
 // are ever downloaded, thanks to unicode-range in the fontsource CSS.
 import '@fontsource-variable/geist/wght.css';
 import '@fontsource-variable/geist-mono/wght.css';
-import '@fontsource/kalam/latin-700.css';
+import '@fontsource/instrument-serif/latin-400.css';
+import '@fontsource/instrument-serif/latin-400-italic.css';
 import geistUrl from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
-import kalamUrl from '@fontsource/kalam/files/kalam-latin-700-normal.woff2?url';
+import serifUrl from '@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2?url';
+import { build as buildStamp } from '../data/build';
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import CommandPalette from '../components/CommandPalette.astro';
+import DevTools from '../components/DevTools.astro';
 import { profile } from '../data/profile';
 
 interface Props {
@@ -45,6 +48,8 @@ const personLd = {
   award: ['Google Summer of Code 2025', 'Linux Foundation LiFT Scholar 2025'],
 };
 
+const build = { ...buildStamp, astro: Astro.generator };
+
 const speculation = { prefetch: [{ source: 'list', urls: ['/writing/'] }] };
 ---
 
@@ -57,12 +62,11 @@ const speculation = { prefetch: [{ source: 'list', urls: ['/writing/'] }] };
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <meta name="author" content={profile.name} />
-    <meta name="theme-color" content="#07090c" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#fbfbf9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#ffffff" data-theme-color />
     <meta name="color-scheme" content="dark light" />
 
     <link rel="preload" href={geistUrl} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={kalamUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={serifUrl} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:type" content={type} />
     <meta property="og:title" content={fullTitle} />
@@ -84,21 +88,26 @@ const speculation = { prefetch: [{ source: 'list', urls: ['/writing/'] }] };
     <script type="speculationrules" set:html={JSON.stringify(speculation)} />
 
     <script is:inline>
+      // Runs before first paint so there is never a flash of the wrong theme.
       (function () {
         var d = document.documentElement;
         d.classList.remove('no-js');
-        var t = null;
-        var q = new URLSearchParams(location.search).get('theme');
-        if (q === 'light' || q === 'dark') t = q;
-        if (!t) { try { t = localStorage.getItem('theme'); } catch (e) {} }
-        if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        var modes = { paper: 'light', sepia: 'light', ink: 'dark', midnight: 'dark', phosphor: 'dark', contrast: 'dark' };
+        var legacy = { light: 'paper', dark: 'ink' };
+        var pick = function (t) { t = legacy[t] || t; return modes[t] ? t : null; };
+        var t = pick(new URLSearchParams(location.search).get('theme'));
+        var p = {};
+        try { t = t || pick(localStorage.getItem('theme')); p = JSON.parse(localStorage.getItem('prefs') || '{}'); } catch (e) {}
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'ink' : 'paper';
         d.dataset.theme = t;
+        d.dataset.mode = modes[t];
+        if (p.scale) d.style.setProperty('--font-scale', p.scale);
+        if (p.motion) d.dataset.motion = p.motion;
+        if (p.accent) { d.style.setProperty('--accent', p.accent); d.style.setProperty('--term-accent', p.accent); }
       })();
     </script>
   </head>
   <body>
-    <div class="bg-grid" aria-hidden="true"></div>
-    <div class="bg-glow" aria-hidden="true"></div>
     <a class="skip" href="#main">Skip to content</a>
     <Nav />
     <main id="main">
@@ -106,6 +115,7 @@ const speculation = { prefetch: [{ source: 'list', urls: ['/writing/'] }] };
     </main>
     <Footer />
     <CommandPalette />
+    <DevTools build={build} />
 
     <script>
       const io = new IntersectionObserver(

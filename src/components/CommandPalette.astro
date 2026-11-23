@@ -1,5 +1,6 @@
 ---
 import { profile, allPrsUrl } from '../data/profile';
+import { themes } from '../scripts/theme';
 
 const commands = [
   { group: 'Navigate', label: 'Experience trace', hint: '/#trace', action: 'go', value: '/#trace' },
@@ -17,7 +18,10 @@ const commands = [
   { group: 'Navigate', label: 'Contact', hint: '/#contact', action: 'go', value: '/#contact' },
   { group: 'Actions', label: 'Copy email address', hint: profile.email, action: 'copy', value: profile.email },
   { group: 'Actions', label: 'Download résumé (PDF)', hint: 'resume.pdf', action: 'open', value: profile.resume },
-  { group: 'Actions', label: 'Toggle light / dark theme', hint: 'theme', action: 'theme', value: '' },
+  { group: 'Actions', label: 'Focus the terminal', hint: 'shell', action: 'terminal', value: '' },
+  { group: 'Actions', label: 'Open developer tools', hint: 'ctrl + `', action: 'devtools', value: '' },
+  { group: 'Actions', label: 'Toggle light / dark', hint: 'theme', action: 'mode', value: '' },
+  ...themes.map((t) => ({ group: 'Theme', label: `Theme: ${t.name}`, hint: t.mode, action: 'theme', value: t.id })),
   ...profile.socials
     .filter((s) => s.url.startsWith('http'))
     .map((s) => ({ group: 'Links', label: `Open ${s.name}`, hint: s.url.replace('https://', ''), action: 'open', value: s.url })),
@@ -49,6 +53,7 @@ const commands = [
 </div>
 
 <script>
+  import { setTheme, toggleMode } from '../scripts/theme';
   const root = document.querySelector<HTMLElement>('[data-palette]')!;
   const input = root.querySelector<HTMLInputElement>('[data-input]')!;
   const items = Array.from(root.querySelectorAll<HTMLLIElement>('[data-item]'));
@@ -90,14 +95,25 @@ const commands = [
     else if (action === 'open') { close(); window.open(value, '_blank', 'noopener'); }
     else if (action === 'copy') {
       navigator.clipboard?.writeText(value).then(() => { toast.textContent = 'copied ✓'; setTimeout(() => { toast.textContent = ''; close(); }, 700); });
-    } else if (action === 'theme') {
-      document.querySelector<HTMLButtonElement>('[data-theme-toggle]')?.click();
+    } else if (action === 'theme') { setTheme(value); close(); }
+    else if (action === 'mode') { toggleMode(); close(); }
+    else if (action === 'devtools') { close(); dispatchEvent(new CustomEvent('devtools:open')); }
+    else if (action === 'terminal') {
+      close();
+      const t = document.querySelector<HTMLElement>('[data-term]');
+      if (t) { t.scrollIntoView({ block: 'center' }); setTimeout(() => t.querySelector<HTMLInputElement>('[data-in]')?.focus({ preventScroll: true }), 300); }
+      else location.href = '/#main';
     }
   };
 
   document.addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); root.hidden ? open() : close(); return; }
-    if (e.key === '/' && root.hidden && !(e.target as HTMLElement).closest('input,textarea,[contenteditable]')) { e.preventDefault(); open(); return; }
+    if (e.key === '/' && root.hidden && !(e.target as HTMLElement).closest('input,textarea,[contenteditable]')) {
+      // While the terminal is on screen, "/" belongs to it.
+      const t = document.querySelector('[data-term]')?.getBoundingClientRect();
+      if (t && t.bottom > 0 && t.top < innerHeight) return;
+      e.preventDefault(); open(); return;
+    }
     if (root.hidden) return;
     if (e.key === 'Escape') close();
     else if (e.key === 'ArrowDown') { e.preventDefault(); select(idx + 1); }

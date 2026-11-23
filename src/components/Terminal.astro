@@ -1,0 +1,293 @@
+---
+// The hero terminal. Its filesystem is generated here, at build time, from
+// src/data and the writing collection, so `ls`, `cat` and `grep` always show
+// what the rest of the site shows.
+import { getCollection } from 'astro:content';
+import { profile, projects, ezvor, pdfScanner, spans, openSource, lanes, alsoUsed, now, changelog, logTypes, awards } from '../data/profile';
+import { counts, inReview, liveState } from '../data/github';
+
+interface Props { build: { commit: string; at: string; astro: string } }
+const { build } = Astro.props;
+
+const HOME = '/home/salman';
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const files: Record<string, { c: string; href?: string }> = {};
+const add = (p: string, c: string, href?: string) => { files[`${HOME}/${p}`] = href ? { c, href } : { c }; };
+const ym = (s: string | null) => (s ? new Date(`${s}-01`).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }) : 'present');
+
+add('about.md', [
+  `# ${profile.name}`,
+  '',
+  `${profile.role} · ${profile.location} (${profile.timezone})`,
+  profile.headline,
+  '',
+  ...profile.intro.flatMap((p) => [p, '']),
+  `status: ${profile.availability}`,
+].join('\n'));
+
+add('now.json', JSON.stringify({ ...now, in_review: inReview }, null, 2));
+add('contact.txt', [
+  `email:    ${profile.email}`,
+  ...profile.socials.filter((s) => s.url.startsWith('http')).map((s) => `${s.name.toLowerCase().padEnd(9)} ${s.url}`),
+  `resume:   ${profile.site}${profile.resume}`,
+  '',
+  'Fastest reply: email. Usually within a day (PKT, UTC+5).',
+].join('\n'));
+add('resume.pdf', '%PDF-1.7 (binary)', profile.resume);
+add('README.md', [
+  '# ~',
+  '',
+  'This is a real shell over the content of this site.',
+  '',
+  'try:',
+  '  ls -l projects',
+  '  cat projects/pos-otel.md',
+  '  grep -ri kubernetes ~ | head -5',
+  '  gh pr list --state merged',
+  '  tree',
+  '  theme next',
+  '  top',
+].join('\n'));
+
+// projects
+const proj = [
+  { file: 'ezvor.md', name: ezvor.name, kind: 'Main project · career platform', body: [ezvor.story, '', ...ezvor.principles.map((p) => `- ${p.title}: ${p.body}`)].join('\n'), stack: ezvor.stack, repo: ezvor.repo, live: ezvor.live, href: '#ezvor' },
+  { file: 'pdf-scanner.md', name: pdfScanner.name, kind: `Shipped at ${pdfScanner.org}`, body: pdfScanner.story, stack: ['React 19', 'TypeScript', 'Web Workers', 'In-browser OCR'], repo: pdfScanner.repo, live: pdfScanner.live, href: '#pdf-scanner' },
+  ...projects.map((p) => ({ file: `${slug(p.name.split(':')[0])}.md`, name: p.name, kind: p.kind, body: p.body, stack: p.stack, repo: p.repo, live: p.live, metric: p.metric, href: '#work' })),
+];
+for (const p of proj) {
+  add(`projects/${p.file}`, [
+    `# ${p.name}`,
+    `kind: ${p.kind}`,
+    ...('metric' in p && p.metric ? [`result: ${p.metric}`] : []),
+    `stack: ${p.stack.join(', ')}`,
+    ...(p.repo ? [`repo: ${p.repo}`] : []),
+    ...(p.live ? [`live: ${p.live}`] : []),
+    '',
+    p.body,
+  ].join('\n'), p.href);
+}
+
+// experience
+const roles = [...spans].filter((s) => s.kind !== 'award').sort((a, b) => b.start.localeCompare(a.start));
+for (const s of roles) {
+  add(`experience/${slug(s.service)}.md`, [
+    `# ${s.role} · ${s.org}`,
+    `dates: ${ym(s.start)} → ${ym(s.end)}`,
+    ...(s.location ? [`location: ${s.location}`] : []),
+    ...Object.entries(s.attrs).map(([k, v]) => `${k}: ${v}`),
+    '',
+    s.summary,
+    ...(s.points?.length ? ['', ...s.points.map((p) => `- ${p}`)] : []),
+  ].join('\n'), `#span-${s.id}`);
+}
+add('experience/README', roles.map((s) => `${s.start}  ${(s.end ?? 'now').padEnd(7)}  ${s.role} · ${s.org}`).join('\n'), '#trace');
+
+// open source
+for (const o of openSource) {
+  add(`oss/${o.slug}.md`, [
+    `# ${o.name}`,
+    o.blurb,
+    ...(o.highlight ? [`highlight: ${o.highlight}`] : []),
+    '',
+    ...o.items.map((it) => {
+      const live = it.url ? liveState(it.url) : undefined;
+      const st = it.status === 'shipped' && live === 'merged' ? 'shipped' : live ?? it.status;
+      return `[${st.padEnd(7)}] ${it.ref.padEnd(20)} ${it.title}${it.url ? `\n           ${it.url}` : ''}`;
+    }),
+  ].join('\n'), `#oss-${o.slug}`);
+}
+add('oss/README', [
+  `${counts.merged} merged upstream PRs across ${counts.orgs} orgs.`,
+  '',
+  ...openSource.map((o) => `${o.name.padEnd(20)} ${String(o.items.length).padStart(2)} items${o.highlight ? `  · ${o.highlight}` : ''}`),
+  '',
+  'cat oss/<org>.md for details · gh pr list for the live list',
+].join('\n'), '#open-source');
+
+// writing
+const posts = (await getCollection('writing', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+for (const p of posts) {
+  const url = p.data.external ?? `/writing/${p.id}/`;
+  add(`writing/${p.id}.md`, [
+    `# ${p.data.title}`,
+    `date: ${p.data.date.toISOString().slice(0, 10)}`,
+    `tags: ${p.data.tags.join(', ')}`,
+    `url: ${p.data.external ?? `${profile.site}/writing/${p.id}/`}`,
+    '',
+    p.data.description,
+  ].join('\n'), url);
+}
+
+add('skills.txt', [
+  ...lanes.map((l) => `${l.title.padEnd(16)} ${l.skills.map((s) => s.name).join(', ')}`),
+  `${'Also used'.padEnd(16)} ${alsoUsed.join(', ')}`,
+].join('\n'), '#skills');
+add('awards.txt', awards.map((a) => `${a.year.padEnd(10)} ${a.title} · ${a.body}`).join('\n'), '#changelog');
+const hash = (s: string) => { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h.toString(16).padStart(7, '0').slice(0, 7); };
+add('changelog.log', [...changelog].sort((a, b) => b.date.localeCompare(a.date)).map((e) => `${hash(e.date + e.text)}  ${e.date.padEnd(10)}  ${logTypes[e.type].verb}: ${e.text}`).join('\n'), '#changelog');
+add('.bashrc', ['# ~/.bashrc', "alias ll='ls -l'", "alias cv='resume'", "export EDITOR=vim", "export PS1='\\u@portfolio:\\w$ '", '# no, you cannot edit this. the filesystem is read-only.'].join('\n'));
+add('.secrets', 'Nice try. There are no secrets here, only a well-configured .gitignore.');
+files['/etc/motd'] = { c: 'Welcome to SalOS. Everything here is read-only and built from the site’s own data.' };
+files['/etc/os-release'] = { c: `NAME="SalOS"\nPRETTY_NAME="SalOS (${build.astro})"\nHOME_URL="${profile.site}"\nBUILD_ID="${build.commit}"` };
+
+const contrib = [
+  ['NAME', 'SCOPE', 'STATUS', 'RELEASE'],
+  ['jenkins/docker', 'env-var-subst', 'shipped', 'LTS 2.568.1'],
+  ['jenkins/core', 'a11y, aria', 'shipped', 'weekly 2.591'],
+  ['fossology', `${counts.fossologyCode + counts.fossologyDocs} PRs`, 'merged', 'GSoC 2025'],
+  ['owasp/nest', 'a11y, security', 'active', 'collab'],
+  ['sktime', 'forecasting', 'review', 'open'],
+];
+const pods = [
+  ['NAME', 'KIND', 'STATUS', 'RESULT'],
+  ['ezvor', 'platform', 'running', 'judge-verified scores'],
+  ['pdf-scanner-web', 'web app', 'running', '31 tools · 0 uploads'],
+  ...projects.map((p) => [slug(p.name.split(':')[0]), p.kind.split('·')[0].trim().toLowerCase().slice(0, 18), /proof|gsoc/i.test(p.kind) ? 'completed' : 'running', p.metric ?? '']),
+];
+
+const firstWork = [...spans].filter((s) => s.kind === 'work').sort((a, b) => a.start.localeCompare(b.start))[0]?.start ?? '2023-05';
+
+const data = {
+  user: 'salman',
+  host: 'portfolio',
+  home: HOME,
+  email: profile.email,
+  resume: profile.resume,
+  github: profile.handle,
+  socials: Object.fromEntries(profile.socials.filter((s) => s.url.startsWith('http')).map((s) => [s.name.toLowerCase(), s.url])),
+  files,
+  contrib,
+  pods,
+  build,
+  merged: counts.merged,
+  orgs: counts.orgs,
+  started: firstWork,
+};
+const chips = ['help', 'ls -l projects', 'gh pr list', 'neofetch', 'top', 'theme next'];
+---
+
+<div class="term" data-term data-component="Terminal">
+  <div class="bar">
+    <div class="lights">
+      <button type="button" class="light r" data-act="reset" aria-label="Reset terminal" title="Reset"></button>
+      <button type="button" class="light y" data-act="min" aria-label="Minimize terminal" title="Minimize"></button>
+      <button type="button" class="light g" data-act="max" aria-label="Maximize terminal" title="Maximize"></button>
+    </div>
+    <span class="title" data-title>salman@portfolio: ~</span>
+    <span class="meta"><span class="live" aria-hidden="true"></span><span data-clock>--:--:--</span>&nbsp;PKT</span>
+  </div>
+  <div class="body" data-body>
+    <div data-log aria-live="polite" aria-atomic="false"></div>
+    <form class="prompt" data-form autocomplete="off">
+      <label class="ps" for="term-in" data-ps></label>
+      <div class="field">
+        <span class="ghost" aria-hidden="true"><span class="gp" data-ghost-pre></span><span class="gs" data-ghost></span></span>
+        <input id="term-in" data-in spellcheck="false" autocapitalize="off" autocorrect="off" enterkeyhint="go" aria-label="Terminal. Type help for a list of commands." />
+      </div>
+    </form>
+  </div>
+  <div class="chips-row">
+    {chips.map((c) => <button type="button" class="tchip" data-run={c}>{c}</button>)}
+    <span class="hint"><kbd>/</kbd> focus · <kbd>tab</kbd> complete</span>
+  </div>
+</div>
+
+<script is:inline type="application/json" id="shell-data" set:html={JSON.stringify(data)} />
+
+<script>
+  import { boot } from '../scripts/shell';
+  const root = document.querySelector<HTMLElement>('[data-term]');
+  const raw = document.getElementById('shell-data')?.textContent;
+  if (root && raw) boot(root, JSON.parse(raw));
+</script>
+
+<style>
+  .term {
+    --c0: #ff7a90; --c1: #f0b85a; --c2: #5cd18a; --c3: #5cc9a3; --c4: #7aa7ff; --c5: #b49cff;
+    position: relative; display: flex; flex-direction: column; overflow: hidden;
+    background: var(--term-bg); color: var(--term-text);
+    border: 1px solid var(--term-border); border-radius: 16px;
+    box-shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 40px 80px -40px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.02);
+    font-family: var(--font-mono); font-size: 13px; line-height: 1.6;
+    transition: box-shadow .3s ease;
+  }
+  .term:focus-within { box-shadow: 0 0 0 1px color-mix(in srgb, var(--term-accent) 45%, transparent), 0 40px 80px -40px rgba(0,0,0,.6); }
+  .bar { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; padding: 12px 16px; background: var(--term-bar); border-bottom: 1px solid var(--term-border); }
+  .lights { display: flex; gap: 8px; }
+  .light { width: 12px; height: 12px; border-radius: 50%; padding: 0; position: relative; }
+  .light::after { content: ''; position: absolute; inset: -6px; }
+  .light.r { background: #ff5f57; } .light.y { background: #febc2e; } .light.g { background: #28c840; }
+  .light:hover { filter: brightness(1.15); }
+  .title { text-align: center; color: var(--term-dim); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .meta { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--term-dim); font-variant-numeric: tabular-nums; }
+  .live { width: 7px; height: 7px; border-radius: 50%; background: var(--term-accent); box-shadow: 0 0 0 0 var(--term-accent); animation: live 2s infinite; }
+  @keyframes live { 70% { box-shadow: 0 0 0 6px transparent; } }
+
+  .body { height: clamp(380px, 56vh, 520px); overflow-y: auto; overscroll-behavior: contain; padding: 14px 18px 18px; scrollbar-width: thin; scrollbar-color: var(--term-border) transparent; }
+  .body :global(.ln) { margin: 0; white-space: pre-wrap; word-break: break-word; }
+  .body :global(.gap) { margin-top: 10px; }
+  .body :global(.out) { color: color-mix(in srgb, var(--term-text) 84%, var(--term-dim)); }
+  .body :global(.pre) { margin: 0; font: inherit; white-space: pre; overflow-x: auto; scrollbar-width: thin; }
+  .body :global(.pre.pw) { white-space: pre-wrap; word-break: break-word; }
+  .body :global(.pr), .ps :global(.pr) { color: var(--term-accent); }
+  .body :global(.pc), .ps :global(.pc) { color: var(--c4); }
+  .body :global(.pd), .ps :global(.pd) { color: var(--term-dim); margin-right: 2px; }
+  .body :global(.cmd) { color: var(--term-text); }
+  .body :global(.dim) { color: var(--term-dim); }
+  .body :global(.acc) { color: var(--term-accent); }
+  .body :global(.ok) { color: var(--c2); }
+  .body :global(.warn) { color: var(--c1); }
+  .body :global(.err) { color: var(--c0); }
+  .body :global(.key) { color: var(--c4); }
+  .body :global(.hd) { color: var(--term-text); }
+  .body :global(.dir) { color: var(--c4); font-weight: 500; }
+  .body :global(.inv) { background: var(--term-text); color: var(--term-bg); }
+  .body :global(mark) { background: color-mix(in srgb, var(--c1) 35%, transparent); color: var(--term-text); border-radius: 2px; }
+  .body :global(a) { color: var(--term-accent); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  .body :global(button.kw), .body :global(button.file), .body :global(button.dir) {
+    font: inherit; padding: 0; color: var(--term-accent); border-bottom: 1px dotted color-mix(in srgb, var(--term-accent) 60%, transparent); cursor: pointer;
+  }
+  .body :global(button.file) { color: var(--term-text); border-bottom-color: var(--term-border); }
+  .body :global(button.dir) { color: var(--c4); border-bottom-color: color-mix(in srgb, var(--c4) 40%, transparent); }
+  .body :global(button.kw:hover), .body :global(button.file:hover), .body :global(button.dir:hover) { border-bottom-style: solid; }
+  .body :global(.sw) { display: inline-block; width: 18px; height: 12px; margin-right: 2px; vertical-align: -1px; }
+  .body :global(.kbd) { border: 1px solid var(--term-border); border-radius: 4px; padding: 0 5px; color: var(--term-text); }
+  .body :global(.spin) { display: inline-block; width: 10px; height: 10px; border: 2px solid var(--term-dim); border-right-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: -1px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .prompt { display: flex; gap: 8px; align-items: baseline; margin-top: 10px; }
+  .ps { white-space: nowrap; flex: none; }
+  .field { position: relative; flex: 1; min-width: 0; }
+  .field input, .ghost { font: inherit; letter-spacing: inherit; padding: 0; margin: 0; border: 0; }
+  .field input { position: relative; z-index: 1; width: 100%; background: transparent; color: var(--term-text); outline: none; caret-color: var(--term-accent); }
+  .ghost { position: absolute; inset: 0; white-space: pre; overflow: hidden; pointer-events: none; }
+  .gp { color: transparent; }
+  .gs { color: var(--term-dim); opacity: .7; }
+  :global(.term.busy) .prompt { opacity: .35; }
+  :global(.term.searching) .ps { color: var(--c1); }
+
+  .chips-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--term-border); background: var(--term-bar); }
+  .tchip { font: inherit; font-size: 11.5px; color: var(--term-dim); border: 1px solid var(--term-border); border-radius: 999px; padding: 4px 10px; transition: color .15s, border-color .15s; }
+  .tchip:hover { color: var(--term-accent); border-color: var(--term-accent); }
+  .hint { margin-left: auto; font-size: 11px; color: var(--term-dim); }
+  .hint kbd { font: inherit; border: 1px solid var(--term-border); border-radius: 4px; padding: 0 4px; }
+
+  /* window states */
+  :global(.term.minimized) .body, :global(.term.minimized) .chips-row { display: none; }
+  :global(.term.maxed) { position: fixed; inset: 16px; z-index: 80; border-radius: 14px; }
+  :global(.term.maxed) .body { height: auto; flex: 1; font-size: 14px; }
+  :global(html.term-maxed) { overflow: hidden; }
+  :global(html.term-maxed) body::before { content: ''; position: fixed; inset: 0; z-index: 79; background: rgba(0,0,0,.55); backdrop-filter: blur(6px); }
+
+  /* iOS zooms into inputs under 16px; keep the prompt row at 16px on touch screens. */
+  @media (pointer: coarse) { .prompt { font-size: 16px; } }
+  @media (max-width: 640px) {
+    .term { font-size: 12px; border-radius: 14px; }
+    .body { height: 400px; padding: 12px 14px 16px; }
+    .meta, .hint { display: none; }
+    .bar { grid-template-columns: auto 1fr; }
+    .title { text-align: right; }
+    :global(.term.maxed) { inset: 0; border-radius: 0; }
+  }
+</style>

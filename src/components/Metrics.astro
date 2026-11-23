@@ -21,7 +21,7 @@ import { metrics } from '../data/profile';
   // Count up from 0 the first time the row is visible. Server HTML has the real
   // numbers, so no-JS readers and crawlers see them too.
   const row = document.querySelector<HTMLElement>('[data-metrics]');
-  if (row && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (row && !matchMedia('(prefers-reduced-motion: reduce)').matches && document.documentElement.dataset.motion !== 'reduce') {
     const els = Array.from(row.querySelectorAll<HTMLElement>('[data-n]'));
     const io = new IntersectionObserver((es) => {
       if (!es.some((e) => e.isIntersecting)) return;
@@ -35,6 +35,8 @@ import { metrics } from '../data/profile';
         if (k < 1) requestAnimationFrame(frame);
       };
       requestAnimationFrame(frame);
+      // rAF pauses in background tabs; always land on the real numbers.
+      setTimeout(() => els.forEach((el) => (el.textContent = el.dataset.n!)), D + 300);
     }, { threshold: 0.4 });
     io.observe(row);
   }

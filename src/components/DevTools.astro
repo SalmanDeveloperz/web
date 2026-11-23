@@ -1,0 +1,500 @@
+---
+// Developer tools for the site itself: real Web Vitals, a network waterfall,
+// layout overlays and an element inspector, theme controls and an a11y audit.
+// Everything is measured in the visitor's browser; nothing is faked.
+import { themes } from '../scripts/theme';
+interface Props { build: { commit: string; at: string; astro: string } }
+const { build } = Astro.props;
+const tabs = ['Perf', 'Network', 'Layout', 'Theme', 'A11y', 'Build'];
+---
+
+<aside class="dt" data-devtools hidden aria-label="Developer tools">
+  <header class="dt-head">
+    <span class="dt-title mono"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg><span class="vh">devtools</span></span>
+    <div class="dt-tabs" role="tablist">
+      {tabs.map((t, i) => <button type="button" role="tab" class="dt-tab mono" id={`dt-tab-${t}`} aria-controls={`dt-${t}`} aria-selected={i === 0 ? 'true' : 'false'} data-tab={t}>{t}</button>)}
+    </div>
+    <button type="button" class="dt-x" data-dt-close aria-label="Close developer tools">×</button>
+  </header>
+
+  <div class="dt-body">
+    <section id="dt-Perf" role="tabpanel" aria-labelledby="dt-tab-Perf" data-panel="Perf">
+      <div class="vitals" data-vitals></div>
+      <div class="dt-card">
+        <div class="row-h"><span class="lbl">Frame rate</span><span class="mono big" data-fps>–</span></div>
+        <svg class="spark" viewBox="0 0 300 48" preserveAspectRatio="none" aria-hidden="true"><polyline data-spark points="" /></svg>
+      </div>
+      <dl class="kv mono" data-perf-kv></dl>
+    </section>
+
+    <section id="dt-Network" role="tabpanel" aria-labelledby="dt-tab-Network" data-panel="Network" hidden>
+      <div class="row-h"><span class="lbl" data-net-sum></span><button type="button" class="mini" data-net-refresh>refresh</button></div>
+      <div class="net" data-net></div>
+    </section>
+
+    <section id="dt-Layout" role="tabpanel" aria-labelledby="dt-tab-Layout" data-panel="Layout" hidden>
+      <button type="button" class="inspect-btn" data-inspect><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M13 13l7 7M13 13v5M13 13h5"/></svg><span>Inspect an element</span><kbd class="mono">I</kbd></button>
+      <div class="dt-card mono" data-picked><span class="muted">Hover anything on the page, click to pin it here.</span></div>
+      <fieldset class="toggles">
+        <legend class="lbl">Overlays</legend>
+        <label><input type="checkbox" data-flag="dev-grid" /> 12-column grid</label>
+        <label><input type="checkbox" data-flag="dev-outline" /> Outline every box</label>
+        <label><input type="checkbox" data-flag="dev-baseline" /> 8px baseline</label>
+        <label><input type="checkbox" data-flag="dev-labels" /> Component names</label>
+      </fieldset>
+      <dl class="kv mono" data-layout-kv></dl>
+    </section>
+
+    <section id="dt-Theme" role="tabpanel" aria-labelledby="dt-tab-Theme" data-panel="Theme" hidden>
+      <p class="lbl">Theme</p>
+      <div class="swatches">
+        {themes.map((t) => (
+          <button type="button" class="swatch" data-dt-theme={t.id} aria-pressed="false">
+            <span class="sw" style={`--a:${t.swatch[0]};--b:${t.swatch[1]}`} aria-hidden="true"></span>
+            <span>{t.name}</span>
+          </button>
+        ))}
+      </div>
+      <p class="lbl">Accent</p>
+      <div class="accents">
+        {['', '#0f5c4a', '#1f5fd1', '#9a3b14', '#7c3aed', '#c0264a', '#0e7490'].map((c) => (
+          <button type="button" class="acc" data-accent={c} style={c ? `background:${c}` : ''} aria-label={c ? `Accent ${c}` : 'Theme default accent'}>{c ? '' : '↺'}</button>
+        ))}
+        <label class="acc custom" title="Pick any color"><input type="color" data-accent-pick aria-label="Custom accent color" /></label>
+      </div>
+      <label class="slider"><span class="lbl">Text size <b class="mono" data-scale-v>100%</b></span><input type="range" min="0.875" max="1.25" step="0.025" value="1" data-scale /></label>
+      <label class="check"><input type="checkbox" data-motion /> Reduce motion</label>
+      <button type="button" class="mini" data-reset>Reset preferences</button>
+    </section>
+
+    <section id="dt-A11y" role="tabpanel" aria-labelledby="dt-tab-A11y" data-panel="A11y" hidden>
+      <div class="row-h"><span class="lbl">Automatic checks</span><button type="button" class="mini" data-a11y-run>re-run</button></div>
+      <ul class="checks" data-checks></ul>
+      <p class="lbl">Contrast (WCAG)</p>
+      <div data-contrast></div>
+      <p class="lbl">Heading outline</p>
+      <ol class="outline mono" data-outline></ol>
+    </section>
+
+    <section id="dt-Build" role="tabpanel" aria-labelledby="dt-tab-Build" data-panel="Build" hidden>
+      <dl class="kv mono">
+        <div><dt>commit</dt><dd><a href={`https://github.com/SalmanDeveloperz/web/commit/${build.commit}`} target="_blank" rel="noopener">{build.commit}</a></dd></div>
+        <div><dt>built</dt><dd data-built={build.at}>{build.at.slice(0, 16).replace('T', ' ')} UTC</dd></div>
+        <div><dt>generator</dt><dd>{build.astro}</dd></div>
+        <div><dt>hosting</dt><dd>Netlify · static</dd></div>
+        <div><dt>fonts</dt><dd>Instrument Serif · Geist · Geist Mono, self-hosted</dd></div>
+      </dl>
+      <p class="lbl">Machine-readable</p>
+      <ul class="links mono">
+        <li><a href="/llms.txt">/llms.txt</a><span>for LLM crawlers</span></li>
+        <li><a href="/rag.json">/rag.json</a><span>the retrieval index</span></li>
+        <li><a href="/rss.xml">/rss.xml</a><span>writing feed</span></li>
+        <li><a href="/sitemap-index.xml">/sitemap-index.xml</a><span>sitemap</span></li>
+        <li><a href="https://github.com/SalmanDeveloperz/web" target="_blank" rel="noopener">source on GitHub ↗</a><span>MIT</span></li>
+      </ul>
+      <p class="lbl">Keyboard</p>
+      <dl class="kv mono">
+        <div><dt>⌘K / Ctrl K</dt><dd>command menu</dd></div>
+        <div><dt>/</dt><dd>focus terminal</dd></div>
+        <div><dt>T</dt><dd>cycle theme</dd></div>
+        <div><dt>Ctrl `</dt><dd>devtools</dd></div>
+        <div><dt>I</dt><dd>inspect (devtools open)</dd></div>
+      </dl>
+    </section>
+  </div>
+</aside>
+
+<div class="dt-hl" data-hl hidden><span class="dt-tip mono" data-tip></span></div>
+
+<script>
+  import { themes, setTheme, currentTheme, getPrefs, setPrefs, resetPrefs } from '../scripts/theme';
+
+  // ── Vitals: start observing immediately so nothing is missed ─────────────
+  type Vitals = { fcp?: number; lcp?: number; cls?: number; inp?: number };
+  const vitals: Vitals = { cls: 0 };
+  (window as unknown as { __vitals: Vitals }).__vitals = vitals;
+  const obs = (type: string, cb: (e: PerformanceEntry) => void, extra: Record<string, unknown> = {}) => {
+    try { new PerformanceObserver((l) => l.getEntries().forEach(cb)).observe({ type, buffered: true, ...extra } as PerformanceObserverInit); } catch {}
+  };
+  obs('paint', (e) => { if (e.name === 'first-contentful-paint') vitals.fcp = e.startTime; });
+  obs('largest-contentful-paint', (e) => { vitals.lcp = e.startTime; });
+  obs('layout-shift', (e) => { const s = e as PerformanceEntry & { value: number; hadRecentInput: boolean }; if (!s.hadRecentInput) vitals.cls = (vitals.cls ?? 0) + s.value; });
+  obs('event', (e) => { const d = (e as PerformanceEntry).duration; if (d > (vitals.inp ?? 0)) vitals.inp = d; }, { durationThreshold: 16 });
+
+  const root = document.querySelector<HTMLElement>('[data-devtools]')!;
+  const $ = <T extends Element = HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+  const kb = (n: number) => (n > 1048576 ? `${(n / 1048576).toFixed(2)} MB` : `${(n / 1024).toFixed(1)} kB`);
+  let tab = 'Perf';
+  let timer = 0;
+
+  // ── open / close / tabs ──────────────────────────────────────────────────
+  const isOpen = () => !root.hidden;
+  const open = (t?: string) => {
+    root.hidden = false;
+    document.documentElement.classList.add('dt-open');
+    if (t) showTab(t); else render();
+    $('.dt-tab[aria-selected="true"]').focus({ preventScroll: true });
+  };
+  const close = () => {
+    root.hidden = true;
+    document.documentElement.classList.remove('dt-open');
+    stopInspect();
+    clearInterval(timer);
+  };
+  const showTab = (t: string) => {
+    tab = t;
+    root.querySelectorAll<HTMLElement>('[data-tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
+    root.querySelectorAll<HTMLElement>('[data-panel]').forEach((p) => (p.hidden = p.dataset.panel !== t));
+    render();
+  };
+  root.querySelectorAll<HTMLElement>('[data-tab]').forEach((b, i, all) => {
+    b.addEventListener('click', () => showTab(b.dataset.tab!));
+    b.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      const n = all[(i + (e.key === 'ArrowRight' ? 1 : all.length - 1)) % all.length];
+      n.focus(); showTab(n.dataset.tab!);
+    });
+  });
+  $('[data-dt-close]').addEventListener('click', close);
+  addEventListener('devtools:open', () => open());
+  document.querySelectorAll('[data-open-devtools]').forEach((b) => b.addEventListener('click', () => (isOpen() ? close() : open())));
+  addEventListener('keydown', (e) => {
+    if (e.ctrlKey && (e.key === '`' || e.code === 'Backquote')) { e.preventDefault(); isOpen() ? close() : open(); return; }
+    if (!isOpen()) return;
+    if (e.key === 'Escape') { if (inspecting) stopInspect(); else close(); return; }
+    const typing = (e.target as HTMLElement).closest('input, textarea, select, [contenteditable]');
+    if (!typing && e.key.toLowerCase() === 'i' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); showTab('Layout'); startInspect(); }
+  });
+
+  // ── Perf ─────────────────────────────────────────────────────────────────
+  const fpsHist: number[] = [];
+  let frames = 0, last = performance.now(), raf = 0;
+  const loop = (t: number) => {
+    frames++;
+    if (t - last >= 500) { fpsHist.push((frames * 1000) / (t - last)); if (fpsHist.length > 60) fpsHist.shift(); frames = 0; last = t; }
+    raf = requestAnimationFrame(loop);
+  };
+  const rate = (v: number | undefined, good: number, poor: number) => (v == null ? 'na' : v <= good ? 'good' : v <= poor ? 'mid' : 'poor');
+  const renderPerf = () => {
+    const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+    const res = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
+    const rows: [string, string, number | undefined, number, number, string][] = [
+      ['LCP', 'Largest paint', vitals.lcp, 2500, 4000, 'ms'],
+      ['FCP', 'First paint', vitals.fcp, 1800, 3000, 'ms'],
+      ['CLS', 'Layout shift', vitals.cls, 0.1, 0.25, ''],
+      ['INP', 'Slowest input', vitals.inp, 200, 500, 'ms'],
+      ['TTFB', 'Server response', nav?.responseStart, 800, 1800, 'ms'],
+    ];
+    $('[data-vitals]').innerHTML = rows.map(([k, label, v, g, p, u]) => {
+      const r = rate(v, g, p);
+      const pct = v == null ? 0 : Math.min(1, v / (p * 1.25));
+      return `<div class="vital ${r}"><div class="v-top"><span class="mono">${k}</span><span class="v-badge">${r === 'na' ? 'waiting' : r === 'good' ? 'good' : r === 'mid' ? 'needs work' : 'poor'}</span></div><b class="mono">${v == null ? '–' : u ? `${Math.round(v)}<small>${u}</small>` : v.toFixed(3)}</b><span class="v-sub">${label}</span><i style="--p:${pct}"></i></div>`;
+    }).join('');
+    const bytes = res.reduce((a, r) => a + (r.transferSize || 0), nav?.transferSize || 0);
+    const mem = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory;
+    const kv: [string, string][] = [
+      ['page weight', kb(bytes)],
+      ['requests', String(res.length + 1)],
+      ['DOM nodes', String(document.getElementsByTagName('*').length)],
+      ['DOM ready', nav ? `${Math.round(nav.domContentLoadedEventEnd)} ms` : '–'],
+      ['load', nav && nav.loadEventEnd ? `${Math.round(nav.loadEventEnd)} ms` : '–'],
+      ['JS heap', mem ? kb(mem.usedJSHeapSize) : 'not exposed'],
+      ['protocol', nav?.nextHopProtocol || '–'],
+    ];
+    $('[data-perf-kv]').innerHTML = kv.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+    const f = fpsHist[fpsHist.length - 1];
+    $('[data-fps]').textContent = f ? `${Math.round(f)} fps` : '–';
+    $('[data-spark]').setAttribute('points', fpsHist.map((v, i) => `${(i / 59) * 300},${48 - (Math.min(v, 120) / 120) * 44}`).join(' '));
+  };
+
+  // ── Network ──────────────────────────────────────────────────────────────
+  const renderNet = () => {
+    const res = (performance.getEntriesByType('resource') as PerformanceResourceTiming[]).filter((r) => !r.name.includes('ping='));
+    const end = Math.max(1, ...res.map((r) => r.responseEnd));
+    const total = res.reduce((a, r) => a + (r.transferSize || 0), 0);
+    $('[data-net-sum]').textContent = `${res.length} requests · ${kb(total)} transferred · ${Math.round(end)} ms`;
+    $('[data-net]').innerHTML = `<div class="nrow nh mono"><span>name</span><span>type</span><span>size</span><span>time</span><span>waterfall</span></div>` + res.map((r) => {
+      const name = r.name.replace(location.origin, '').split('?')[0];
+      const short = name.length > 34 ? '…' + name.slice(-33) : name;
+      const cached = r.transferSize === 0 && r.decodedBodySize > 0;
+      return `<div class="nrow mono" title="${esc(r.name)}"><span class="nn">${esc(short)}</span><span>${r.initiatorType}</span><span>${cached ? '<em>cache</em>' : kb(r.transferSize || r.encodedBodySize)}</span><span>${Math.round(r.duration)}ms</span><span class="wf"><i style="left:${(r.startTime / end) * 100}%;width:${Math.max(1, (r.duration / end) * 100)}%"></i></span></div>`;
+    }).join('');
+  };
+  $('[data-net-refresh]').addEventListener('click', renderNet);
+
+  // ── Layout & inspector ───────────────────────────────────────────────────
+  const flags = Array.from(root.querySelectorAll<HTMLInputElement>('[data-flag]'));
+  flags.forEach((f) => f.addEventListener('change', () => {
+    const k = f.dataset.flag!.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+    if (f.checked) document.documentElement.dataset[k] = ''; else delete document.documentElement.dataset[k];
+  }));
+  const bp = () => (innerWidth < 560 ? 'phone' : innerWidth < 900 ? 'small tablet' : innerWidth < 1024 ? 'tablet' : innerWidth < 1440 ? 'laptop' : 'desktop');
+  const renderLayout = () => {
+    const kv: [string, string][] = [
+      ['viewport', `${innerWidth} × ${innerHeight}`],
+      ['breakpoint', bp()],
+      ['pixel ratio', `${devicePixelRatio}x`],
+      ['color scheme', `${currentTheme().name} (${currentTheme().mode})`],
+      ['scroll', `${Math.round(scrollY)} / ${document.documentElement.scrollHeight - innerHeight}px`],
+      ['root font', getComputedStyle(document.documentElement).fontSize],
+    ];
+    $('[data-layout-kv]').innerHTML = kv.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+  };
+
+  const hl = document.querySelector<HTMLElement>('[data-hl]')!;
+  const tip = hl.querySelector<HTMLElement>('[data-tip]')!;
+  let inspecting = false;
+  const rgbToHex = (c: string) => {
+    const m = c.match(/\d+(\.\d+)?/g);
+    if (!m) return c;
+    const [r, g, b, a] = m.map(Number);
+    const hex = '#' + [r, g, b].map((x) => Math.round(x).toString(16).padStart(2, '0')).join('');
+    return a !== undefined && a < 1 ? `${hex} ${Math.round(a * 100)}%` : hex;
+  };
+  const describe = (el: Element) => {
+    const cs = getComputedStyle(el);
+    const r = el.getBoundingClientRect();
+    const cls = [...el.classList].filter((c) => !c.startsWith('astro-')).slice(0, 3).map((c) => '.' + c).join('');
+    const comp = el.closest('[data-component]')?.getAttribute('data-component');
+    return {
+      sel: `${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}${cls}`,
+      size: `${Math.round(r.width)} × ${Math.round(r.height)}`,
+      font: `${cs.fontFamily.split(',')[0].replace(/"/g, '')} ${cs.fontWeight} · ${cs.fontSize}/${cs.lineHeight === 'normal' ? 'normal' : Math.round(parseFloat(cs.lineHeight)) + 'px'}`,
+      color: rgbToHex(cs.color),
+      bg: rgbToHex(cs.backgroundColor),
+      box: `margin ${cs.margin} · padding ${cs.padding}`,
+      display: `${cs.display}${cs.display.includes('grid') ? ' · ' + cs.gridTemplateColumns.split(' ').length + ' cols' : ''}${cs.display.includes('flex') ? ' · ' + cs.flexDirection : ''}`,
+      comp: comp ?? '',
+    };
+  };
+  const onMove = (e: MouseEvent) => {
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    if (!el || root.contains(el) || hl.contains(el)) { hl.hidden = true; return; }
+    const r = el.getBoundingClientRect();
+    const d = describe(el);
+    hl.hidden = false;
+    Object.assign(hl.style, { left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
+    tip.innerHTML = `<b>${esc(d.sel)}</b> <span>${d.size}</span>${d.comp ? `<em>&lt;${esc(d.comp)} /&gt;</em>` : ''}`;
+    tip.classList.toggle('below', r.top < 34);
+  };
+  const onPick = (e: MouseEvent) => {
+    if (root.contains(e.target as Node)) return;
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    if (!el || root.contains(el)) return;
+    e.preventDefault(); e.stopPropagation();
+    const d = describe(el);
+    const sw = (c: string) => `<span class="csw" style="background:${c.split(' ')[0]}"></span>${c}`;
+    $('[data-picked]').innerHTML = `<div class="pk-sel">${esc(d.sel)}</div>${d.comp ? `<div><span class="muted">component</span> &lt;${esc(d.comp)} /&gt;</div>` : ''}<div><span class="muted">size</span> ${d.size}</div><div><span class="muted">display</span> ${esc(d.display)}</div><div><span class="muted">font</span> ${esc(d.font)}</div><div><span class="muted">color</span> ${sw(d.color)}</div><div><span class="muted">background</span> ${sw(d.bg)}</div><div><span class="muted">box</span> ${esc(d.box)}</div>`;
+    stopInspect();
+  };
+  const startInspect = () => {
+    if (inspecting) return;
+    inspecting = true;
+    $('[data-inspect]').classList.add('on');
+    document.documentElement.classList.add('dt-inspecting');
+    addEventListener('mousemove', onMove, true);
+    addEventListener('click', onPick, true);
+  };
+  const stopInspect = () => {
+    inspecting = false;
+    $('[data-inspect]')?.classList.remove('on');
+    document.documentElement.classList.remove('dt-inspecting');
+    hl.hidden = true;
+    removeEventListener('mousemove', onMove, true);
+    removeEventListener('click', onPick, true);
+  };
+  $('[data-inspect]').addEventListener('click', (e) => { e.stopPropagation(); inspecting ? stopInspect() : startInspect(); });
+
+  // ── Theme ────────────────────────────────────────────────────────────────
+  const renderTheme = () => {
+    root.querySelectorAll<HTMLElement>('[data-dt-theme]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.dtTheme === currentTheme().id)));
+    const p = getPrefs();
+    const scale = p.scale ?? 1;
+    $<HTMLInputElement>('[data-scale]').value = String(scale);
+    $('[data-scale-v]').textContent = `${Math.round(scale * 100)}%`;
+    $<HTMLInputElement>('[data-motion]').checked = p.motion === 'reduce';
+    root.querySelectorAll<HTMLElement>('[data-accent]').forEach((b) => b.classList.toggle('on', (b.dataset.accent || '') === (p.accent || '')));
+  };
+  root.querySelectorAll<HTMLElement>('[data-dt-theme]').forEach((b) => b.addEventListener('click', () => { setTheme(b.dataset.dtTheme!); renderTheme(); }));
+  root.querySelectorAll<HTMLElement>('[data-accent]').forEach((b) => b.addEventListener('click', () => { setPrefs({ accent: b.dataset.accent || '' }); renderTheme(); }));
+  $<HTMLInputElement>('[data-accent-pick]').addEventListener('input', (e) => { setPrefs({ accent: (e.target as HTMLInputElement).value }); renderTheme(); });
+  $<HTMLInputElement>('[data-scale]').addEventListener('input', (e) => { setPrefs({ scale: Number((e.target as HTMLInputElement).value) }); renderTheme(); });
+  $<HTMLInputElement>('[data-motion]').addEventListener('change', (e) => { setPrefs({ motion: (e.target as HTMLInputElement).checked ? 'reduce' : '' }); });
+  $('[data-reset]').addEventListener('click', () => { resetPrefs(); renderTheme(); });
+  addEventListener('themechange', () => isOpen() && render());
+
+  // ── Accessibility ────────────────────────────────────────────────────────
+  const lum = (c: string) => {
+    const m = c.match(/\d+(\.\d+)?/g)!.slice(0, 3).map(Number).map((v) => { const s = v / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; });
+    return 0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2];
+  };
+  const ratio = (a: string, b: string) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+  const tokenColor = (v: string) => { const d = document.createElement('span'); d.style.color = `var(${v})`; document.body.appendChild(d); const c = getComputedStyle(d).color; d.remove(); return c; };
+  const renderA11y = () => {
+    const main = document.querySelector('main')!;
+    const imgs = [...main.querySelectorAll('img')].filter((i) => !i.hasAttribute('alt'));
+    const named = (el: Element) => (el.getAttribute('aria-label') || el.getAttribute('aria-labelledby') || el.getAttribute('title') || (el.textContent || '').trim() || el.querySelector('img[alt]:not([alt=""]), svg[aria-label]'));
+    const btns = [...document.querySelectorAll('button, a[href]')].filter((b) => !b.closest('[data-devtools]') && !named(b) && getComputedStyle(b).display !== 'none');
+    const inputs = [...document.querySelectorAll('input:not([type=hidden]), select, textarea')].filter((i) => !i.getAttribute('aria-label') && !(i.id && document.querySelector(`label[for="${i.id}"]`)) && !i.closest('label'));
+    const h1s = document.querySelectorAll('h1').length;
+    const lang = document.documentElement.lang;
+    const land = ['header', 'nav', 'main', 'footer'].filter((t) => document.querySelector(t)).length;
+    const focusables = document.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])').length;
+    const checks: [boolean, string][] = [
+      [imgs.length === 0, `${imgs.length} images missing alt text`],
+      [btns.length === 0, `${btns.length} links or buttons without an accessible name`],
+      [inputs.length === 0, `${inputs.length} form fields without a label`],
+      [h1s === 1, `${h1s} h1 on the page (expect 1)`],
+      [!!lang, `document language: ${lang || 'missing'}`],
+      [land === 4, `${land}/4 landmarks (header, nav, main, footer)`],
+      [!!document.querySelector('.skip'), 'skip-to-content link present'],
+      [true, `${focusables} keyboard-focusable elements`],
+    ];
+    $('[data-checks]').innerHTML = checks.map(([ok, t]) => `<li class="${ok ? 'pass' : 'fail'}"><span aria-hidden="true">${ok ? '✓' : '!'}</span>${esc(t)}<span class="sr">${ok ? 'pass' : 'fail'}</span></li>`).join('');
+    const bg = tokenColor('--bg');
+    const pairs: [string, string][] = [['Body text', '--text'], ['Secondary', '--text-2'], ['Muted', '--muted'], ['Accent', '--accent']];
+    $('[data-contrast]').innerHTML = pairs.map(([n, v]) => {
+      const r = ratio(tokenColor(v), bg);
+      const g = r >= 7 ? 'AAA' : r >= 4.5 ? 'AA' : r >= 3 ? 'AA large' : 'fail';
+      return `<div class="ct"><span class="csw" style="background:var(${v})"></span><span>${n}</span><b class="mono">${r.toFixed(2)}:1</b><em class="g-${g.replace(' ', '')}">${g}</em></div>`;
+    }).join('');
+    $('[data-outline]').innerHTML = [...document.querySelectorAll('main h1, main h2, main h3')].map((h) => {
+      const lvl = Number(h.tagName[1]);
+      return `<li style="--l:${lvl - 1}"><span>h${lvl}</span>${esc((h.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 60))}</li>`;
+    }).join('');
+  };
+  $('[data-a11y-run]').addEventListener('click', renderA11y);
+
+  // ── render loop ──────────────────────────────────────────────────────────
+  const render = () => {
+    clearInterval(timer);
+    cancelAnimationFrame(raf);
+    if (tab === 'Perf') { raf = requestAnimationFrame(loop); renderPerf(); timer = window.setInterval(renderPerf, 500); }
+    if (tab === 'Network') renderNet();
+    if (tab === 'Layout') { renderLayout(); timer = window.setInterval(renderLayout, 400); }
+    if (tab === 'Theme') renderTheme();
+    if (tab === 'A11y') renderA11y();
+  };
+  void themes;
+</script>
+
+<style>
+  .dt {
+    position: fixed; z-index: 70; top: 0; right: 0; bottom: 0; width: min(440px, 100vw);
+    display: flex; flex-direction: column;
+    background: color-mix(in srgb, var(--surface) 96%, transparent); color: var(--text);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-left: 1px solid var(--border-2); box-shadow: -30px 0 80px -40px rgba(0,0,0,.45);
+    font-size: 13.5px; animation: dt-in .28s cubic-bezier(.2,.7,.2,1);
+  }
+  @keyframes dt-in { from { transform: translateX(24px); opacity: 0; } }
+  .dt-head { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; padding: 12px 12px 0 16px; border-bottom: 1px solid var(--border); }
+  .dt-title { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--accent); padding-bottom: 12px; }
+  .dt-tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; align-self: end; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .dt-tab { font-size: 12px; padding: 8px 8px 11px; color: var(--muted); border-bottom: 2px solid transparent; white-space: nowrap; }
+  .dt-tab:hover { color: var(--text); }
+  .dt-tab[aria-selected='true'] { color: var(--text); border-bottom-color: var(--accent); }
+  .dt-x { width: 32px; height: 32px; border-radius: 8px; font-size: 20px; color: var(--muted); margin-bottom: 10px; }
+  .dt-x:hover { background: var(--surface-2); color: var(--text); }
+  .dt-body { flex: 1; overflow-y: auto; padding: 16px; scrollbar-width: thin; }
+  .dt-body section { display: flex; flex-direction: column; gap: 14px; }
+  .lbl { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .row-h { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .big { font-size: 15px; color: var(--text); }
+  .muted { color: var(--muted); }
+  .mini { font-family: var(--font-mono); font-size: 11.5px; padding: 6px 10px; border: 1px solid var(--border-2); border-radius: 999px; color: var(--text-2); align-self: flex-start; }
+  .mini:hover { border-color: var(--accent); color: var(--accent); }
+  .dt-card { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; background: var(--bg); }
+
+  .vitals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .vitals :global(.vital) { position: relative; overflow: hidden; border: 1px solid var(--border); border-radius: 12px; padding: 12px; background: var(--bg); display: flex; flex-direction: column; gap: 2px; }
+  .vitals :global(.vital:first-child) { grid-column: 1 / -1; }
+  .vitals :global(.v-top) { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--muted); }
+  .vitals :global(.v-badge) { font-size: 10.5px; padding: 1px 7px; border-radius: 999px; background: var(--surface-2); }
+  .vitals :global(b) { font-size: 24px; font-weight: 500; letter-spacing: -0.02em; }
+  .vitals :global(small) { font-size: 12px; color: var(--muted); margin-left: 2px; }
+  .vitals :global(.v-sub) { font-size: 11.5px; color: var(--muted); }
+  .vitals :global(i) { position: absolute; left: 0; bottom: 0; height: 3px; width: calc(var(--p) * 100%); background: var(--muted); transition: width .4s; }
+  .vitals :global(.good i) { background: var(--green); } .vitals :global(.good .v-badge) { color: var(--green); }
+  .vitals :global(.mid i) { background: var(--amber); } .vitals :global(.mid .v-badge) { color: var(--amber); }
+  .vitals :global(.poor i) { background: var(--rose); } .vitals :global(.poor .v-badge) { color: var(--rose); }
+  .spark { width: 100%; height: 48px; margin-top: 8px; }
+  .spark polyline { fill: none; stroke: var(--accent); stroke-width: 1.6; vector-effect: non-scaling-stroke; }
+
+  .kv { display: grid; gap: 0; font-size: 12.5px; }
+  .kv :global(div) { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; padding: 7px 0; border-bottom: 1px dashed var(--border); }
+  .kv :global(dt) { color: var(--muted); }
+  .kv :global(dd) { margin: 0; overflow-wrap: anywhere; }
+  .kv a { color: var(--accent); }
+
+  .net { font-size: 11.5px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .net :global(.nrow) { display: grid; grid-template-columns: minmax(0, 1.6fr) 52px 58px 46px minmax(0, 1fr); gap: 8px; padding: 6px 10px; border-bottom: 1px solid var(--border); align-items: center; }
+  .net :global(.nh) { color: var(--muted); background: var(--surface-2); }
+  .net :global(.nn) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .net :global(em) { color: var(--green); font-style: normal; }
+  .net :global(.wf) { position: relative; height: 8px; background: var(--surface-2); border-radius: 4px; }
+  .net :global(.wf i) { position: absolute; top: 0; bottom: 0; background: var(--accent); border-radius: 4px; }
+
+  .inspect-btn { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1px solid var(--border-2); border-radius: 12px; font-size: 14px; text-align: left; }
+  .inspect-btn span { flex: 1; }
+  .inspect-btn kbd { font-size: 11px; border: 1px solid var(--border-2); border-radius: 5px; padding: 1px 6px; }
+  .inspect-btn:hover, .inspect-btn:global(.on) { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  [data-picked] { font-size: 12px; display: grid; gap: 4px; }
+  [data-picked] :global(.pk-sel) { color: var(--accent); font-weight: 500; margin-bottom: 4px; overflow-wrap: anywhere; }
+  :global(.csw) { display: inline-block; width: 11px; height: 11px; border-radius: 3px; border: 1px solid var(--border-2); vertical-align: -1px; margin-right: 6px; }
+  .toggles { border: 0; padding: 0; display: grid; gap: 8px; }
+  .toggles legend { margin-bottom: 8px; }
+  .toggles label, .check { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  input[type='checkbox'] { accent-color: var(--accent); width: 16px; height: 16px; }
+
+  .swatches { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .swatch { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--border); border-radius: 12px; text-align: left; }
+  .swatch:hover { border-color: var(--border-2); }
+  .swatch[aria-pressed='true'] { border-color: var(--accent); background: var(--accent-soft); }
+  .sw { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border-2); background: linear-gradient(135deg, var(--a) 50%, var(--b) 50%); flex: none; }
+  .accents { display: flex; flex-wrap: wrap; gap: 8px; }
+  .acc { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--border-2); display: grid; place-items: center; font-size: 14px; color: var(--muted); position: relative; overflow: hidden; cursor: pointer; }
+  .acc:global(.on) { box-shadow: 0 0 0 2px var(--text); }
+  .acc.custom { background: conic-gradient(#f43f5e, #f59e0b, #22c55e, #06b6d4, #6366f1, #d946ef, #f43f5e); }
+  .acc.custom input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .slider { display: grid; gap: 8px; }
+  .slider .lbl { display: flex; justify-content: space-between; }
+  .slider b { color: var(--text); font-weight: 500; }
+  input[type='range'] { accent-color: var(--accent); width: 100%; }
+
+  .checks { list-style: none; padding: 0; display: grid; gap: 6px; }
+  .checks :global(li) { display: flex; gap: 10px; align-items: baseline; font-size: 13px; }
+  .checks :global(li > span:first-child) { width: 18px; height: 18px; flex: none; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; }
+  .checks :global(.pass > span:first-child) { background: color-mix(in srgb, var(--green) 18%, transparent); color: var(--green); }
+  .checks :global(.fail > span:first-child) { background: color-mix(in srgb, var(--rose) 18%, transparent); color: var(--rose); }
+  .checks :global(.sr) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  [data-contrast] { display: grid; gap: 6px; }
+  [data-contrast] :global(.ct) { display: grid; grid-template-columns: 18px 1fr auto 70px; gap: 8px; align-items: center; font-size: 13px; }
+  [data-contrast] :global(em) { font-style: normal; font-family: var(--font-mono); font-size: 11px; text-align: center; border-radius: 999px; padding: 2px 6px; }
+  [data-contrast] :global(.g-AAA), [data-contrast] :global(.g-AA) { color: var(--green); background: color-mix(in srgb, var(--green) 14%, transparent); }
+  [data-contrast] :global(.g-AAlarge) { color: var(--amber); background: color-mix(in srgb, var(--amber) 14%, transparent); }
+  [data-contrast] :global(.g-fail) { color: var(--rose); background: color-mix(in srgb, var(--rose) 14%, transparent); }
+  .outline { list-style: none; padding: 0; font-size: 12px; display: grid; gap: 4px; }
+  .outline :global(li) { padding-left: calc(var(--l) * 16px); color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .outline :global(li span) { color: var(--accent); margin-right: 8px; }
+  .links { list-style: none; padding: 0; display: grid; gap: 6px; font-size: 12.5px; }
+  .links li { display: flex; justify-content: space-between; gap: 10px; }
+  .links a { color: var(--accent); }
+  .links span { color: var(--muted); }
+
+  .dt-hl { position: fixed; z-index: 69; pointer-events: none; background: color-mix(in srgb, var(--accent) 14%, transparent); outline: 1.5px solid var(--accent); border-radius: 2px; transition: all .06s linear; }
+  .dt-tip { position: absolute; left: -1px; bottom: calc(100% + 4px); white-space: nowrap; font-size: 11px; padding: 4px 8px; border-radius: 6px; background: var(--text); color: var(--bg); display: flex; gap: 8px; }
+  .dt-tip:global(.below) { bottom: auto; top: calc(100% + 4px); }
+  .dt-tip :global(span) { opacity: .7; }
+  .dt-tip :global(em) { font-style: normal; color: var(--accent); filter: brightness(1.6); }
+  :global(html.dt-inspecting), :global(html.dt-inspecting *) { cursor: crosshair !important; }
+
+  @media (max-width: 640px) {
+    .dt { top: auto; height: min(78vh, 640px); width: 100vw; border-left: 0; border-top: 1px solid var(--border-2); border-radius: 18px 18px 0 0; animation-name: dt-up; }
+    @keyframes dt-up { from { transform: translateY(30px); opacity: 0; } }
+    .dt-head { grid-template-columns: 1fr auto; }
+    .dt-title { display: none; }
+  }
+</style>

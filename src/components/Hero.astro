@@ -1,421 +1,80 @@
 ---
-import Mark from './Mark.astro';
-import { profile, projects, openSource, spans, lanes, now, changelog, logTypes, allPrsUrl } from '../data/profile';
-import { counts, inReview } from '../data/github';
+import { profile } from '../data/profile';
+import { counts } from '../data/github';
+import { build } from '../data/build';
 import Icon from './Icon.astro';
-
-const rows = [
-  ['jenkins/docker', 'env-var-subst', 'shipped', 'LTS 2.568.1'],
-  ['jenkins/core', 'a11y, aria', 'shipped', 'weekly 2.591'],
-  ['fossology', `${counts.fossologyCode + counts.fossologyDocs} PRs`, 'merged', 'GSoC 2025'],
-  ['owasp/nest', 'a11y, security', 'active', 'collab'],
-  ['sktime', 'forecasting', 'review', 'open'],
-];
+import Terminal from './Terminal.astro';
 
 const socials = profile.socials.filter((s) => s.url.startsWith('http'));
-
-// Data the in-browser terminal reads. Kept small and derived from profile.ts.
-const termData = {
-  email: profile.email,
-  resume: profile.resume,
-  allPrs: allPrsUrl,
-  socials: Object.fromEntries(profile.socials.map((s) => [s.name.toLowerCase(), s.url])),
-  experience: [...spans]
-    .sort((a, b) => b.start.localeCompare(a.start))
-    .filter((s) => s.kind !== 'award')
-    .map((s) => `${s.start}  ${s.end ?? 'now    '}  ${s.role} · ${s.org}`),
-  projects: [
-    'ezvor          career platform, judge-verified readiness score',
-    'pdf-scanner    31 in-browser PDF tools (9D Technologies)',
-    ...projects.map((p) => `${p.name.split(':')[0].toLowerCase().replace(/\s+/g, '-').slice(0, 14).padEnd(15)}${p.kind.toLowerCase()}`),
-  ],
-  oss: openSource.map((o) => `${o.name.padEnd(15)}${o.items.length} items${o.highlight ? ` · ${o.highlight}` : ''}`),
-  stack: lanes.map((l) => `${l.title.padEnd(15)}${l.skills.map((s) => s.name).join(', ')}`),
-  merged: counts.merged,
-  now: { ...now, in_review: inReview },
-  gitlog: [...changelog]
-    .sort((a, b) => b.date.localeCompare(a.date))
-    .slice(0, 8)
-    .map((e) => `${e.date.padEnd(10)}  ${(logTypes[e.type].verb + ':').padEnd(7)}${e.text}`),
-  fetch: [
-    ['role', profile.role.toLowerCase()],
-    ['lanes', 'backend · ai/llm · devops · full stack'],
-    ['stack', 'python fastapi k8s otel llm-agents'],
-    ['oss', `${counts.merged} merged upstream PRs · ${counts.orgs} orgs`],
-    ['shipped', 'jenkins weekly 2.565 · lts 2.568.1 · weekly 2.591'],
-    ['gsoc', 'fossology 2025 · monolith → 10+ services'],
-    ['location', 'lahore · utc+5'],
-  ],
-};
-const nowIntro = { shipping: now.shipping, building: now.building, in_review: inReview.slice(0, 3), open_to: now.open_to };
+const facts = [
+  ['Now', 'Backend engineer, 9D Technologies', '#span-9d'],
+  ['Upstream', `${counts.merged} merged PRs across ${counts.orgs} orgs`, '#open-source'],
+  ['Releases', 'Jenkins 2.565 · LTS 2.568.1 · 2.591', '#oss-jenkins'],
+  ['Programs', 'GSoC 2025 · Linux Foundation LiFT', '#changelog'],
+  ['Based in', 'Lahore, UTC+5 · open to remote', '#contact'],
+];
 ---
 
-<section class="hero wrap" aria-labelledby="hero-title">
-  <div class="hero-copy">
-    <div class="id rise">
-      <h1 id="hero-title" class="hand" aria-label="Hi, I’m Salman." data-type-h1>
-        <span class="l1" aria-hidden="true">Hi,</span>
-        <span class="l2" aria-hidden="true">{[...'I’m '].map((c) => <span class="ch">{c}</span>)}<Mark>{[...'Salman'].map((c) => <span class="ch">{c}</span>)}</Mark><span class="ch">.</span></span>
-      </h1>
-      <script is:inline>
-        (function () {
-          var h = document.querySelector('[data-type-h1]');
-          if (h && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) h.classList.add('typing');
-        })();
-      </script>
-      <p class="lanes-row mono">
-        {profile.disciplines.map((d, i) => <>{i > 0 && <span class="sep" aria-hidden="true">/</span>}<a href={d.href}>{d.label}</a></>)}
-      </p>
-    </div>
-
-    <p class="headline rise">
-      I build backend services and fix the <span class="hl">pipelines nobody wants to touch.</span>
-    </p>
-    <div class="intro rise">{profile.intro.map((p) => <p>{p}</p>)}</div>
-
+<section class="hero wrap" aria-labelledby="hero-title" data-component="Hero">
+  <div class="copy">
+    <p class="eyebrow rise">Backend &amp; infrastructure engineer</p>
+    <h1 id="hero-title" class="rise">I fix the pipelines <em>nobody</em> wants to touch.</h1>
+    <p class="intro rise">{profile.intro[0]}</p>
     <div class="ctas rise">
-      <a class="btn primary" href="#work">
-        See the work
-        <Icon name="down" size={16} />
-      </a>
-      <a class="btn" href={profile.resume} target="_blank" rel="noopener">
-        <Icon name="file" size={16} /> Résumé
-      </a>
+      <a class="btn primary" href="#work">See the work <Icon name="down" size={16} /></a>
+      <a class="btn" href={profile.resume} target="_blank" rel="noopener"><Icon name="file" size={16} /> Résumé</a>
       <ul class="socials" aria-label="Profiles">
         {socials.map((s) => (
-          <li>
-            <a class="icon-link" href={s.url} target="_blank" rel="noopener" aria-label={s.name} title={s.name}>
-              <Icon name={s.name.toLowerCase()} size={17} />
-            </a>
-          </li>
+          <li><a class="icon-link" href={s.url} target="_blank" rel="noopener" aria-label={s.name} title={s.name}><Icon name={s.name.toLowerCase()} size={17} /></a></li>
         ))}
       </ul>
     </div>
-  </div>
-
-  <div class="term-wrap rise">
-  <p class="scribble hand" aria-hidden="true">
-    <span>psst, it’s a real terminal. type&nbsp;<b>help</b></span>
-    <svg viewBox="0 0 70 60" width="54" height="46"><path d="M8 6 C 40 4, 62 20, 52 50" /><path d="M42 42 L 52 52 L 60 40" /></svg>
-  </p>
-  <div class="term card" data-term-root>
-    <div class="term-bar">
-      <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span class="mono term-title">salman@env: ~</span>
-      <span class="mono term-meta">interactive · type <b>help</b></span>
-    </div>
-    <div class="term-body mono" data-term-body tabindex="-1">
-      <div data-term-intro>
-        <p class="ln"><span class="pr">salman@env:~$</span> <span class="cmd">whoami</span></p>
-        <p class="ln out">software engineer · backend, ai, devops · 9D Technologies · Lahore</p>
-
-        <p class="ln gap"><span class="pr">salman@env:~$</span> <span class="cmd">kubectl get contributions -n open-source</span></p>
-        <div class="ln out tbl" role="table" aria-label="Open source contributions">
-          <div class="tr th" role="row"><span role="columnheader">NAME</span><span role="columnheader">SCOPE</span><span role="columnheader">STATUS</span><span role="columnheader" class="c4">RELEASE</span></div>
-          {rows.map(([n, t, s, r]) => (
-            <div class="tr" role="row">
-              <span role="cell">{n}</span><span role="cell">{t}</span>
-              <span role="cell" class:list={['st', s]}>{s}</span>
-              <span role="cell" class="c4">{r}</span>
-            </div>
-          ))}
-        </div>
-
-        <p class="ln gap"><span class="pr">salman@env:~$</span> <span class="cmd">cat now.json</span></p>
-        <pre class="ln out json">{'{'}
-{Object.entries(nowIntro).map(([k, v], i, a) => (
-<>  <span class="k">"{k}"</span>: {Array.isArray(v) ? <>[{v.map((x, j) => <><span class="v">"{x}"</span>{j < v.length - 1 ? ', ' : ''}</>)}]</> : <span class="v">"{v}"</span>}{i < a.length - 1 ? ',' : ''}
-</>
-))}{'}'}</pre>
-      </div>
-      <div data-term-log aria-live="polite"></div>
-      <form class="ln gap prompt" data-term-form autocomplete="off">
-        <label for="term-input" class="pr">salman@env:~$</label>
-        <input id="term-input" data-term-input spellcheck="false" autocapitalize="off" aria-label="Terminal command. Type help for a list." />
-      </form>
-    </div>
-    <div class="suggest" data-term-suggest>
-      {['help', 'neofetch', 'ask kubernetes', 'git log', 'agent', 'resume'].map((c) => (
-        <button type="button" class="chip" data-cmd={c}>{c}</button>
+    <dl class="facts rise" aria-label="At a glance">
+      {facts.map(([k, v, href]) => (
+        <div class="fact"><dt>{k}</dt><dd><a href={href}>{v}</a></dd></div>
       ))}
-    </div>
+    </dl>
   </div>
+  <div class="term-col rise">
+    <Terminal build={{ ...build, astro: Astro.generator }} />
   </div>
 </section>
 
-<script is:inline type="application/json" id="term-data" set:html={JSON.stringify(termData)} />
-
-<script>
-  const root = document.querySelector<HTMLElement>('[data-term-root]');
-  const body = root?.querySelector<HTMLElement>('[data-term-body]');
-  const intro = root?.querySelector<HTMLElement>('[data-term-intro]');
-  const log = root?.querySelector<HTMLElement>('[data-term-log]');
-  const form = root?.querySelector<HTMLFormElement>('[data-term-form]');
-  const input = root?.querySelector<HTMLInputElement>('[data-term-input]');
-  const data = JSON.parse(document.getElementById('term-data')?.textContent || '{}');
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // 0. Greeting: type "I'm Salman." once, then hand off to the underline
-  const h1 = document.querySelector<HTMLElement>('[data-type-h1]');
-  if (h1?.classList.contains('typing')) {
-    const chars = Array.from(h1.querySelectorAll<HTMLElement>('.ch'));
-    let i = 0;
-    const step = () => {
-      chars[i - 1]?.classList.remove('cur');
-      if (i >= chars.length) {
-        chars[chars.length - 1].classList.add('cur');
-        setTimeout(() => { chars[chars.length - 1].classList.remove('cur'); h1.classList.add('typed'); }, 1300);
-        return;
-      }
-      chars[i].classList.add('on', 'cur');
-      i++;
-      setTimeout(step, chars[i - 1].textContent === ' ' ? 60 : 85 + Math.random() * 50);
-    };
-    setTimeout(step, 450);
-  }
-
-  // 1. Typed intro
-  if (intro && !reduce) {
-    const lines = Array.from(intro.querySelectorAll<HTMLElement>('.ln'));
-    lines.forEach((l) => l.classList.add('pending'));
-    form?.classList.add('pending');
-    let t = 300;
-    for (const l of lines) {
-      const cmd = l.querySelector<HTMLElement>('.cmd');
-      if (cmd) {
-        const full = cmd.textContent || '';
-        cmd.textContent = '';
-        setTimeout(() => {
-          l.classList.remove('pending');
-          let i = 0;
-          const tick = setInterval(() => {
-            cmd.textContent = full.slice(0, ++i);
-            if (i >= full.length) clearInterval(tick);
-          }, 24);
-        }, t);
-        t += full.length * 24 + 220;
-      } else {
-        setTimeout(() => l.classList.remove('pending'), t);
-        t += 160;
-      }
-    }
-    setTimeout(() => form?.classList.remove('pending'), t);
-  }
-
-  // 2. Interactive shell
-  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
-  const scroll = () => body?.scrollTo({ top: body.scrollHeight, behavior: reduce ? 'auto' : 'smooth' });
-  const print = (cmd: string, html: string) => {
-    const block = document.createElement('div');
-    block.innerHTML = `<p class="ln gap"><span class="pr">salman@env:~$</span> <span class="cmd">${esc(cmd)}</span></p><div class="ln out">${html}</div>`;
-    log?.appendChild(block);
-    scroll();
-    return block.lastElementChild as HTMLElement;
-  };
-  const list = (rows: string[]) => `<pre class="json">${rows.map(esc).join('\n')}</pre>`;
-  const go = (hash: string) => document.querySelector(hash)?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
-
-  const commands: Record<string, { help: string; run: (args: string[]) => string | Promise<string> }> = {
-    help: {
-      help: 'list commands',
-      run: () =>
-        list(Object.entries(commands).map(([k, v]) => `${k.padEnd(12)}${v.help}`)) +
-        `<span class="dim">tab completes, ↑ recalls history</span>`,
-    },
-    whoami: { help: 'short bio', run: () => 'Muhammad Salman. Software engineer at 9D Technologies: backend, AI and DevOps. GSoC 2025 at FOSSology, code in official Jenkins releases. Lahore, UTC+5.' },
-    ask: {
-      help: 'ask <question>: retrieval over my data, cited',
-      run: async (args) => {
-        const q = args.join(' ');
-        if (!q) return 'usage: ask <question>   e.g. ask how do you keep LLMs safe';
-        const { ask } = await import('../scripts/retrieve');
-        const a = await ask(q);
-        if (!a.sentence) return `no confident answer in my data. I'd rather say that than guess. <span class="dim">(${a.ms.toFixed(1)} ms, ${a.corpus} chunks)</span>`;
-        const src = a.hits
-          .map((h, i) => `<span class="dim">[${i + 1}]</span> ${h.chunk.href ? `<a href="${esc(h.chunk.href)}">${esc(h.chunk.title)}</a>` : esc(h.chunk.title)} <span class="dim">${h.score.toFixed(2)}</span>`)
-          .join('<br>');
-        return `${esc(a.sentence)} <span class="dim">[1]</span><br>${src}<br><span class="dim">bm25 · ${a.corpus} chunks · ${a.ms.toFixed(1)} ms · no model call</span>`;
-      },
-    },
-    now: { help: 'what I’m on right now', run: () => `<pre class="json">${esc(JSON.stringify(data.now, null, 2))}</pre>` },
-    neofetch: {
-      help: 'system info, but it’s me',
-      run: () => {
-        const art = ['╭─────────╮', '│  ━━━━━● │', '│  ┃      │', '│  ━━━━━  │', '│      ┃  │', '│  ━━━━━  │', '╰─────────╯', ''];
-        const rows = [['', '<b class="ok">salman</b>@<b class="ok">env</b>'], ['', '──────────'], ...data.fetch];
-        return `<pre class="json">${rows.map((r: string[], i: number) => `<span class="art">${art[i] ?? ' '.repeat(11)}</span>   ${r[0] ? `<span class="k">${esc(r[0].padEnd(9))}</span>${esc(r[1])}` : r[1]}`).join('\n')}</pre>`;
-      },
-    },
-    git: {
-      help: 'git log: latest from the changelog',
-      run: (args) => (args[0] && args[0] !== 'log' ? `git: '${esc(args[0])}' is not a git command here. try <b>git log</b>` : (go('#changelog'), list(data.gitlog))),
-    },
-    agent: {
-      help: 'run the LLM agent demo',
-      run: () => {
-        go('#ai');
-        setTimeout(() => document.querySelector<HTMLButtonElement>('[data-scen="unknown"]')?.click(), reduce ? 0 : 700);
-        return 'scrolling to the agent · firing an unknown alert at tier 2…';
-      },
-    },
-    experience: { help: 'roles, newest first', run: () => (go('#trace'), list(data.experience)) },
-    projects: { help: 'what I built', run: () => (go('#ezvor'), list(data.projects)) },
-    oss: { help: 'open source summary', run: () => (go('#open-source'), list(data.oss) + `<a href="${data.allPrs}" target="_blank" rel="noopener">all ${data.merged} merged PRs on GitHub ↗</a>`) },
-    stack: { help: 'skills by area', run: () => list(data.stack) },
-    resume: { help: 'open the PDF', run: () => (window.open(data.resume, '_blank', 'noopener'), 'opening resume.pdf…') },
-    contact: {
-      help: 'copy my email',
-      run: () => {
-        navigator.clipboard?.writeText(data.email).catch(() => {});
-        return `${esc(data.email)} <span class="ok">copied ✓</span>`;
-      },
-    },
-    open: {
-      help: 'open github | linkedin | x | medium',
-      run: ([name]) => {
-        const url = data.socials[(name || '').toLowerCase()];
-        if (!url) return `usage: open ${Object.keys(data.socials).filter((k) => k !== 'email').join(' | ')}`;
-        window.open(url, '_blank', 'noopener');
-        return `opening ${esc(url)}…`;
-      },
-    },
-    theme: { help: 'toggle light / dark', run: () => (document.querySelector<HTMLButtonElement>('[data-theme-toggle]')?.click(), 'theme toggled') },
-    clear: { help: 'clear the screen', run: () => { if (log) log.innerHTML = ''; intro?.remove(); return ''; } },
-    sudo: {
-      help: 'try it',
-      run: (args) =>
-        args.join(' ').startsWith('hire')
-          ? (setTimeout(() => (location.href = `mailto:${data.email}?subject=Let%E2%80%99s%20talk`), 600), '<span class="ok">permission granted.</span> opening your mail client…<br><span class="dim">want it in your real terminal?</span> curl -fsSL salman-ch.netlify.app/install.sh | sh')
-          : 'usage: sudo hire salman',
-    },
-  };
-  const aliases: Record<string, string> = { ls: 'projects', email: 'contact', cv: 'resume', exp: 'experience', skills: 'stack', cls: 'clear', fetch: 'neofetch', log: 'git', ai: 'agent', '?': 'ask' };
-
-  const history: string[] = [];
-  let hIdx = 0;
-  const run = (raw: string) => {
-    const line = raw.trim();
-    if (!line) return;
-    history.push(line);
-    hIdx = history.length;
-    const [name, ...args] = line.split(/\s+/);
-    const key = aliases[name.toLowerCase()] ?? name.toLowerCase();
-    const c = commands[key];
-    if (key === 'clear') { c.run(args); return; }
-    if (!c) { print(line, `command not found: ${esc(name)}. try <b>help</b>`); return; }
-    const out = c.run(args);
-    if (typeof out === 'string') { print(line, out); return; }
-    const el = print(line, '<span class="dim">…</span>');
-    out.then((h) => { el.innerHTML = h; scroll(); }).catch(() => { el.innerHTML = 'something failed. try again.'; });
-  };
-
-  form?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    if (!input) return;
-    run(input.value);
-    input.value = '';
-  });
-  input?.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowUp' && history.length) { e.preventDefault(); hIdx = Math.max(0, hIdx - 1); input.value = history[hIdx]; }
-    else if (e.key === 'ArrowDown') { e.preventDefault(); hIdx = Math.min(history.length, hIdx + 1); input.value = history[hIdx] ?? ''; }
-    else if (e.key === 'Tab') {
-      const v = input.value.trim().toLowerCase();
-      const hit = Object.keys(commands).find((k) => v && k.startsWith(v));
-      if (hit) { e.preventDefault(); input.value = hit + ' '; }
-    }
-  });
-  root?.querySelectorAll<HTMLButtonElement>('[data-cmd]').forEach((b) =>
-    b.addEventListener('click', () => { run(b.dataset.cmd || ''); input?.focus({ preventScroll: true }); }),
-  );
-  body?.addEventListener('click', (e) => {
-    if (!(e.target as HTMLElement).closest('a,button') && !window.getSelection()?.toString()) input?.focus({ preventScroll: true });
-  });
-</script>
-
 <style>
   .hero {
-    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 64px);
-    align-items: center; padding-block: clamp(24px, 4vh, 48px);
-    min-height: min(calc(100svh - 68px), 980px);
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.02fr); gap: clamp(40px, 5vw, 80px);
+    align-items: center; padding-block: clamp(40px, 7vh, 96px) clamp(56px, 9vh, 112px);
+    min-height: min(calc(100svh - 72px), 960px);
   }
-  h1 { font-size: clamp(46px, 5.4vw, 72px); line-height: 1.02; }
-  h1 .l1, h1 .l2 { display: block; }
-  h1 .ch { white-space: pre; }
-  h1.typing .ch { opacity: 0; }
-  h1.typing .ch.on { opacity: 1; }
-  h1 .ch.cur { position: relative; }
-  h1 .ch.cur::after {
-    content: ''; position: absolute; right: -0.12em; top: 0.12em; width: 0.07em; height: 0.82em;
-    background: var(--accent); border-radius: 2px; animation: caret .9s steps(1) infinite;
+  .copy { display: flex; flex-direction: column; }
+  h1 {
+    font-family: var(--font-display); font-weight: 400; margin-top: 26px;
+    font-size: clamp(50px, 6.4vw, 96px); line-height: .98; letter-spacing: -0.02em; text-wrap: balance;
   }
-  @keyframes caret { 50% { opacity: 0; } }
-  .term-wrap { position: relative; }
-  .scribble { position: absolute; right: 8px; top: -52px; display: flex; align-items: flex-start; gap: 2px; font-size: 19px; color: var(--muted); transform: rotate(-3deg); pointer-events: none; }
-  .scribble b { color: var(--accent); }
-  .scribble svg { margin-top: 6px; }
-  .scribble path { fill: none; stroke: var(--accent); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-  .headline { font-size: clamp(20px, 2vw, 25px); line-height: 1.3; letter-spacing: -0.02em; margin-top: 18px; font-weight: 500; max-width: 26ch; text-wrap: balance; }
-  .hl { color: var(--accent); }
-  .intro { color: var(--text-2); margin-top: 14px; max-width: 58ch; display: grid; gap: 10px; }
-  .lanes-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 12px; font-size: 13px; }
-  .lanes-row a { color: var(--text-2); padding: 3px 9px; border-radius: 99px; border: 1px solid var(--border); background: var(--surface); transition: color .15s, border-color .15s; }
-  .lanes-row a:hover { color: var(--accent); border-color: var(--accent); }
-  .lanes-row .sep { color: var(--faint); }
-  .term-body :global(.art) { color: var(--accent); }
-  .ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 22px; }
-  .socials { list-style: none; padding: 0; display: flex; gap: 4px; margin-left: 6px; }
-  .icon-link { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; color: var(--muted); border: 1px solid transparent; transition: color .15s, border-color .15s, background .15s; }
-  .icon-link:hover { color: var(--text); border-color: var(--border-2); background: var(--surface); }
+  h1 em { font-style: italic; color: var(--accent); }
+  :global(:root[data-theme='phosphor']) h1 { font-size: clamp(38px, 4.6vw, 64px); letter-spacing: -0.05em; line-height: 1.05; }
+  :global(:root[data-theme='phosphor']) h1 em { font-style: normal; }
+  .intro { margin-top: 28px; color: var(--text-2); font-size: clamp(16.5px, 1.4vw, 18.5px); max-width: 54ch; text-wrap: pretty; }
+  .ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 32px; }
+  .socials { list-style: none; padding: 0; display: flex; gap: 2px; margin-left: 4px; }
+  .icon-link { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 999px; color: var(--muted); transition: color .15s, background .15s; }
+  .icon-link:hover { color: var(--text); background: var(--surface-2); }
+  .facts { margin-top: 44px; border-top: 1px solid var(--text); max-width: 520px; }
+  .fact { display: grid; grid-template-columns: 108px minmax(0, 1fr); gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14.5px; }
+  dt { color: var(--muted); }
+  dd { margin: 0; }
+  dd a { transition: color .15s; }
+  dd a:hover { color: var(--accent); }
+  .term-col { min-width: 0; }
 
-  .term { overflow: hidden; font-size: 12.5px; display: flex; flex-direction: column; }
-  .term-bar { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-bottom: 1px solid var(--border); background: var(--surface-2); }
-  .lights { display: flex; gap: 6px; }
-  .lights i { width: 11px; height: 11px; border-radius: 50%; }
-  .lights i:nth-child(1) { background: #ff5f57; } .lights i:nth-child(2) { background: #febc2e; } .lights i:nth-child(3) { background: #28c840; }
-  .term-title { font-size: 12px; color: var(--muted); }
-  .term-meta { margin-left: auto; font-size: 11px; color: var(--muted); }
-  .term-meta b { color: var(--accent); font-weight: 500; }
-  .term-body { padding: 14px 18px 16px; line-height: 1.65; height: clamp(320px, 52vh, 420px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
-  .term-body :global(.ln) { transition: opacity .2s; }
-  .term-body :global(.ln.pending), .prompt.pending { opacity: 0; }
-  .term-body :global(.gap) { margin-top: 12px; }
-  .term-body :global(.pr) { color: var(--accent); white-space: nowrap; }
-  .term-body :global(.cmd) { color: var(--text); }
-  .term-body :global(.out) { color: var(--text-2); }
-  .term-body :global(.dim) { color: var(--muted); }
-  .term-body :global(.ok) { color: var(--green); }
-  .term-body :global(a) { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
-  .term-body :global(.json) { font-family: inherit; margin: 0; white-space: pre; overflow-x: auto; }
-  .tbl { display: grid; gap: 1px; margin-top: 4px; overflow-x: auto; }
-  .tr { display: grid; grid-template-columns: 1.3fr 1.2fr .8fr 1fr; gap: 10px; white-space: nowrap; }
-  .th { color: var(--muted); }
-  .st.shipped { color: var(--accent); } .st.merged { color: var(--violet); } .st.active { color: var(--green); } .st.review { color: var(--amber); }
-  .k { color: var(--blue); } .v { color: var(--amber); } .n { color: var(--green); }
-  .prompt { display: flex; gap: 8px; align-items: center; }
-  .prompt input { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: var(--text); font: inherit; caret-color: var(--accent); padding: 0; }
-  .suggest { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 14px; border-top: 1px solid var(--border); background: var(--surface-2); }
-  .suggest .chip { cursor: pointer; }
-  .suggest .chip:hover { border-color: var(--accent); color: var(--accent); }
-
-  @media (max-width: 980px) {
-    .hero { grid-template-columns: minmax(0, 1fr); min-height: 0; padding-top: 0; }
-    .hero-copy { min-height: min(calc(100svh - 68px), 980px); display: flex; flex-direction: column; justify-content: center; padding-block: 24px; }
-    .term-wrap { margin-top: 44px; }
-    .term-body { height: 380px; }
-    .scribble { top: -40px; font-size: 17px; }
-  }
-  /* Short laptop screens: keep the whole hero above the fold */
-  @media (min-width: 981px) and (max-height: 800px) {
-    .intro { font-size: 15px; }
-    .headline { margin-top: 14px; }
-    .term { font-size: 12px; }
+  @media (max-width: 1024px) {
+    .hero { grid-template-columns: minmax(0, 1fr); min-height: 0; padding-top: 48px; }
+    .facts { max-width: none; }
   }
   @media (max-width: 560px) {
-    .term { font-size: 11px; }
-    .term-body { height: 360px; }
-    .scribble { right: 0; font-size: 15px; }
-    .tr { grid-template-columns: 1.3fr 1.2fr .9fr; }
-    .c4, .term-meta { display: none; }
-    .socials { margin-left: 0; }
+    .hero { padding-top: 32px; gap: 40px; }
+    h1 { margin-top: 18px; }
+    .fact { grid-template-columns: 92px minmax(0, 1fr); font-size: 14px; }
+    .socials { margin-left: 0; width: 100%; }
   }
 </style>
