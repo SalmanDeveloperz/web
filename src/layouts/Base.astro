@@ -3,10 +3,7 @@
 // are ever downloaded, thanks to unicode-range in the fontsource CSS.
 import '@fontsource-variable/geist/wght.css';
 import '@fontsource-variable/geist-mono/wght.css';
-import '@fontsource/instrument-serif/latin-400.css';
-import '@fontsource/instrument-serif/latin-400-italic.css';
 import geistUrl from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
-import serifUrl from '@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2?url';
 import { build as buildStamp } from '../data/build';
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
@@ -66,7 +63,6 @@ const speculation = { prefetch: [{ source: 'list', urls: ['/writing/'] }] };
     <meta name="color-scheme" content="dark light" />
 
     <link rel="preload" href={geistUrl} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={serifUrl} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:type" content={type} />
     <meta property="og:title" content={fullTitle} />

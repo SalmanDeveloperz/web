@@ -1,14 +1,16 @@
 /* ─────────────────────────────────────────────────────────────────────────
    Monograph design system.
-   One serif for display, one sans for reading, one mono for code.
+   One typeface, Geist, for everything. Geist Mono appears only where columns
+   must line up: the terminal, code blocks and the demo consoles (--font-code).
    Themes set colors only; type, spacing and radii never change.
    html[data-theme] picks the palette, html[data-mode] says light or dark.
    ───────────────────────────────────────────────────────────────────────── */
 :root {
   --font-sans: 'Geist Variable', 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: 'Geist Mono Variable', 'Geist Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-serif: 'Instrument Serif', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
-  --font-display: var(--font-serif);
+  --font-code: 'Geist Mono Variable', 'Geist Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* Labels that used to be monospace now use Geist too, with tabular figures. */
+  --font-mono: var(--font-sans);
+  --font-display: var(--font-sans);
 
   --radius: 18px;
   --radius-sm: 10px;
@@ -84,7 +86,6 @@
   --amber: #e8d36a; --violet: #9ee6c0; --rose: #ff9b8a; --blue: #6fe3c8; --green: #3cf08a;
   --term-bg: #030604; --term-bar: #07100a; --term-border: #163020; --term-text: #c9f7da; --term-dim: #7fb592; --term-accent: #3cf08a;
   --shadow: 0 0 0 1px rgba(60, 240, 138, 0.04), 0 30px 70px -40px rgba(0, 0, 0, 0.95);
-  --font-display: var(--font-mono);
   color-scheme: dark;
 }
 :root[data-theme='contrast'] {
@@ -137,8 +138,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* ── Layout primitives ────────────────────────────────────────────────── */
 .wrap { width: 100%; max-width: var(--max); margin-inline: auto; padding-inline: var(--gutter); }
-.mono { font-family: var(--font-mono); }
-.serif { font-family: var(--font-display); font-weight: 400; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.code { font-family: var(--font-code); }
 .muted { color: var(--muted); }
 
 section.block { padding-block: clamp(72px, 10vw, 136px); position: relative; }
@@ -156,13 +157,12 @@ section.block + section.block { border-top: 1px solid var(--border); }
 .eyebrow::before { content: ''; width: 18px; height: 1px; background: var(--accent); }
 
 .h2, .hand {
-  font-family: var(--font-display); font-weight: 400; letter-spacing: -0.015em;
+  font-family: var(--font-display); font-weight: 600; letter-spacing: -0.04em;
 }
 .h2 {
-  font-size: clamp(40px, 5.6vw, 68px); line-height: 1.0;
-  margin-top: 16px; max-width: 18ch; text-wrap: balance;
+  font-size: clamp(36px, 4.8vw, 58px); line-height: 1.04;
+  margin-top: 16px; max-width: 20ch; text-wrap: balance;
 }
-:root[data-theme='phosphor'] .h2 { letter-spacing: -0.04em; font-size: clamp(32px, 4.4vw, 52px); }
 .lede { color: var(--text-2); font-size: clamp(16px, 1.5vw, 18.5px); max-width: 60ch; margin-top: 20px; text-wrap: pretty; }
 .section-head { margin-bottom: clamp(36px, 5vw, 64px); }
 
@@ -212,16 +212,16 @@ section.block + section.block { border-top: 1px solid var(--border); }
 /* ── Prose (writing) ──────────────────────────────────────────────────── */
 .prose { color: var(--text-2); font-size: 18px; line-height: 1.75; }
 .prose > * + * { margin-top: 1.15em; }
-.prose h2 { color: var(--text); font-family: var(--font-display); font-weight: 400; font-size: 34px; letter-spacing: -0.01em; line-height: 1.15; margin-top: 1.8em; }
+.prose h2 { color: var(--text); font-weight: 600; font-size: 27px; letter-spacing: -0.03em; line-height: 1.2; margin-top: 1.8em; }
 .prose h3 { color: var(--text); font-size: 20px; letter-spacing: -0.01em; margin-top: 1.6em; }
 .prose a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 .prose strong { color: var(--text); font-weight: 600; }
 .prose ul, .prose ol { padding-left: 1.3em; }
 .prose li + li { margin-top: .4em; }
-.prose code { font-family: var(--font-mono); font-size: .86em; background: var(--surface-2); border: 1px solid var(--border); padding: .12em .38em; border-radius: 5px; }
-.prose pre { font-size: 14px; line-height: 1.6; padding: 18px 20px; border-radius: var(--radius-sm); border: 1px solid var(--border); overflow-x: auto; }
+.prose code { font-family: var(--font-code); font-size: .86em; background: var(--surface-2); border: 1px solid var(--border); padding: .12em .38em; border-radius: 5px; }
+.prose pre { font-family: var(--font-code); font-size: 14px; line-height: 1.6; padding: 18px 20px; border-radius: var(--radius-sm); border: 1px solid var(--border); overflow-x: auto; }
 .prose pre code { background: none; border: 0; padding: 0; font-size: inherit; }
-.prose blockquote { border-left: 2px solid var(--accent); padding-left: 18px; color: var(--muted); font-family: var(--font-display); font-size: 1.3em; line-height: 1.4; }
+.prose blockquote { border-left: 2px solid var(--accent); padding-left: 18px; color: var(--text-2); font-size: 1.1em; line-height: 1.55; }
 .prose table { width: 100%; border-collapse: collapse; font-size: 14px; display: block; overflow-x: auto; }
 .prose th, .prose td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
 .prose th { color: var(--text); font-weight: 600; }

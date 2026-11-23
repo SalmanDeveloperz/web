@@ -1,5 +1,5 @@
 ---
-// The one emphasised word in a heading: serif italic in the accent color.
+// The one emphasised word in a heading: the accent color, same font and weight.
 // `variant` is kept so existing call sites don't need to change.
 interface Props { variant?: 1 | 2 | 3 }
 ---
@@ -7,6 +7,5 @@ interface Props { variant?: 1 | 2 | 3 }
 <em class="mark"><slot /></em>
 
 <style>
-  .mark { font-style: italic; color: var(--accent); font-family: var(--font-display); }
-  :global(:root[data-theme='phosphor']) .mark { font-style: normal; }
+  .mark { font-style: normal; color: var(--accent); }
 </style>

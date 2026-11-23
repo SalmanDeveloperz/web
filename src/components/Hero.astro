@@ -48,12 +48,10 @@ const facts = [
   }
   .copy { display: flex; flex-direction: column; }
   h1 {
-    font-family: var(--font-display); font-weight: 400; margin-top: 26px;
-    font-size: clamp(50px, 6.4vw, 96px); line-height: .98; letter-spacing: -0.02em; text-wrap: balance;
+    font-family: var(--font-display); font-weight: 600; margin-top: 26px;
+    font-size: clamp(42px, 5.4vw, 78px); line-height: 1.0; letter-spacing: -0.045em; text-wrap: balance;
   }
-  h1 em { font-style: italic; color: var(--accent); }
-  :global(:root[data-theme='phosphor']) h1 { font-size: clamp(38px, 4.6vw, 64px); letter-spacing: -0.05em; line-height: 1.05; }
-  :global(:root[data-theme='phosphor']) h1 em { font-style: normal; }
+  h1 em { font-style: normal; color: var(--accent); }
   .intro { margin-top: 28px; color: var(--text-2); font-size: clamp(16.5px, 1.4vw, 18.5px); max-width: 54ch; text-wrap: pretty; }
   .ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 32px; }
   .socials { list-style: none; padding: 0; display: flex; gap: 2px; margin-left: 4px; }
