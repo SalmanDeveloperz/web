@@ -19,6 +19,7 @@ export const logTypes: Record<LogType, { label: string; verb: string }> = {
 };
 
 export const changelog: LogEntry[] = [
+  { date: '2026-11-16', type: 'merge', text: 'ARIA roles on Jenkins core dropdown menus for screen readers', ref: 'jenkinsci/jenkins#26321', href: 'https://github.com/jenkinsci/jenkins/pull/26321' },
   { date: '2026-09', type: 'ship', text: 'PDF Scanner Web: 31 document tools, all in the browser, for 9D Technologies', href: 'https://docs-scan.netlify.app/' },
   { date: '2026-08-09', type: 'merge', text: 'Live LLM analysis path with the deterministic engine kept as fallback', ref: 'failuretwin-ai#12', href: 'https://github.com/kaulastudies/failuretwin-ai/pull/12' },
   { date: '2026-08', type: 'role', text: 'Joined 9D Technologies as a Backend Software Engineer' },

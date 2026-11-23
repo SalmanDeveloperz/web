@@ -36,8 +36,9 @@ export const openSource: Org[] = [
       { title: 'Off-screen dropdown items lost focus feedback during arrow-key navigation', ref: 'jenkins#26358', url: gh('jenkinsci/jenkins', 26358), status: 'merged' },
       { title: 'Keyboard navigation for the theme picker, requested by the maintainer', ref: 'theme-manager#350', url: gh('jenkinsci/theme-manager-plugin', 350), status: 'merged' },
       { title: 'Broken contributor profile link on jenkins.io', ref: 'jenkins.io#8629', url: gh('jenkins-infra/jenkins.io', 8629), status: 'merged' },
-      { title: 'ARIA roles on dropdown menus for screen readers', ref: 'jenkins#26321', url: gh('jenkinsci/jenkins', 26321), status: 'open' },
+      { title: 'ARIA roles on dropdown menus for screen readers', ref: 'jenkins#26321', url: gh('jenkinsci/jenkins', 26321), status: 'merged' },
       { title: 'Double-clicking the search placeholder blocked input', ref: 'jenkins#26418', url: gh('jenkinsci/jenkins', 26418), status: 'open' },
+      { title: 'Error pages for uncaught exceptions showed “Sign in” to logged-in users', ref: 'jenkins#27604', url: gh('jenkinsci/jenkins', 27604), status: 'open' },
     ],
   },
   {

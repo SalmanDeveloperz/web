@@ -25,7 +25,7 @@ const UPSTREAM = new Set([
 export type PrState = 'merged' | 'open' | 'closed';
 export type Pr = { repo: string; number: number; title: string; state: PrState; created: string; merged: string | null; url: string };
 
-const FALLBACK = { merged: 28, total: 38, orgs: 7, fossologyCode: 5, fossologyDocs: 14, jenkins: 5 };
+const FALLBACK = { merged: 29, total: 38, orgs: 7, fossologyCode: 5, fossologyDocs: 14, jenkins: 6 };
 
 async function fromApi(): Promise<Pr[] | null> {
   const headers: Record<string, string> = { Accept: 'application/vnd.github+json', 'User-Agent': 'salman-portfolio-build' };
