@@ -58,7 +58,7 @@ export const credentials = [
     proof: 'https://training.linuxfoundation.org/about/scholarships/',
   },
   {
-    mark: 'JK', color: '#d24939', label: 'Jenkins', title: 'Code in releases', detail: 'Weekly 2.565 · LTS 2.568.1', year: '2026',
+    mark: 'JK', color: '#d24939', label: 'Jenkins', title: 'Code in releases', detail: 'Weekly 2.565 · LTS 2.568.1 · Weekly 2.591', year: '2026',
     proof: 'https://github.com/jenkinsci/docker/releases/tag/2.568.1',
   },
   {
@@ -82,5 +82,5 @@ export const metrics = [
   { n: 40, suffix: '%', label: 'faster builds', note: 'FOSSology, Make to CMake', href: '#span-gsoc' },
   { n: 10, suffix: '+', label: 'services', note: 'One monolith, split onto Kubernetes', href: '#span-gsoc' },
   { n: counts.merged, suffix: '', label: 'merged upstream PRs', note: `Across ${counts.orgs} orgs, synced from GitHub`, href: '#open-source' },
-  { n: 2, suffix: '', label: 'Jenkins releases', note: 'Weekly 2.565 and LTS 2.568.1', href: '#oss-jenkins' },
+  { n: 3, suffix: '', label: 'Jenkins releases', note: 'Weekly 2.565, LTS 2.568.1 and Weekly 2.591', href: '#oss-jenkins' },
 ];

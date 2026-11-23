@@ -6,7 +6,7 @@ import Icon from './Icon.astro';
 
 const rows = [
   ['jenkins/docker', 'env-var-subst', 'shipped', 'LTS 2.568.1'],
-  ['jenkins/core', 'a11y, kbd-nav', 'merged', 'weekly'],
+  ['jenkins/core', 'a11y, aria', 'shipped', 'weekly 2.591'],
   ['fossology', `${counts.fossologyCode + counts.fossologyDocs} PRs`, 'merged', 'GSoC 2025'],
   ['owasp/nest', 'a11y, security', 'active', 'collab'],
   ['sktime', 'forecasting', 'review', 'open'],
@@ -42,7 +42,7 @@ const termData = {
     ['lanes', 'backend · ai/llm · devops · full stack'],
     ['stack', 'python fastapi k8s otel llm-agents'],
     ['oss', `${counts.merged} merged upstream PRs · ${counts.orgs} orgs`],
-    ['shipped', 'jenkins weekly 2.565 · lts 2.568.1'],
+    ['shipped', 'jenkins weekly 2.565 · lts 2.568.1 · weekly 2.591'],
     ['gsoc', 'fossology 2025 · monolith → 10+ services'],
     ['location', 'lahore · utc+5'],
   ],
@@ -398,7 +398,7 @@ const nowIntro = { shipping: now.shipping, building: now.building, in_review: in
   .suggest .chip:hover { border-color: var(--accent); color: var(--accent); }
 
   @media (max-width: 980px) {
-    .hero { grid-template-columns: 1fr; min-height: 0; padding-top: 0; }
+    .hero { grid-template-columns: minmax(0, 1fr); min-height: 0; padding-top: 0; }
     .hero-copy { min-height: min(calc(100svh - 68px), 980px); display: flex; flex-direction: column; justify-content: center; padding-block: 24px; }
     .term-wrap { margin-top: 44px; }
     .term-body { height: 380px; }

@@ -28,7 +28,7 @@ export const openSource: Org[] = [
     name: 'Jenkins',
     slug: 'jenkins',
     blurb: 'Core, the official Docker images, and the theme manager plugin.',
-    highlight: 'Shipped in Weekly 2.565 and LTS 2.568.1',
+    highlight: 'Shipped in Weekly 2.565, LTS 2.568.1 and Weekly 2.591',
     all: 'https://github.com/search?q=author%3ASalmanDeveloperz+org%3Ajenkinsci&type=pullrequests',
     items: [
       { title: 'Env var substitution for reference config files. The issue had been open since 2017.', ref: 'docker#2250', url: gh('jenkinsci/docker', 2250), status: 'shipped' },
@@ -36,7 +36,7 @@ export const openSource: Org[] = [
       { title: 'Off-screen dropdown items lost focus feedback during arrow-key navigation', ref: 'jenkins#26358', url: gh('jenkinsci/jenkins', 26358), status: 'merged' },
       { title: 'Keyboard navigation for the theme picker, requested by the maintainer', ref: 'theme-manager#350', url: gh('jenkinsci/theme-manager-plugin', 350), status: 'merged' },
       { title: 'Broken contributor profile link on jenkins.io', ref: 'jenkins.io#8629', url: gh('jenkins-infra/jenkins.io', 8629), status: 'merged' },
-      { title: 'ARIA roles on dropdown menus for screen readers', ref: 'jenkins#26321', url: gh('jenkinsci/jenkins', 26321), status: 'merged' },
+      { title: 'ARIA roles on dropdown menus for screen readers, shipped in Weekly 2.591', ref: 'jenkins#26321', url: gh('jenkinsci/jenkins', 26321), status: 'shipped' },
       { title: 'Double-clicking the search placeholder blocked input', ref: 'jenkins#26418', url: gh('jenkinsci/jenkins', 26418), status: 'open' },
       { title: 'Error pages for uncaught exceptions showed “Sign in” to logged-in users', ref: 'jenkins#27604', url: gh('jenkinsci/jenkins', 27604), status: 'open' },
     ],

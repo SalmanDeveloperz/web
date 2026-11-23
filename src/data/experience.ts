@@ -53,7 +53,7 @@ export const spans: Span[] = [
     kind: 'oss',
     summary:
       'Contributor to Jenkins core, the official Docker images and the theme manager plugin. Five PRs merged; two of them ship inside every official Jenkins container.',
-    attrs: { repos: 'jenkins, docker, theme-manager-plugin', shipped: '2.565, LTS 2.568.1' },
+    attrs: { repos: 'jenkins, docker, theme-manager-plugin', shipped: '2.565, LTS 2.568.1, 2.591' },
     points: [
       'Closed an issue open since 2017: opt-in env var substitution for containerized Jenkins.',
       'Brought the same feature to Windows containers in PowerShell, with Pester tests.',
