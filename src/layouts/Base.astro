@@ -1,9 +1,10 @@
 ---
 // Fonts are self-hosted (same origin, immutable cache). Only the latin subsets
 // are ever downloaded, thanks to unicode-range in the fontsource CSS.
-import '@fontsource-variable/geist/wght.css';
+import '@fontsource-variable/newsreader/opsz.css';
+import '@fontsource-variable/newsreader/opsz-italic.css';
 import '@fontsource-variable/geist-mono/wght.css';
-import geistUrl from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
+import serifUrl from '@fontsource-variable/newsreader/files/newsreader-latin-opsz-normal.woff2?url';
 import { build as buildStamp } from '../data/build';
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
@@ -62,7 +63,7 @@ const speculation = { prefetch: [{ source: 'list', urls: ['/writing/'] }] };
     <meta name="theme-color" content="#ffffff" data-theme-color />
     <meta name="color-scheme" content="dark light" />
 
-    <link rel="preload" href={geistUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={serifUrl} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:type" content={type} />
     <meta property="og:title" content={fullTitle} />

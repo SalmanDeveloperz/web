@@ -42,23 +42,23 @@ const facts = [
 
 <style>
   .hero {
-    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.02fr); gap: clamp(40px, 5vw, 80px);
+    display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(40px, 5vw, 80px);
     align-items: center; padding-block: clamp(40px, 7vh, 96px) clamp(56px, 9vh, 112px);
     min-height: min(calc(100svh - 72px), 960px);
   }
   .copy { display: flex; flex-direction: column; }
   h1 {
-    font-family: var(--font-display); font-weight: 600; margin-top: 26px;
-    font-size: clamp(42px, 5.4vw, 78px); line-height: 1.0; letter-spacing: -0.045em; text-wrap: balance;
+    font-family: var(--font-display); font-weight: 400; margin-top: 26px;
+    font-size: clamp(44px, 5.1vw, 82px); line-height: 1; letter-spacing: -0.025em; text-wrap: balance;
   }
-  h1 em { font-style: normal; color: var(--accent); }
-  .intro { margin-top: 28px; color: var(--text-2); font-size: clamp(16.5px, 1.4vw, 18.5px); max-width: 54ch; text-wrap: pretty; }
+  h1 em { font-style: italic; color: var(--accent); }
+  .intro { margin-top: 28px; color: var(--text-2); font-size: clamp(18px, 1.5vw, 20.5px); max-width: 54ch; text-wrap: pretty; }
   .ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 32px; }
   .socials { list-style: none; padding: 0; display: flex; gap: 2px; margin-left: 4px; }
   .icon-link { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 999px; color: var(--muted); transition: color .15s, background .15s; }
   .icon-link:hover { color: var(--text); background: var(--surface-2); }
   .facts { margin-top: 44px; border-top: 1px solid var(--text); max-width: 520px; }
-  .fact { display: grid; grid-template-columns: 108px minmax(0, 1fr); gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14.5px; }
+  .fact { display: grid; grid-template-columns: 108px minmax(0, 1fr); gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 16.5px; }
   dt { color: var(--muted); }
   dd { margin: 0; }
   dd a { transition: color .15s; }
@@ -72,7 +72,7 @@ const facts = [
   @media (max-width: 560px) {
     .hero { padding-top: 32px; gap: 40px; }
     h1 { margin-top: 18px; }
-    .fact { grid-template-columns: 92px minmax(0, 1fr); font-size: 14px; }
+    .fact { grid-template-columns: 92px minmax(0, 1fr); font-size: 15.5px; }
     .socials { margin-left: 0; width: 100%; }
   }
 </style>
