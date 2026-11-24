@@ -9,7 +9,7 @@ Software engineer · 9D Technologies · localhost
 
 ---
 
-## Why I rewrote it
+## Why I rewrote it:
 
 The old version was a Gatsby 3 template from 2021. It still built, barely, but it no longer described what I do. After GSoC, Jenkins releases and a few projects I actually care about, the site was two years behind.
 
