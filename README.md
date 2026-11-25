@@ -13,7 +13,7 @@ Software engineer · 9D Technologies · localhost
 
 The old version was a Gatsby 3 template from 2021. It still built, barely, but it no longer described what I do. After GSoC, Jenkins releases and a few projects I actually care about, the site was two years behind.
 
-So I threw it out and started from an empty folder. The rules I set:
+So I threw it out and started from an empty directory. The rules I set:
 
 1. **No framework runtime in the browser.** Plain HTML, a little CSS, small scripts that only wake up when their section is on screen. The home page ships ~36 KB of HTML, ~13 KB of CSS and ~5 KB of external JS after gzip, plus ~75 KB of self-hosted fonts.
 2. **Nothing typed by hand that a machine can check.** PR counts and statuses come from the GitHub API at build time.
